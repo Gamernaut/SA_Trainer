@@ -368,3 +368,5 @@ FodyWeavers.xsd
 /resource1.h
 /resource.h
 /SA_Builder.rc
+/libs/*
+/assets/*
