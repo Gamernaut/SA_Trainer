@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	SA_Trainer trainer;
 
 
-	trainer.initialise();
+	trainer.initialiseScreens();
 	trainer.run();
 	trainer.closeDown();
 

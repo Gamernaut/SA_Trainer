@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/RCa10908
+/RCb18836
+/RCb10908
+/RCa18836
+/resource1.h
+/resource.h
+/SA_Builder.rc

@@ -149,9 +149,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Aircraft.cpp" />
     <ClCompile Include="src\Bullseye.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\SA_Trainer.cpp" />
+    <ClCompile Include="src\ImageObject.cpp" />
+    <ClCompile Include="src\TextObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\glm\common.hpp" />
@@ -408,10 +411,15 @@
     <ClInclude Include="libs\lua\luaconf.h" />
     <ClInclude Include="libs\lua\lualib.h" />
     <ClInclude Include="libs\sol\sol.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="src\Aircraft.h" />
     <ClInclude Include="src\Bullseye.h" />
-    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\SA_Trainer.h" />
+    <ClInclude Include="src\ImageObject.h" />
+    <ClInclude Include="src\TextObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\glm\detail\func_common.inl" />

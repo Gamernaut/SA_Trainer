@@ -1,10 +1,25 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Author:	Carmelo Volpe
+//
+//	Date:	September 2021
+//
+//	Purpose:	
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "SA_Trainer.h"
-#include "config.h"
+#include "Main.h"
 #include "Bullseye.h"
+#include "aircraft.h"
+#include "ImageObject.h"
+#include "TextObject.h"
+
 
 SA_Trainer::SA_Trainer() {
 
@@ -16,379 +31,382 @@ SA_Trainer::~SA_Trainer() {
 }
 
 
-
-void SA_Trainer::initialise() {
+bool SA_Trainer::LoadAndSetUpSDL() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cerr << "Error initializing SDL library" << std::endl;
-		return;
+		return false;
 	}
-
+		
 	if (TTF_Init() != 0) {
 		std::cerr << "Error initializing TTF library" << std::endl;
-		return;
+		return false;
 	}
-
-	// Fake full screen as it's just a window that is the same size of the screen
+		
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
-
-	window = SDL_CreateWindow(
+		
+	window_ = SDL_CreateWindow(
 		"SA Trainer",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		windowWidth,
-		windowHeight,
+		kWindowWidth,
+		kWindowHeight,
 		NULL
 	);
-
-	if (!window) {
+		
+	if (!window_) {
 		std::cerr << "Error creating SDL window" << std::endl;
-		return;
+		return false;
 	}
-
-	renderer = SDL_CreateRenderer(window, -1, 0);
-
-	if (!renderer) {
+		
+	renderer_ = SDL_CreateRenderer(window_, -1, 0);
+		
+	if (!renderer_) {
 		std::cerr << "Error creating SDL Renderer" << std::endl;
-		return;
+		return false;
 	}
-
-	font = TTF_OpenFont(fontName1, fontSize1);
-	if (!font) {
+		
+//	TextObject font(renderer, "./assets/fonts/white-rabbit/whitrabt.ttf" , 16);
+	font_ = TTF_OpenFont(kFontName1, kFontSize1);
+	if (!font_) {
 		std::cerr << "Error opening font Renderer" << std::endl;
-		return;
+		return false;
 	}
-
-	isRunning = true;
+		
+	is_game_running = true;
+	return true;
 }
 
+
+bool SA_Trainer::SetupLoadingScreen() {
+	// Allocate on the heap not the stack or when the function ends the object is destroyed and it looses it's link to the texture even though the object is copied into the vector the texture is lost.
+	ImageObject* loadingScreenTitle= new ImageObject(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
+	loading_screen_image_list_.push_back(loadingScreenTitle);
+
+	ImageObject* mfdSurround = new ImageObject(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
+	loading_screen_image_list_.push_back(mfdSurround);
+
+	return true;
+}
+
+
+bool SA_Trainer::SetupGameScreen() {
+	// create distance rings 
+	hsd_distance_rings_ = new ImageObject(renderer_, kDistRingsFileName, mfdCenter.x - (kDistRingsImageWidth / 2), (mfdCenter.y - (kDistRingsImageHeight / 2)) + kDepOffset);
+
+	// create Bearing ring image
+	bearing_ring_ = new ImageObject(renderer_, kBearingCircle, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 80);
+
+	// create my aircraft
+	my_aircraft_ = new Aircraft(renderer_, kAircraftFileName, mfdCenter.x - (kAircraftImageWidth / 2), (mfdCenter.y - 5) + kDepOffset);
+
+	// create a bogey
+	bogey[0] = new Aircraft(renderer_, kAircraftFileName, mfdCenter.x - (kAircraftImageWidth / 2), mfdCenter.y - 5);
+
+	// Create bullseye
+	bullseye_ = new Bullseye(renderer_, kBullsFileName, mfdCenter.x - (kBullsImageWidth / 2), mfdCenter.y - (kBullsImageHeight / 2));
+
+	// create MFD background
+	mfd_frame_ = new ImageObject(renderer_, kMfdFileName, kMfdPaddingLeft, kMfdPaddingTop);
+
+
+	// ALL THIS BELOW NEED REFACTORING BUT NEED TO  THINK ABOUT HOW WE USE TEXT AND IMAGE OBJECTS IN SAME COLLECTION -> COMMON BASE CLASS
+
+	////////////////////////////////////////////////////////////
+	//// Font based text for text that changes (numbers etc.)
+	////////////////////////////////////////////////////////////
+
+	//int textWidth, textHeight = 0;
+	//int textWidth1, textHeight1 = 0;
+	//int textWidth2, textHeight2 = 0;
+
+	//// Distance to bullseye
+	//SDL_Surface* distTextSurface = TTF_RenderText_Blended(font_, kDistanceText, kMfdBlueColour);
+	//SDL_Texture* distTextTexture = SDL_CreateTextureFromSurface(renderer_, distTextSurface);
+	//TTF_SizeText(font_, kDistanceText, &textWidth, &textHeight);
+	//SDL_Rect distDestRect = {
+	//	kMfdScreenLeftInsideEdge + 50,
+	//	kMfdScreenBottomInsideEdge - 77,
+	//	textWidth,
+	//	textHeight
+	//};
+	//SDL_FreeSurface(distTextSurface);
+	//SDL_RenderCopy(renderer_, distTextTexture, NULL, &distDestRect);
+	//SDL_DestroyTexture(distTextTexture);
+
+
+	//// Bearing to bullseye
+	//SDL_Surface* bearingTextSurface = TTF_RenderText_Blended(font_, kBearingText, kMfdBlueColour);
+	//SDL_Texture* bearingTextTexture = SDL_CreateTextureFromSurface(renderer_, bearingTextSurface);
+	//TTF_SizeText(font_, kBearingText, &textWidth, &textHeight);
+	//SDL_Rect bearingDestRect = {
+	//	kMfdScreenLeftInsideEdge + 47,
+	//	kMfdScreenBottomInsideEdge - 20,
+	//	textWidth,
+	//	textHeight
+	//};
+	//SDL_FreeSurface(bearingTextSurface);
+	//SDL_RenderCopy(renderer_, bearingTextTexture, NULL, &bearingDestRect);
+	//SDL_DestroyTexture(bearingTextTexture);
+
+	//// AWACS call text
+	//SDL_Surface* awacsTextSurface = TTF_RenderText_Blended(font_, "AWACS Call:", kMfdWhiteColour);
+	//SDL_Texture* awacsTextTexture = SDL_CreateTextureFromSurface(renderer_, awacsTextSurface);
+	//TTF_SizeText(font_, "AWACS Call:", &textWidth1, &textHeight1);
+	//SDL_Rect awacsDestRect = {
+	//	(kWindowWidth / 2) - (textWidth1 / 2),
+	//	kMfdPaddingTop - 150,
+	//	awacsTextSurface->w,
+	//	awacsTextSurface->h
+	//};
+	//SDL_FreeSurface(awacsTextSurface);
+	//SDL_RenderCopy(renderer_, awacsTextTexture, NULL, &awacsDestRect);
+	//SDL_DestroyTexture(awacsTextTexture);
+
+	//std::string callText = "Birdseye 1-1, Hostile group bulls 230 for 20, Angles 20, tracking South West";
+	//SDL_Surface* callTextSurface = TTF_RenderText_Blended(font_, callText.c_str(), kMfdBlueColour);
+	//SDL_Texture* callTextTexture = SDL_CreateTextureFromSurface(renderer_, callTextSurface);
+	//TTF_SizeText(font_, callText.c_str(), &textWidth2, &textHeight2);
+	//SDL_Rect callDestRect2 = {
+	//	(kWindowWidth / 2) - (textWidth2 / 2),
+	//	kMfdPaddingTop - 100,
+	//	callTextSurface->w,
+	//	callTextSurface->h
+	//};
+	//SDL_FreeSurface(callTextSurface);
+	//SDL_RenderCopy(renderer_, callTextTexture, NULL, &callDestRect2);
+	//SDL_DestroyTexture(callTextTexture);
+
+	return true;
+}
+
+
+bool SA_Trainer::SetupOptionsScreen() {
+	// Allocate on the heap not the stack or when the function ends the object is destroyed and it looses it's link to the texture even though the object is copied into the vector the texture is lost.
+	ImageObject* mfdFrame = new ImageObject(renderer_, kMfdSetupFileName, kMfdPaddingLeft, kMfdPaddingTop);
+	options_screen_image_list_.push_back(mfdFrame);
+
+	if (gameDifficulty == Difficulty::kAce) {
+		SDL_Surface* description = IMG_Load(kAceLevelFileName);
+		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer_, description);
+		SDL_FreeSurface(description);
+		SDL_Rect destRect = {
+			mfdCenter.x - 150,
+			mfdCenter.y - 100,
+			kAceImageWidth,
+			kAceImageHeight
+		};
+		SDL_RenderCopy(renderer_, descptionTexture, NULL, &destRect);
+		SDL_DestroyTexture(descptionTexture);
+	}
+	else if (gameDifficulty == Difficulty::kCadet) {
+		SDL_Surface* description = IMG_Load(kCadetLevelFileName);
+		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer_, description);
+		SDL_FreeSurface(description);
+		SDL_Rect destRect = {
+			mfdCenter.x - 150,
+			mfdCenter.y - 100,
+			kCadetImageWidth,
+			kCadetImageHeight
+		};
+		SDL_RenderCopy(renderer_, descptionTexture, NULL, &destRect);
+		SDL_DestroyTexture(descptionTexture);
+	}
+	else if (gameDifficulty == Difficulty::kRecruit) {
+		SDL_Surface* description = IMG_Load(kRecruitLevelFileName);
+		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer_, description);
+		SDL_FreeSurface(description);
+		SDL_Rect destRect = {
+			mfdCenter.x - 150,
+			mfdCenter.y - 100,
+			kRecruitImageWidth,
+			kRecruitImageHeight
+		};
+		SDL_RenderCopy(renderer_, descptionTexture, NULL, &destRect);
+		SDL_DestroyTexture(descptionTexture);
+	}
+	else if (gameDifficulty == Difficulty::kRookie) {
+		SDL_Surface* description = IMG_Load(kRookieLevelFileName);
+		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer_, description);
+		SDL_FreeSurface(description);
+		SDL_Rect destRect = {
+			mfdCenter.x - 150,
+			mfdCenter.y - 100,
+			kRookieImageWidth,
+			kRookieImageHeight
+		};
+		SDL_RenderCopy(renderer_, descptionTexture, NULL, &destRect);
+		SDL_DestroyTexture(descptionTexture);
+	}
+	else if (gameDifficulty == Difficulty::kVeteran) {
+		SDL_Surface* description = IMG_Load(kVeteranLevelFileName);
+		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer_, description);
+		SDL_FreeSurface(description);
+		SDL_Rect destRect = {
+			mfdCenter.x - 150,
+			mfdCenter.y - 100,
+			kVeteranImageWidth,
+			kVeteranImageHeight
+		};
+		SDL_RenderCopy(renderer_, descptionTexture, NULL, &destRect);
+		SDL_DestroyTexture(descptionTexture);
+	}
+	return true;
+}
+
+
+void SA_Trainer::initialiseScreens() {
+	if (!LoadAndSetUpSDL()) {
+		std::cerr << "Error setting up SDL" << std::endl;
+	}
+
+	if (!SetupLoadingScreen()) {
+		std::cerr << "Error creating Loading screen" << std::endl;
+	}
+
+	if (!SetupGameScreen()) {
+		std::cerr << "Error creating Game screen" << std::endl;
+	}
+
+	if (!SetupOptionsScreen()) {
+		std::cerr << "Error creating Options screen" << std::endl;
+	}
+
+}
+
+
 void SA_Trainer::closeDown() {
-	TTF_CloseFont(font);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+	// delete bullseye;
+	loading_screen_image_list_.clear();
+	options_screen_image_list_.clear();
+	delete hsd_distance_rings_;
+	delete bearing_ring_;
+	delete my_aircraft_;
+	delete mfd_frame_;
+	delete bullseye_;
+	delete bogey[0];
+	delete bogey[1];
+	delete bogey[2];
+	TTF_CloseFont(font_);
+	SDL_DestroyRenderer(renderer_);
+	SDL_DestroyWindow(window_);
 	TTF_Quit();
 	SDL_Quit();
 }
 
 
+void SA_Trainer::RenderGameScreen() {
+	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+	SDL_RenderClear(renderer_);
 
-void SA_Trainer::renderGameScreen() {
-	int textWidth{ 0 }, textHeight{ 0 };
-	int textWidth1{ 0 }, textHeight1{ 0 };
-	int textWidth2{ 0 }, textHeight2{ 0 };
+	// Draw images on game screen, call them with those on the lowest layer first so they get written over
+	hsd_distance_rings_->Draw(renderer_);
+	bearing_ring_->Draw(renderer_);
+	my_aircraft_->Draw(renderer_);
+	mfd_frame_->Draw(renderer_);
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-
-	//// Load MFD image
-	SDL_Surface* MFD = IMG_Load(mfdFileName);
-	SDL_Texture* MFDtexture = SDL_CreateTextureFromSurface(renderer, MFD);
-	SDL_FreeSurface(MFD);
-	SDL_Rect MFDdestRect = {
-		mfdPaddingLeft,
-		mfdPaddingTop,
-		mfdImageWidth,
-		mfdImageHeight
-	};
-	SDL_RenderCopy(renderer, MFDtexture, NULL, &MFDdestRect);
-	SDL_DestroyTexture(MFDtexture);
-
-	// Load Bearing ring image
-	SDL_Surface* ring = IMG_Load(bearingCircle);
-	SDL_Texture* ringtexture = SDL_CreateTextureFromSurface(renderer, ring);
-	SDL_FreeSurface(ring);
-	SDL_Rect ringDestRect = {
-		mfdScreenLeftInsideEdge + 20,
-		mfdScreenBottomInsideEdge - 120,
-		bearingCircleWidth,
-		bearingCircleHeight
-	};
-	SDL_RenderCopy(renderer, ringtexture, NULL, &ringDestRect);
-	SDL_DestroyTexture(ringtexture);
-
-	// Load distance rings image
-	SDL_Surface* distRings = IMG_Load(distRingsFileName);
-	SDL_Texture* distRingstexture = SDL_CreateTextureFromSurface(renderer, distRings);
-	SDL_FreeSurface(distRings);
-	SDL_Rect destRingsDestRect = {
-		mfdCenter.x - (distRingsImageWidth / 2),
-		mfdCenter.y - (distRingsImageHeight / 2),
-		distRingsImageWidth,
-		distRingsImageHeight
-	};
-	SDL_RenderCopy(renderer, distRingstexture, NULL, &destRingsDestRect);
-	SDL_DestroyTexture(distRingstexture);
-
-	// Load aircraft image
-	SDL_Surface* aircraft = IMG_Load(aircraftFileName);
-	SDL_Texture* aircraftTexture = SDL_CreateTextureFromSurface(renderer, aircraft);
-	SDL_FreeSurface(aircraft);
-	SDL_Rect aircraftDestRect = {
-		mfdCenter.x - (aircraftImageWidth / 2),
-		mfdCenter.y - 5,
-		aircraftImageWidth,
-		aircraftImageHeight
-	};
-	SDL_RenderCopy(renderer, aircraftTexture, NULL, &aircraftDestRect);
-	SDL_DestroyTexture(aircraftTexture);
-
-	// Load bullseye image
-	SDL_Surface* bullseye = IMG_Load(bullsFileName);
-	SDL_Texture* bullseyeTexture = SDL_CreateTextureFromSurface(renderer, bullseye);
-	SDL_FreeSurface(bullseye);
-	SDL_Rect bullseyeDestRect = {
-		bullsCenter.x - (bullsImageWidth / 2),
-		bullsCenter.y - (bullsImageHeight / 2),
-		bullsImageWidth,
-		bullsImageHeight
-	};
-	SDL_RenderCopy(renderer, bullseyeTexture, NULL, &bullseyeDestRect);
-	SDL_DestroyTexture(bullseyeTexture);
-
-	//////////////////////////////////////////////////////////
-	// Font based text for text that changes (numbers etc.)
-	//////////////////////////////////////////////////////////
-
-	// Distance to bullseye
-	SDL_Surface* distTextSurface = TTF_RenderText_Blended(font, distanceText, mfdBlueColour);
-	SDL_Texture* distTextTexture = SDL_CreateTextureFromSurface(renderer, distTextSurface);
-	TTF_SizeText(font, distanceText, &textWidth, &textHeight);
-	SDL_Rect distDestRect = {
-		mfdScreenLeftInsideEdge + 50,
-		mfdScreenBottomInsideEdge - 77,
-		textWidth,
-		textHeight
-	};
-	SDL_FreeSurface(distTextSurface);
-	SDL_RenderCopy(renderer, distTextTexture, NULL, &distDestRect);
-	SDL_DestroyTexture(distTextTexture);
+	// This is here just for testing
+	bullseye_->Draw(renderer_);
+	
+	SDL_RenderPresent(renderer_);
 
 
-	// Bearing to bullseye
-	SDL_Surface* bearingTextSurface = TTF_RenderText_Blended(font, bearingText, mfdBlueColour);
-	SDL_Texture* bearingTextTexture = SDL_CreateTextureFromSurface(renderer, bearingTextSurface);
-	TTF_SizeText(font, bearingText, &textWidth, &textHeight);
-	SDL_Rect bearingDestRect = {
-		mfdScreenLeftInsideEdge + 47,
-		mfdScreenBottomInsideEdge - 20,
-		textWidth,
-		textHeight
-	};
-	SDL_FreeSurface(bearingTextSurface);
-	SDL_RenderCopy(renderer, bearingTextTexture, NULL, &bearingDestRect);
-	SDL_DestroyTexture(bearingTextTexture);
+	//// ALL THIS BELOW NEED MOVING TO THE MOST APPROPRIATE FUNCTION
+	//int textWidth, textHeight = 0;
+	//int textWidth1, textHeight1 = 0;
 
-	// AWACS call text
-	SDL_Surface* awacsTextSurface = TTF_RenderText_Blended(font, "AWACS Call:", mfdWhiteColour);
-	SDL_Texture* awacsTextTexture = SDL_CreateTextureFromSurface(renderer, awacsTextSurface);
-	TTF_SizeText(font, "AWACS Call:", &textWidth1, &textHeight1);
-	SDL_Rect awacsDestRect = {
-		(windowWidth / 2) - (textWidth1 / 2),
-		mfdPaddingTop - 150,
-		awacsTextSurface->w,
-		awacsTextSurface->h
-	};
-	SDL_FreeSurface(awacsTextSurface);
-	SDL_RenderCopy(renderer, awacsTextTexture, NULL, &awacsDestRect);
-	SDL_DestroyTexture(awacsTextTexture);
+	//// Description of what to do
+	//std::string difficultyText1, difficultyText2;
+	//if (gameDifficulty == Difficulty::ace) {
+	//	difficultyText1 = "Difficulty: ACE";
+	//	difficultyText2 = "Click on HSD close to all groups of bogey's";
+	//} else if (gameDifficulty == Difficulty::cadet && gameState == GameState::playing) {
+	//	difficultyText1 = "Difficulty: CADET";
+	//	difficultyText2 = "Click on HSD close to the bullseye";
+	//} else if (gameDifficulty == Difficulty::recruit && gameState == GameState::playing) {
+	//	difficultyText1 = "Difficulty: RECRUIT";
+	//	difficultyText2 = "Click on HSD in the direction of the bullseye";
+	//} else if (gameDifficulty == Difficulty::rookie && gameState == GameState::playing) {
+	//	difficultyText1 = "Difficulty: ROOKIE";
+	//	difficultyText2 = "Click on HSD in the direction of the bogey from the bullseye";
+	//} else if (gameDifficulty == Difficulty::veteran && gameState == GameState::playing) {
+	//	difficultyText1 = "Difficulty: VETERAN";
+	//	difficultyText2 = "Click on HSD close to the bogey's";
+	//}
+	//SDL_Surface* descriptionTextSurface1 = TTF_RenderText_Blended(font, difficultyText1.c_str(), mfdWhiteColour);
+	//SDL_Texture* descriptionTextTexture1 = SDL_CreateTextureFromSurface(gRenderer, descriptionTextSurface1);
+	//TTF_SizeText(font, difficultyText1.c_str(), &textWidth, &textHeight);
+	//SDL_Rect descriptionDestRect1 = {
+	//	(windowWidth / 2) - (textWidth / 2),
+	//	mfdPaddingTop - 50,
+	//	descriptionTextSurface1->w,
+	//	descriptionTextSurface1->h
+	//};
+	//SDL_FreeSurface(descriptionTextSurface1);
+	//SDL_RenderCopy(gRenderer, descriptionTextTexture1, NULL, &descriptionDestRect1);
+	//SDL_DestroyTexture(descriptionTextTexture1);
 
-	std::string callText = "Birdseye 1-1, Hostile group bulls 230 for 20, Angles 20, tracking South West";
-	SDL_Surface* callTextSurface = TTF_RenderText_Blended(font, callText.c_str(), mfdBlueColour);
-	SDL_Texture* callTextTexture = SDL_CreateTextureFromSurface(renderer, callTextSurface);
-	TTF_SizeText(font, callText.c_str(), &textWidth2, &textHeight2);
-	SDL_Rect callDestRect2 = {
-		(windowWidth / 2) - (textWidth2 / 2),
-		mfdPaddingTop - 100,
-		callTextSurface->w,
-		callTextSurface->h
-	};
-	SDL_FreeSurface(callTextSurface);
-	SDL_RenderCopy(renderer, callTextTexture, NULL, &callDestRect2);
-	SDL_DestroyTexture(callTextTexture);
-
-	// Description of what to do
-	std::string difficultyText1, difficultyText2;
-	if (gameDifficulty == Difficulty::ace) {
-		difficultyText1 = "Difficulty: ACE";
-		difficultyText2 = "Click on HSD close to all groups of bogey's";
-	} else if (gameDifficulty == Difficulty::cadet && gameState == GameState::playing) {
-		difficultyText1 = "Difficulty: CADET";
-		difficultyText2 = "Click on HSD close to the bullseye";
-	} else if (gameDifficulty == Difficulty::recruit && gameState == GameState::playing) {
-		difficultyText1 = "Difficulty: RECRUIT";
-		difficultyText2 = "Click on HSD in the direction of the bullseye";
-	} else if (gameDifficulty == Difficulty::rookie && gameState == GameState::playing) {
-		difficultyText1 = "Difficulty: ROOKIE";
-		difficultyText2 = "Click on HSD in the direction of the bogey from the bullseye";
-	} else if (gameDifficulty == Difficulty::veteran && gameState == GameState::playing) {
-		difficultyText1 = "Difficulty: VETERAN";
-		difficultyText2 = "Click on HSD close to the bogey's";
-	}
-	SDL_Surface* descriptionTextSurface1 = TTF_RenderText_Blended(font, difficultyText1.c_str(), mfdWhiteColour);
-	SDL_Texture* descriptionTextTexture1 = SDL_CreateTextureFromSurface(renderer, descriptionTextSurface1);
-	TTF_SizeText(font, difficultyText1.c_str(), &textWidth1, &textHeight1);
-	SDL_Rect descriptionDestRect1 = {
-		(windowWidth / 2) - (textWidth1 / 2),
-		mfdPaddingTop - 50,
-		descriptionTextSurface1->w,
-		descriptionTextSurface1->h
-	};
-	SDL_FreeSurface(descriptionTextSurface1);
-	SDL_RenderCopy(renderer, descriptionTextTexture1, NULL, &descriptionDestRect1);
-	SDL_DestroyTexture(descriptionTextTexture1);
-
-	SDL_Surface* descriptionTextSurface2 = TTF_RenderText_Blended(font, difficultyText2.c_str(), mfdWhiteColour);
-	SDL_Texture* descriptionTextTexture2 = SDL_CreateTextureFromSurface(renderer, descriptionTextSurface2);
-	TTF_SizeText(font, difficultyText2.c_str(), &textWidth2, &textHeight2);
-	SDL_Rect descriptionDestRect2 = {
-		(windowWidth / 2) - (textWidth2 / 2),
-		mfdPaddingTop - 30,
-		descriptionTextSurface2->w,
-		descriptionTextSurface2->h
-	};
-	SDL_FreeSurface(descriptionTextSurface2);
-	SDL_RenderCopy(renderer, descriptionTextTexture2, NULL, &descriptionDestRect2);
-	SDL_DestroyTexture(descriptionTextTexture2);
+	//SDL_Surface* descriptionTextSurface2 = TTF_RenderText_Blended(font, difficultyText2.c_str(), mfdWhiteColour);
+	//SDL_Texture* descriptionTextTexture2 = SDL_CreateTextureFromSurface(gRenderer, descriptionTextSurface2);
+	//TTF_SizeText(font, difficultyText2.c_str(), &textWidth1, &textHeight1);
+	//SDL_Rect descriptionDestRect2 = {
+	//	(windowWidth / 2) - (textWidth1 / 2),
+	//	mfdPaddingTop - 30,
+	//	descriptionTextSurface2->w,
+	//	descriptionTextSurface2->h
+	//};
+	//SDL_FreeSurface(descriptionTextSurface2);
+	//SDL_RenderCopy(gRenderer, descriptionTextTexture2, NULL, &descriptionDestRect2);
+	//SDL_DestroyTexture(descriptionTextTexture2);
 }
 
-void SA_Trainer::renderMenuScreen() {
-	// Title text
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
 
-	SDL_Surface* titleTextSurface = IMG_Load(gameTitleFilename);
-	SDL_Texture* titleTextTexture = SDL_CreateTextureFromSurface(renderer, titleTextSurface);
-	SDL_FreeSurface(titleTextSurface);
-	SDL_Rect titleTextDestRect = {
-		(windowWidth / 2) - (gameTitleWidth / 2),
-		(mfdPaddingTop / 2) - (gameTitleHeight / 2),
-		gameTitleWidth,
-		gameTitleHeight
-	};
-	SDL_RenderCopy(renderer, titleTextTexture, NULL, &titleTextDestRect);
-	SDL_DestroyTexture(titleTextTexture);
+void SA_Trainer::RenderLoadingScreen() {
+	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+	SDL_RenderClear(renderer_);
 
-
-	// MFD and image
-	SDL_Surface* startSurface = IMG_Load(gameStartMenuFileName);
-	SDL_Texture* starttexture = SDL_CreateTextureFromSurface(renderer, startSurface);
-	SDL_FreeSurface(startSurface);
-	SDL_Rect startDestRect = {
-		mfdPaddingLeft,
-		mfdPaddingTop,
-		mfdImageWidth,
-		mfdImageHeight
-	};
-	SDL_RenderCopy(renderer, starttexture, NULL, &startDestRect);
-	SDL_DestroyTexture(starttexture);
-
+	for (std::size_t i = 0; i < loading_screen_image_list_.size(); ++i) {
+		loading_screen_image_list_[i]->Draw(renderer_);
+	}
+	
+	SDL_RenderPresent(renderer_);
 }
 
-void SA_Trainer::renderSetupSceen() {
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+void SA_Trainer::RenderOptionsSceen() {
+	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+	SDL_RenderClear(renderer_);
 
-	SDL_Surface* MFD = IMG_Load(mfdSetupFileName);
-	SDL_Texture* MFDtexture = SDL_CreateTextureFromSurface(renderer, MFD);
-	SDL_FreeSurface(MFD);
-	SDL_Rect MFDdestRect = {
-		mfdPaddingLeft,
-		mfdPaddingTop,
-		mfdImageWidth,
-		mfdImageHeight
-	};
-	SDL_RenderCopy(renderer, MFDtexture, NULL, &MFDdestRect);
-	SDL_DestroyTexture(MFDtexture);
-
-	if (gameDifficulty == Difficulty::ace) {
-		SDL_Surface* description = IMG_Load(aceLevelFileName);
-		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer, description);
-		SDL_FreeSurface(description);
-		SDL_Rect destRect = {
-			mfdCenter.x - 150,
-			mfdCenter.y - 100,
-			aceImageWidth,
-			aceImageHeight
-		};
-		SDL_RenderCopy(renderer, descptionTexture, NULL, &destRect);
-		SDL_DestroyTexture(descptionTexture);
-	}
-	else if (gameDifficulty == Difficulty::cadet) {
-		SDL_Surface* description = IMG_Load(cadetLevelFileName);
-		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer, description);
-		SDL_FreeSurface(description);
-		SDL_Rect destRect = {
-			mfdCenter.x - 150,
-			mfdCenter.y - 100,
-			cadetImageWidth,
-			cadetImageHeight
-		};
-		SDL_RenderCopy(renderer, descptionTexture, NULL, &destRect);
-		SDL_DestroyTexture(descptionTexture);
-	}
-	else if (gameDifficulty == Difficulty::recruit) {
-		SDL_Surface* description = IMG_Load(recruitLevelFileName);
-		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer, description);
-		SDL_FreeSurface(description);
-		SDL_Rect destRect = {
-			mfdCenter.x - 150,
-			mfdCenter.y - 100,
-			recruitImageWidth,
-			recruitImageHeight
-		};
-		SDL_RenderCopy(renderer, descptionTexture, NULL, &destRect);
-		SDL_DestroyTexture(descptionTexture);
-	}
-	else if (gameDifficulty == Difficulty::rookie) {
-		SDL_Surface* description = IMG_Load(rookieLevelFileName);
-		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer, description);
-		SDL_FreeSurface(description);
-		SDL_Rect destRect = {
-			mfdCenter.x - 150,
-			mfdCenter.y - 100,
-			rookieImageWidth,
-			rookieImageHeight
-		};
-		SDL_RenderCopy(renderer, descptionTexture, NULL, &destRect);
-		SDL_DestroyTexture(descptionTexture);
-	}
-	else if (gameDifficulty == Difficulty::veteran) {
-		SDL_Surface* description = IMG_Load(veteranLevelFileName);
-		SDL_Texture* descptionTexture = SDL_CreateTextureFromSurface(renderer, description);
-		SDL_FreeSurface(description);
-		SDL_Rect destRect = {
-			mfdCenter.x - 150,
-			mfdCenter.y - 100,
-			veteranImageWidth,
-			veteranImageHeight
-		};
-		SDL_RenderCopy(renderer, descptionTexture, NULL, &destRect);
-		SDL_DestroyTexture(descptionTexture);
+	for (std::size_t i = 0; i < options_screen_image_list_.size(); ++i) {
+		options_screen_image_list_[i]->Draw(renderer_);
 	}
 
+	SDL_RenderPresent(renderer_);
 }
+
 
 void SA_Trainer::render() {
 	// basically check the game state and then render the appropriate view
 	switch (gameState) {
-		case GameState::menu:
-			renderMenuScreen();
+		case GameState::kMenu:
+			RenderLoadingScreen();
 			break;
-		case GameState::setup:
-			renderSetupSceen();
+		case GameState::kSetup:
+			RenderOptionsSceen();
 			break;
-		case GameState::playing:
-			renderGameScreen();
+		case GameState::kPlaying:
+			RenderGameScreen();
 			break;
 	}
 
-	SDL_RenderPresent(renderer);
+	// SDL_RenderPresent(renderer_);
 }
+
 
 void SA_Trainer::update() {
 
 }
+
 
 void SA_Trainer::processInput() {
 	SDL_Event sdlEvent;
@@ -396,11 +414,11 @@ void SA_Trainer::processInput() {
 	while (SDL_PollEvent(&sdlEvent)) {
 		switch (sdlEvent.type) {
 			case SDL_QUIT:
-				isRunning = false;
+				is_game_running = false;
 				break;
 			case SDL_KEYDOWN:
 				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
-					isRunning = false;
+					is_game_running = false;
 					break;
 				}
 
@@ -412,95 +430,127 @@ void SA_Trainer::processInput() {
 				std::cout << "Mouse position is x = " << mouseX << " and y = " << mouseY << std::endl;
 
 				// Handle Start button on main screen
-				if (mouseX >= startButtonLeftEdge && mouseX <= startButtonRightEdge && mouseY >= startButtonTopEdge && mouseY <= startButtonBottomEdge) {
-					if (gameState == GameState::menu) {
-						gameState = GameState::playing;
+				if (mouseX >= kStartButtonLeftEdge && mouseX <= kStartButtonRightEdge && mouseY >= kStartButtonTopEdge && mouseY <= kStartButtonBottomEdge) {
+					if (gameState == GameState::kMenu) {
+						gameState = GameState::kPlaying;
 						break;
 					}
 				}
 
 				// Handle Setup/Back button
-				if (mouseX >= setupButtonLeftEdge && mouseX <= setupButtonRightEdge && mouseY >= setupButtonTopEdge && mouseY <= setupButtonBottomEdge) {
-					if (gameState == GameState::playing) {
-						gameState = GameState::setup;
+				if (mouseX >= kSetupButtonLeftEdge && mouseX <= kSetupButtonRightEdge && mouseY >= kSetupButtonTopEdge && mouseY <= kSetupButtonBottomEdge) {
+					if (gameState == GameState::kPlaying) {
+						gameState = GameState::kSetup;
 						break;
 					}
-					if (gameState == GameState::setup) {
-						gameState = GameState::playing;
+					if (gameState == GameState::kSetup) {
+						gameState = GameState::kPlaying;
 						break;
 					}
 				}
 				// Handle Recruit difficulty selection in setup screen
-				if (mouseX >= recruitButtonLeftEdge && mouseX <= recruitButtonRightEdge && mouseY >= recruitButtonTopEdge && mouseY <= recruitButtonBottomEdge && gameState == GameState::setup) {
-					gameDifficulty = Difficulty::recruit;
+				if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && mouseY <= kRecruitButtonBottomEdge && gameState == GameState::kSetup) {
+					gameDifficulty = Difficulty::kRecruit;
 					std::cout << "Difficulty changed to Recruit" << std::endl;
 					break;
 				}
 
 				// Handle Cadet selection in setup screen
-				if (mouseX >= cadetButtonLeftEdge && mouseX <= cadetButtonRightEdge && mouseY >= cadetButtonTopEdge && mouseY <= cadetButtonBottomEdge && gameState == GameState::setup) {
-					gameDifficulty = Difficulty::cadet;
+				if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && gameState == GameState::kSetup) {
+					gameDifficulty = Difficulty::kCadet;
 					std::cout << "Difficulty changed to Cadet" << std::endl;
 					break;
 				}
 
 				// Handle Rookie selection in setup screen
-				if (mouseX >= rookieButtonLeftEdge && mouseX <= rookieButtonRightEdge && mouseY >= rookieButtonTopEdge && mouseY <= rookieButtonBottomEdge && gameState == GameState::setup) {
-					gameDifficulty = Difficulty::rookie;
+				if (mouseX >= kRookieButtonLeftEdge && mouseX <= kRookieButtonRightEdge && mouseY >= kRookieButtonTopEdge && mouseY <= kRookieButtonBottomEdge && gameState == GameState::kSetup) {
+					gameDifficulty = Difficulty::kRookie;
 					std::cout << "Difficulty changed to Rookie" << std::endl;
 					break;
 				}
 
 				// Handle Veteran selection in setup screen
-				if (mouseX >= veteranButtonLeftEdge && mouseX <= veteranButtonRightEdge && mouseY >= veteranButtonTopEdge && mouseY <= veteranButtonBottomEdge && gameState == GameState::setup) {
-					gameDifficulty = Difficulty::veteran;
+				if (mouseX >= kVeteranButtonLeftEdge && mouseX <= kVeteranButtonRightEdge && mouseY >= kVeteranButtonTopEdge && mouseY <= kVeteranButtonBottomEdge && gameState == GameState::kSetup) {
+					gameDifficulty = Difficulty::kVeteran;
 					std::cout << "Difficulty changed to Veteran" << std::endl;
 				}
 
 				// Handle Ace selection in setup screen
-				if (mouseX >= aceButtonLeftEdge && mouseX <= aceButtonRightEdge && mouseY >= aceButtonTopEdge && mouseY <= aceButtonBottomEdge && gameState == GameState::setup) {
-					gameDifficulty = Difficulty::ace;
+				if (mouseX >= kAceButtonLeftEdge && mouseX <= kAceButtonRightEdge && mouseY >= kAceButtonTopEdge && mouseY <= kAceButtonBottomEdge && gameState == GameState::kSetup) {
+					gameDifficulty = Difficulty::kAce;
 					std::cout << "Difficulty changed to Ace" << std::endl;
 				}
 
-				if (mouseX >= exitButtonLeftEdge && mouseX <= exitButtonRightEdge && mouseY >= exitButtonTopEdge && mouseY <= exitButtonBottomEdge) {
+				if (mouseX >= kExitButtonLeftEdge && mouseX <= kExitButtonRightEdge && mouseY >= kExitButtonTopEdge && mouseY <= kExitButtonBottomEdge) {
 					std::cout << "Mouse is inside the Exit button" << std::endl;
-					isRunning = false;
+					is_game_running = false;
 					break;
 				}
 				break;
-
-			case SDL_MOUSEMOTION:
-				if (mouseX >= exitButtonLeftEdge && mouseX <= exitButtonRightEdge && mouseY >= exitButtonTopEdge && mouseY <= exitButtonBottomEdge) {
-					std::cout << "Mouse is hovering over the Exit button" << std::endl;
-					break;
-				}
 			break;
 		}
 	}
 }
 
+
 void SA_Trainer::setupRound() {
-	// create bullseye object
-	Bullseye bullseye;
+
+std::cout << "Initial - My aircraft position " << my_aircraft_->position_.x << ", " << my_aircraft_->position_.y << " and heading " << my_aircraft_->current_heading_ << std::endl;
+
+	// Set random bullseye position for this round
+	bullseye_->SetRandomPosition();
+	bullseye_->Draw(renderer_);
+
+
+std::cout << "Info for bullseye " << bullseye_->position_.x << ", " << bullseye_->position_.y << std::endl;
+
+
+	// Set random heading of my aircraft for this round and rotate HSD distance rings to match that heading
+	my_aircraft_->SetRandomHeading();
+	hsd_distance_rings_->RotateToFinalAngle(my_aircraft_->GetHeading());
+	hsd_distance_rings_->Draw(renderer_);
+
+
+std::cout << "My aircraft heading " << my_aircraft_->current_heading_ << std::endl;
+
+
+	// Set the heading of the bearing ring to point to the bulls eye
+	int heading_to_bullseye = bullseye_->CalculateBearingToBullseye(my_aircraft_->position_);
+	bearing_ring_->RotateToFinalAngle(heading_to_bullseye);
+
+	// Select a random HSD range from 5m to 160m, using ranges on HSD
+	int HSD_Range = (rand() % 160);
+
+	if (HSD_Range <= 8) { HSD_Range = 8; }
+	else if (HSD_Range > 8 && HSD_Range <= 15) { HSD_Range = 15; }
+	else if (HSD_Range > 15 && HSD_Range <= 30) { HSD_Range = 30; }
+	else if (HSD_Range > 30 && HSD_Range <= 60) { HSD_Range = 60; }
+	else if (HSD_Range > 60 && HSD_Range <= 120) { HSD_Range = 120; }
+	else if (HSD_Range > 120 && HSD_Range <= 240) { HSD_Range = 240; }
+
+	// Set a random position and heading for bogey's
+	bogey[0]->SetRandomPosition();
+	bogey[0]->SetRandomHeading();
+
+
 }
 
+
 void SA_Trainer::run() {
-	// This function needs to manage each round, so it needs to initialise a round (set the bulls eye and display the AWACS call to the player
+	// This function needs to manage each round, so it needs to initialise a round (set the bulls eye and display the AWACS call to the player)
 	// needs a loop
-	// 
-	// calls setup round
+	
 	setupRound();
 	// then loops through processInput, update and render until user clicks
 	// 
 	// checks if click and bullseye align, informs user and starts a new round
 
-	while (isRunning) {
+	while (is_game_running) {
 		// Limit speed to consistent frame rate. Not really needed in this app, but good practice to include it anyway.
-		while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecondsPreviousFrame + MILLISECONDS_PER_FRAME));
+		while (!SDL_TICKS_PASSED(SDL_GetTicks(), milliseconds_previous_frame_ + kmilliseconds_per_frame));
 
 		// Store the current frame time
-		millisecondsPreviousFrame = SDL_GetTicks();
+		milliseconds_previous_frame_ = SDL_GetTicks();
 
 		processInput();
 		update();
