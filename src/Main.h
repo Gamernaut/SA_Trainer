@@ -4,7 +4,6 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-
 // Header file with set up info and constants for SQ Trainer
 
 const int kFPS = 10;
@@ -32,18 +31,21 @@ const int kMfdScreenTopInsideEdge = kMfdPaddingTop + 83;
 const int kMfdScreenLeftInsideEdge = kMfdPaddingLeft + 83;
 const int kMfdScreenBottomInsideEdge = kMfdPaddingTop + 631;
 const int kMfdScreenRightInsideEdge = kMfdPaddingLeft + 638;
+inline const char* kGreenPieSlice = "./assets/images/green_pie_slice_165x684.png";
+inline const char* kRedPieSlice = "./assets/images/red_pie_slice_165x684.png";
+inline const char* kRedRectangle = "./assets/images/red_rectangle_64x64.png";
+inline const char* kGreenRectangle = "./assets/images/green_rectangle_64x64.png";
 
-const SDL_Color kMfdGreenColour { 0, 175, 0 };
+const SDL_Color kMfdGreenColour{ 0, 175, 0 };
 const SDL_Color kMfdWhiteColour{ 255, 255, 255 };
 const SDL_Color kMfdBlueColour{ 0, 200, 200 };
 const SDL_Color kMfdBackground{ 0, 0, 0 };
-const Coordinates mfdCenter{
+const Coordinates kMFDCenter{
 			kMfdScreenLeftInsideEdge + (kMfdScreenWidth / 2),
 			kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
 };
 
-
-// MFD setup screen 
+// MFD setup screen
 inline const char* kMfdSetupFileName = "./assets/images/setup_screen_727x720.png";
 inline const char* kAceLevelFileName = "./assets/images/ace_level_319x177.png";
 const int kAceImageWidth = 319;
@@ -61,13 +63,11 @@ inline const char* kVeteranLevelFileName = "./assets/images/veteran_level_318x17
 const int kVeteranImageWidth = 318;
 const int kVeteranImageHeight = 170;
 
-
-// Game start menu screen 
+// Game start menu screen
 inline const char* kGameStartMenuFileName = "./assets/images/main_menu_727x720.png";
 inline const char* kGameTitleFilename = "./assets/images/main_title_396x74.png";
 const int kGameTitleWidth = 396;
 const int kGameTitleHeight = 74;
-
 
 // Distance rings attributes, needs to rotate so needs to have a center
 inline const char* kDistRingsFileName = "./assets/images/distance_rings_646x646.png";
@@ -79,32 +79,29 @@ const Coordinates distRingsCenter{
 			kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
 };
 
-
 // Aircraft  attributes
 inline const char* kAircraftFileName = "./assets/images/Aircraft_datum_42x47.png";
 const int kAircraftImageWidth = 42;
 const int kAircraftImageHeight = 47;
-
 
 // Bullseye attributes
 inline const char* kBullsFileName = "./assets/images/bullseye_28x28.png";
 const int kBullsImageWidth = 28;
 const int kBullsImageHeight = 28;
 
-
 // Blue bearing circle attribute, needs to rotate so needs to have a center
 inline const char* kBearingCircle = "./assets/images/blue_bearing_ring_55x60.png";
 const int kBearingCircleWidth = 55;
 const int kBearingCircleHeight = 60;
+inline const char* kBearingPointer = "./assets/images/bearing_pointer_53x65.png";
 const Coordinates bearingCircleCenter{
 			kBearingCircleWidth / 2,
 			kBearingCircleHeight / 2
 };
 
-
 // Fonts used in game
 inline const char* kFontName2 = "C:/Windows/Fonts/Arial.ttf";
-inline const char* kFontName1 = "./assets/fonts/white-rabbit/whitrabt.ttf";
+inline const char* kFontName = "./assets/fonts/white-rabbit/whitrabt.ttf";
 //inline const char* fontName1 = "./assets/fonts/digitgraphics/DigiGraphics.ttf";
 //inline const char* fontName1 = "./assets/fonts/visitor-brk/visitor2.ttf";
 const int kFontSize1 = 16;
@@ -117,7 +114,8 @@ const int kStartButtonTopEdge = kMfdPaddingTop + 653;
 const int kStartButtonBottomEdge = kMfdPaddingTop + 703;
 
 // Setup Button Text
-inline const char* kSetupButtonText = "./assets/images/SETUP_Text_44x11.png";
+//inline const char* kSetupButtonText = "./assets/images/SETUP_Text_44x11.png";
+inline const char* kSetupButtonText = "SETUP";
 const int kSetupTextImageWidth = 44;
 const int kSetupTextImageHeight = 11;
 const int kSetupButtonLeftEdge = kMfdPaddingLeft + 253;
@@ -126,7 +124,8 @@ const int kSetupButtonTopEdge = kMfdPaddingTop + 652;
 const int kSetupButtonBottomEdge = kMfdPaddingTop + 704;
 
 // Exit Button Text
-inline const char* kExitButtonText = "./assets/images/EXIT_Text_32x10.png";
+//inline const char* kExitButtonText = "./assets/images/EXIT_Text_32x10.png";
+inline const char* kExitButtonText = "EXIT";
 const int kExitTextImageWidth = 32;
 const int kExitTextImageHeight = 10;
 const int kExitButtonLeftEdge = kMfdPaddingLeft + 424;
@@ -167,11 +166,7 @@ const int kAceButtonBottomEdge = kMfdPaddingTop + 539;
 // Distance to bullseye Text
 inline const char* kDistanceText = "00";
 
-
 // Bearing to bullseye Text
 inline const char* kBearingText = "000";
-
-
-
 
 #endif // CONFIG_H

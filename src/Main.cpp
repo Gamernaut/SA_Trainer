@@ -1,12 +1,10 @@
-#include <iostream>
-#include <SDL.h>
-#include <SDL_image.h>
+//#include <iostream>
+//#include <SDL.h>
+//#include <SDL_image.h>
 #include "SA_Trainer.h"
-
 
 int main(int argc, char* argv[]) {
 	SA_Trainer trainer;
-
 
 	trainer.initialiseScreens();
 	trainer.run();

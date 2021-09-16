@@ -4,70 +4,55 @@
 //
 //	Date:	September 2021
 //
-//	Purpose:	
+//	Purpose:
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <iostream>
-#include <math.h>
+//#include <stdlib.h>
+//#include <iostream>
+//#include <math.h>
 #include "Bullseye.h"
-#include "Main.h"
 
 
-// Call the constructor in then base class to load the image
+// Call the constructor in the base class to load the image
 Bullseye::Bullseye(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition) : ImageObject(renderer, filename, xPosition, yPosition) {
-	// currentPosition.x = xPosition;
-	// currentPosition.y = yPosition;
 }
-
 
 Bullseye::~Bullseye() {
-
 }
-
 
 void Bullseye::SetPosition(Coordinates newPosition) {
-	position_.x = newPosition.x;
-	position_.y = newPosition.y;
+	image_center_.x = newPosition.x;
+	image_center_.y = newPosition.y;
 }
-
 
 Coordinates Bullseye::GetPosition() {
-	return position_;
+	return image_center_;
 }
 
-
-int Bullseye::CalculateBearingToBullseye(Coordinates aircraftPosition) {
+int Bullseye::Bearing_FromPoint1ToPoint2(Coordinates point1, Coordinates point2) {
 	// We'll be using the difference in x1,y1 and x2,y2 coordinates
-	// we can use the atan2(y,x) function where y = y2 - y1 and x = x2 -x1 where x1,y1 is the starting point
+	// we can use the atan2(y,x) function where y = y2 - y1 and x = x2 - x1 where x1,y1 is the starting point
 	// However, this function can return a negative value when x < 0 so need to adapt formula to give a result between 0 and 359 deg
 
-	const double kTwoPI = 6.2831853071795865;
+	const double kTwoPi = 6.2831853071795865;
 	const double kRad2Deg = 57.2957795130823209;
 
-	double x2 = static_cast<double>(position_.x);
-	double y2 = static_cast<double>(position_.y);
-	double x1 = static_cast<double>(aircraftPosition.x);
-	double y1 = static_cast<double>(aircraftPosition.y);
+	double x1 = static_cast<double>(point1.x);
+	double y1 = static_cast<double>(point1.y);
+	double x2 = static_cast<double>(point2.x);
+	double y2 = static_cast<double>(point2.y);
 	double theta = 0.0;
 
 	theta = atan2(x2 - x1, y1 - y2);
 	if (theta < 0.0)
-		theta += kTwoPI;
+		theta += kTwoPi;
 	return static_cast<int>(kRad2Deg * theta);
 }
 
-
-int Bullseye::CalculateBearingToBogey(Coordinates aircraftPosition) {
-
-	return 0;
-}
-
-
-int Bullseye::CalculateDistanceTo(Coordinates coord1) {
-	int xdist = position_.x - coord1.x;
-	int ydist = position_.y - coord1.y;
+int Bullseye::Distance_BetweenPoint1AndPoint2(Coordinates start_point, Coordinates end_point) {
+	int xdist = start_point.x - end_point.x;
+	int ydist = start_point.y - end_point.y;
 	double distance = sqrt((xdist * xdist) + (ydist * ydist));
 	return static_cast<int>(distance);
 }

@@ -4,22 +4,16 @@
 //
 //	Date:	September 2021
 //
-//	Purpose:	
+//	Purpose:
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 #ifndef AIRCRAFT_H
 #define AIRCRAFT_H
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include "Main.h"
 #include "ImageObject.h"
 
-
 class Aircraft : public ImageObject {
-
 public:
 	double	current_heading_ = 0.0;
 
