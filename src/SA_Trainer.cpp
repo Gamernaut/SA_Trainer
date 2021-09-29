@@ -203,7 +203,8 @@ void SA_Trainer::RenderGameScreen() {
 	SDL_RenderDrawLine(renderer_, 105, 460, 90, 445);
 
 	// HSD Scale Range
-	std::string hsd_scale_range_text = std::to_string(round_manager_->GetHSDRange());
+	//std::string hsd_scale_range_text = std::to_string(round_manager_->GetHSDRange());
+	std::string hsd_scale_range_text = std::to_string(hsd_range_[hsd_range_level_]);
 	font_18_->Draw(renderer_, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 5, kMfdScreenTopInsideEdge + 152);
 
 	// Display remaining guesses
@@ -212,7 +213,7 @@ void SA_Trainer::RenderGameScreen() {
 
 	// Text for buttons
 	font_16_->Draw(renderer_, kExitButtonText, kMfdWhiteColour, 433, 795);
-	// if a round is in progress then don;t display the setup button as we don't want to change the difficulty mid round
+	// if a round is in progress then don't display the setup button as we don't want to change the difficulty mid round
 	if (roundstate == RoundState::kRoundStarting || roundstate == RoundState::kEnded) { font_16_->Draw(renderer_, kSetupButtonText, kMfdWhiteColour, 260, 795); }
 
 	// AWACS header
@@ -465,7 +466,7 @@ void SA_Trainer::ProcessInput() {
 				roundstate = RoundState::kPlaying;
 				mouse_click_position.x = mouseX;
 				mouse_click_position.y = mouseY;
-				round_manager_->CheckWinStatus(gameDifficulty, roundstate, mouse_click_position);
+				round_manager_->CheckWinStatus(gameDifficulty, roundstate, mouse_click_position, hsd_range_[hsd_range_level_]);
 				break;
 			}
 
@@ -513,13 +514,19 @@ void SA_Trainer::ProcessInput() {
 
 			// Handle inc HSD range button in playing screen
 			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && mouseY <= kRecruitButtonBottomEdge && gameState == GameState::kPlaying) {
-				std::cout << "Increase HSD range" << std::endl;
+				if (hsd_range_level_ < 5) {
+					hsd_range_level_ += 1;
+				}
+				std::cout << "Increase HSD range to " << hsd_range_[hsd_range_level_] << std::endl;
 				break;
 			}
 
 			// Handle dec HSD range button in playing screen
 			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && gameState == GameState::kPlaying) {
-				std::cout << "Decrease HSD range" << std::endl;
+				if (hsd_range_level_ != 0) {
+					hsd_range_level_ -= 1;
+				}
+				std::cout << "Decrease HSD range to " << hsd_range_[hsd_range_level_] << std::endl;
 				break;
 			}
 

@@ -42,6 +42,13 @@ protected:
 	int bulls_range = 0;
 	bool user_guessed = false;
 	int user_guess_count = 0;
+
+	// Used to hold distances of HSD
+	int hsd_range_centered_[6] = {5, 10, 20, 40, 80, 160};
+	int hsd_range_[6] = { 8, 15, 30, 60, 120, 240 };
+	int fcr_range_[6] = { 5, 10, 20, 40, 80, 160 };
+	int hsd_range_level_ = 0;
+
 	RoundManager* round_manager_{ nullptr };
 
 	// Pointers for game screen objects

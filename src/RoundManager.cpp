@@ -1,7 +1,7 @@
 //#include <iostream>
 #include "RoundManager.h"
 //#include "Main.h"
-//#include "SA_Trainer.h"
+#include "SA_Trainer.h"
 //#include "Bullseye.h"
 //#include "Aircraft.h"
 
@@ -35,7 +35,7 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	int bearing_to_bullseye = bullseye_->Bearing_FromPoint1ToPoint2(my_aircraft_->image_center_, bullseye_->image_center_);
 	bearing_ring_->RotateToFinalAngle(bearing_to_bullseye);
 	
-	// Select a random HSD range from 5m to 160m, using ranges on HSD
+	// Select a random HSD range from covering HSD scale of 5 miles to 240 miles
 	int HSD_Range = (rand() % 160);
 
 	if (HSD_Range <= 8) { hsd_range_ = 8; }
@@ -82,15 +82,15 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	}
 }
 
-int RoundManager::GetRemaingGuesses() {
+int RoundManager::GetRemaingGuesses() const {
 	return total_guesses - current_guess;
 }
 
-int RoundManager::GetBullsDistance() {
+int RoundManager::GetBullsDistance() const {
 	return static_cast<int>(distance_to_bullseye_);
 }
 
-int RoundManager::GetHSDRange() {
+int RoundManager::GetHSDRange() const {
 	return hsd_range_;
 }
 
@@ -105,12 +105,18 @@ void RoundManager::ResetRound() {
 	bogey_3_pos_ = { 0,0 };
 }
 
-void RoundManager::CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position) {
+void RoundManager::CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position, int hsd_range_in) {
 	current_guess += 1;
 	
 	std::cout << "current_guess = " << current_guess << std::endl;
 
 	mouse_click_pos_ = mouse_click_position;
+
+	//if (hsd_range_in != hsd_range_) {
+	//	std::cout << "Range scale doesn't match. hsd_range_in = " << hsd_range_in << " and hsd_range_ = " << GetHSDRange() << ". distance_to_bullseye_ = " << distance_to_bullseye_ << std::endl;
+	//	state = RoundState::kPlaying;
+	//	return;
+	//}
 
 	if (current_guess <= total_guesses) {
 		//Check the win condition for this round based on level of difficulty

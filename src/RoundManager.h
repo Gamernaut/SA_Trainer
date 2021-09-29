@@ -35,6 +35,7 @@ protected:
 	ImageObject* hsd_distance_rings_ = nullptr;
 	ImageObject* bearing_ring_ = nullptr;
 
+
 public:
 	using RoundState = SA_Trainer::RoundState; // creates an alias so I don't have to use SA_Trainer::RoundState
 	using Difficulty = SA_Trainer::Difficulty;
@@ -52,12 +53,12 @@ public:
 	// constructor just creates object need a start and end round method to handle each round
 	RoundManager(Aircraft* aircraft_Ptr, Bullseye* bullseye_Ptr, ImageObject* hsd_Ptr, ImageObject* bearing_ring_Ptr);
 	~RoundManager();
-	void CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position);
+	void CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position, int hsd_range_in);
 	void StartRound(const Difficulty& level, RoundState& state, Aircraft* bogeys[]);
 	void ResetRound();
-	int GetRemaingGuesses();
-	int GetBullsDistance();
-	int GetHSDRange();
+	int GetRemaingGuesses() const;
+	int GetBullsDistance() const;
+	int GetHSDRange() const;
 };
 
 #endif // ROUNDMANAGER_H
