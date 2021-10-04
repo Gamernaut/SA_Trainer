@@ -9,8 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
-libs/
-assets/
+[Ll]ibs/
+[Aa]ssets/
+*.exe
 
 
 # User-specific files (MonoDevelop/Xamarin Studio)
