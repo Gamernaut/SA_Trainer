@@ -48,7 +48,7 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	// Now we have the HSD range calculate the distance to the bullseye and scale by range
 	distance_to_bullseye_ = bullseye_->Distance_BetweenPoint1AndPoint2(my_aircraft_->image_center_, bullseye_->image_center_);
 	
-	// 320px is difference between center and outermost ring which equals the current range so work out proportion of that distance an multiply by scale
+	// 320px is difference between center and outermost ring which equals the current range so work out proportion of that distance and multiply by scale
 	// distance to bulls / 320 (total distance to outer ring at any scale) = proportion of full scale * HSD scale
 	distance_to_bullseye_ = (distance_to_bullseye_ / 320) * hsd_range_;
 
