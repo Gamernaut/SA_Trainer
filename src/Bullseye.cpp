@@ -13,6 +13,7 @@
 //#include <math.h>
 #include "Bullseye.h"
 
+using namespace cpv;
 
 // Call the constructor in the base class to load the image
 Bullseye::Bullseye(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition) : ImageObject(renderer, filename, xPosition, yPosition) {
@@ -30,6 +31,7 @@ Coordinates Bullseye::GetPosition() {
 	return image_center_;
 }
 
+// TODO: Remove this function once HSD code is integrated
 int Bullseye::Bearing_FromPoint1ToPoint2(Coordinates point1, Coordinates point2) {
 	// We'll be using the difference in x1,y1 and x2,y2 coordinates
 	// we can use the atan2(y,x) function where y = y2 - y1 and x = x2 - x1 where x1,y1 is the starting point
@@ -50,6 +52,8 @@ int Bullseye::Bearing_FromPoint1ToPoint2(Coordinates point1, Coordinates point2)
 	return static_cast<int>(kRad2Deg * theta);
 }
 
+
+// TODO: Remove this function once HSD code is integrated
 int Bullseye::Distance_BetweenPoint1AndPoint2(Coordinates start_point, Coordinates end_point) {
 	int xdist = start_point.x - end_point.x;
 	int ydist = start_point.y - end_point.y;

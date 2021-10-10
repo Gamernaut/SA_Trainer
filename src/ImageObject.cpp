@@ -13,6 +13,8 @@
 #include <SDL_image.h>
 #include "ImageObject.h"
 
+using namespace cpv;
+
 ImageObject::ImageObject(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition) {
 	// Store parameters in object
 	position_.x = xPosition;

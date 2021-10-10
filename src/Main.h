@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+namespace cpv {
+
 // Header file with set up info and constants for SQ Trainer
 
 const int kFPS = 10;
@@ -168,5 +170,7 @@ inline const char* kDistanceText = "00";
 
 // Bearing to bullseye Text
 inline const char* kBearingText = "000";
+
+}
 
 #endif // CONFIG_H

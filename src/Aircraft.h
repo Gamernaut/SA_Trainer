@@ -13,15 +13,18 @@
 
 #include "ImageObject.h"
 
-class Aircraft : public ImageObject {
-public:
-	double	current_heading_ = 0.0;
+namespace cpv {
 
-public:
-	Aircraft(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
-	~Aircraft();
-	void SetRandomHeading();
-	int GetHeading();
-};
+	class Aircraft : public ImageObject {
+		public:
+			double	current_heading_ = 0.0;
 
+		public:
+			Aircraft(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
+			~Aircraft();
+			void SetRandomHeading();
+			int GetHeading();
+	};
+
+}
 #endif // AIRCRAFT_H

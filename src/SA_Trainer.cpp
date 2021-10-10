@@ -22,6 +22,8 @@
 #include "TextObject.h"
 #include "RoundManager.h"
 
+using namespace cpv;
+
 SA_Trainer::SA_Trainer() {
 }
 
@@ -73,6 +75,10 @@ bool SA_Trainer::LoadAndSetUpSDL() {
 	std::srand((unsigned int)std::time(NULL));
 
 	is_game_running = true;
+
+	// Allocate smart pointer test
+	p1 = std::make_unique<int>();
+
 	return true;
 }
 
@@ -104,14 +110,14 @@ bool SA_Trainer::SetupGameScreen() {
 	bogeys[2] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
 
 	// Create bullseye
-	bullseye_ = new Bullseye(renderer_, kBullsFileName, 359 - (kBullsImageWidth / 2), 750 - (kBullsImageHeight / 2));
+	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, 359 - (kBullsImageWidth / 2), 750 - (kBullsImageHeight / 2));
 
 	// create MFD background
-	mfd_frame_ = new ImageObject(renderer_, kMfdFileName, kMfdPaddingLeft, kMfdPaddingTop);
+	mfd_frame_ = std::make_unique<ImageObject>(renderer_, kMfdFileName, kMfdPaddingLeft, kMfdPaddingTop);
 
 	// Create the pie slices to indicate a correct or incorrect guess
-	correct_guess_arc_ = new ImageObject(renderer_, kGreenPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
-	wrong_guess_arc_ = new ImageObject(renderer_, kRedPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+	correct_guess_arc_ = std::make_unique<ImageObject>(renderer_, kGreenPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+	wrong_guess_arc_ = std::make_unique<ImageObject>(renderer_, kRedPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
 
 	// Create the rectangles to indicate a correct or incorrect guess
 	correct_guess_rect_ = new ImageObject(renderer_, kGreenRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
@@ -132,10 +138,15 @@ bool SA_Trainer::SetupGameScreen() {
 	return true;
 }
 
-void SA_Trainer::initialiseScreens() {
+void SA_Trainer::Initialise() {
+	// 1 - Import and set up SDl and libraries
+
 	if (!LoadAndSetUpSDL()) {
 		std::cerr << "Error setting up SDL" << std::endl;
 	}
+
+	// 2 - create the MFD objects (HSD only in this version but maybe FCR in future versions
+	// 3 - put game in start screen mode
 
 	if (!SetupLoadingScreen()) {
 		std::cerr << "Error creating Loading screen" << std::endl;
@@ -146,13 +157,12 @@ void SA_Trainer::initialiseScreens() {
 	}
 }
 
-void SA_Trainer::closeDown() {
+void SA_Trainer::CloseDown() {
 	loading_screen_image_list_.clear();
 	options_screen_image_list_.clear();
 	delete hsd_distance_rings_;
 	delete bearing_ring_;
 	delete my_aircraft_;
-	delete mfd_frame_;
 	delete bullseye_;
 	delete round_manager_;
 	delete bogeys[0];
@@ -576,7 +586,7 @@ void SA_Trainer::SetupRound() {
 	round_manager_->StartRound(gameDifficulty, roundstate, bogeys);
 }
 
-void SA_Trainer::run() {
+void SA_Trainer::Run() {
 
 
 	while (is_game_running ) {

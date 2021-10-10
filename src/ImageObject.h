@@ -16,36 +16,39 @@
 //#include <SDL_Image.h>
 #include "Main.h"
 
-class ImageObject {
-	// Attributes
-protected:
-	std::string name_;
-	SDL_Surface* image_surface_ = nullptr;
-	SDL_Texture* image_texture_ = nullptr;
-	double rotation_angle_ = 0.0;
-	int image_width_ = 0;
-	int image_height_ = 0;
+namespace cpv {
 
-public:
-	Coordinates position_{ 0,0 };
-	Coordinates image_center_{ 0, 0 };
+	class ImageObject {
+		// Attributes
+		protected:
+			std::string name_;
+			SDL_Surface* image_surface_ = nullptr;
+			SDL_Texture* image_texture_ = nullptr;
+			double rotation_angle_ = 0.0;
+			int image_width_ = 0;
+			int image_height_ = 0;
 
-	// Methods
+		public:
+			Coordinates position_{ 0,0 };
+			Coordinates image_center_{ 0, 0 };
 
-public:
-	ImageObject(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
-	~ImageObject();
-	// 	void DrawAt(SDL_Renderer* renderer, int xPos, int yPos);
-	void Draw(SDL_Renderer* renderer);
-	void DrawCenteredAt(SDL_Renderer* renderer, Coordinates center_point);
-	void DrawArc(SDL_Renderer* renderer, int user_bearing_guess);
-	void SetRandomPosition();
-	Coordinates GetPosition();
-	void RotateToFinalAngle(double angleInDegrees);
-	std::string GetObjectName();
-	bool ValidPosition(int x, int y);
-	int GetWidth();
-	int GetHeight();
-};
+		// Methods
 
+		public:
+			ImageObject(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
+			~ImageObject();
+			// 	void DrawAt(SDL_Renderer* renderer, int xPos, int yPos);
+			void Draw(SDL_Renderer* renderer);
+			void DrawCenteredAt(SDL_Renderer* renderer, Coordinates center_point);
+			void DrawArc(SDL_Renderer* renderer, int user_bearing_guess);
+			void SetRandomPosition();
+			Coordinates GetPosition();
+			void RotateToFinalAngle(double angleInDegrees);
+			std::string GetObjectName();
+			bool ValidPosition(int x, int y);
+			int GetWidth();
+			int GetHeight();
+	};
+
+}
 #endif		// SCREENOBJECT_H

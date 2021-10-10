@@ -5,6 +5,8 @@
 #include "Main.h"
 #include "TextObject.h"
 
+using namespace cpv;
+
 TextObject::TextObject(SDL_Renderer* renderer, std::string font_name, int font_size = 16) {
 	// Store renderer in object
 	myRenderer_ = renderer;

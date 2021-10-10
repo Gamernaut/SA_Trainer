@@ -10,6 +10,8 @@
 
 #include "Aircraft.h"
 
+using namespace cpv;
+
 // Call the constructor in then base class to load the image
 Aircraft::Aircraft(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition) : ImageObject(renderer, filename, xPosition, yPosition) {
 

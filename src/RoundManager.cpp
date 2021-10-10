@@ -5,6 +5,8 @@
 //#include "Bullseye.h"
 //#include "Aircraft.h"
 
+using namespace cpv;
+
 RoundManager::RoundManager(Aircraft* aircraft_Ptr, Bullseye* bullseye_Ptr, ImageObject* hsd_Ptr, ImageObject* bearing_ring_Ptr) {
 	// Setup all the relevant win data for this round
 	bullseye_ = bullseye_Ptr;
