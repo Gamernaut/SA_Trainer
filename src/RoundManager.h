@@ -56,7 +56,7 @@ namespace cpv {
 		RoundManager(Aircraft* aircraft_Ptr, Bullseye* bullseye_Ptr, ImageObject* hsd_Ptr, ImageObject* bearing_ring_Ptr);
 		~RoundManager();
 		void CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position, int hsd_range_in);
-		void StartRound(const Difficulty& level, RoundState& state, Aircraft* bogeys[]);
+		void StartRound(const Difficulty& level, RoundState& state, std::vector <std::unique_ptr<Aircraft>>& bogey_list_);
 		void ResetRound();
 		int GetRemaingGuesses() const;
 		int GetBullsDistance() const;

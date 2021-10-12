@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <memory>
+#include <array>
 #include <SDL_ttf.h>
 #include "ImageObject.h"
 #include "TextObject.h"
@@ -27,15 +28,6 @@ namespace cpv {
 	class SA_Trainer {
 	// Properties
 	protected:
-		SDL_Window* window_ = nullptr;
-		SDL_Renderer* renderer_ = nullptr;
-		TTF_Font* font_ = nullptr;
-
-		// Collections to hold screen layout that doesn't change
-		std::vector<ImageObject*> loading_screen_image_list_;
-		std::vector<ImageObject*> options_screen_image_list_;
-		std::vector<TextObject*> game_screen_text_list_;
-
 		int milliseconds_previous_frame_ = 0;
 		int my_aircraft_heading = 0;
 		int bogey_heading[3] = { 0, 0, 0 };
@@ -48,42 +40,51 @@ namespace cpv {
 		int user_guess_count = 0;
 
 		// Used to hold distances of HSD
-		int hsd_range_centered_[6] = { 5, 10, 20, 40, 80, 160 };
+		// When the display is centered the HSD rings represent different ranges from when not centered
+		int hsd_range_centered_[6] = { 5, 10, 20, 40, 80, 160 };	
+
+		// None centered ranges
 		int hsd_range_[6] = { 8, 15, 30, 60, 120, 240 };
 		int fcr_range_[6] = { 5, 10, 20, 40, 80, 160 };
 		int hsd_range_level_ = 0;
 
-		RoundManager* round_manager_{ nullptr };
+		// Pointers for the main SDL objects (needs converting to smart pointers)
+		SDL_Window* window_ = nullptr;
+		SDL_Renderer* renderer_ = nullptr;
+		TTF_Font* font_ = nullptr;
 
-		// Pointers for game screen objects
-		ImageObject* hsd_distance_rings_ = nullptr;
-		ImageObject* bearing_ring_ = nullptr;
-		Aircraft* my_aircraft_ = nullptr;
-		//ImageObject* mfd_frame_ = nullptr;
-		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr }; // remove from here
-		//Bullseye* bullseye_ = nullptr;
-		//ImageObject* correct_guess_arc_ = nullptr;
-		//ImageObject* wrong_guess_arc_ = nullptr;
-		ImageObject* correct_guess_rect_ = nullptr;
-		ImageObject* wrong_guess_rect_ = nullptr;
-		ImageObject* bearing_pointer_ = nullptr;
-		// Declare smart pointers
+		// Various objects on the HSD
+		std::unique_ptr<ImageObject> hsd_distance_rings_ = nullptr;
+		std::unique_ptr<ImageObject> bearing_ring_ = nullptr;
+		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
+		//std::unique_ptr<Aircraft> bogeys[3] = { nullptr, nullptr, nullptr };
+		std::vector <std::unique_ptr<Aircraft>> bogey_list_;
+		//std::array<std::unique_ptr<Aircraft>, 3> bogeys = { nullptr, nullptr, nullptr };
 		std::unique_ptr<Bullseye> bullseye_ = nullptr;
 		std::unique_ptr<ImageObject> mfd_frame_ = nullptr;
 		std::unique_ptr<ImageObject> correct_guess_arc_ = nullptr;
 		std::unique_ptr<ImageObject> wrong_guess_arc_ = nullptr;
-		std::unique_ptr<int> p1 = nullptr;
+		std::unique_ptr<ImageObject> correct_guess_rect_ = nullptr;
+		std::unique_ptr<ImageObject> wrong_guess_rect_ = nullptr;
+		std::unique_ptr<ImageObject> bearing_pointer_ = nullptr;
 
-		// Font pointers
-		TextObject* font_26_;
-		TextObject* font_24_;
-		TextObject* font_22_;
-		TextObject* font_20_;
-		TextObject* font_18_;
-		TextObject* font_16_;
-		TextObject* font_14_;
+		// Collections to hold screen layout that doesn't change
+		std::vector<std::unique_ptr<ImageObject>> loading_screen_image_list_;
+		std::vector<std::unique_ptr<ImageObject>> options_screen_image_list_;
+		std::vector<std::unique_ptr<ImageObject>> game_screen_text_list_;
 
-		Coordinates mouse_click_position{ 0, 0 };	// remove this it's just for testing purposes
+		// Fonts to be used in the game
+		std::unique_ptr<TextObject> font_26_;
+		std::unique_ptr<TextObject> font_24_;
+		std::unique_ptr<TextObject> font_22_;
+		std::unique_ptr<TextObject> font_20_;
+		std::unique_ptr<TextObject> font_18_;
+		std::unique_ptr<TextObject> font_16_;
+		std::unique_ptr<TextObject> font_14_;
+
+		std::unique_ptr<RoundManager> round_manager_ = nullptr;
+
+		Coordinates mouse_click_position{ 0, 0 };
 
 	public:
 		// Enum to hold state for rendering etc.

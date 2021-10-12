@@ -76,18 +76,15 @@ bool SA_Trainer::LoadAndSetUpSDL() {
 
 	is_game_running = true;
 
-	// Allocate smart pointer test
-	p1 = std::make_unique<int>();
-
 	return true;
 }
 
 bool SA_Trainer::SetupLoadingScreen() {
 	// Allocate on the heap not the stack or when the function ends the object is destroyed and it looses it's link to the texture even though the object is copied into the vector the texture is lost.
-	ImageObject* loadingScreenTitle = new ImageObject(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
+	std::unique_ptr<ImageObject> loadingScreenTitle = std::make_unique<ImageObject>(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
 	loading_screen_image_list_.push_back(loadingScreenTitle);
 
-	ImageObject* mfdSurround = new ImageObject(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
+	std::unique_ptr<ImageObject> mfdSurround = std::make_unique<ImageObject>(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
 	loading_screen_image_list_.push_back(mfdSurround);
 
 	return true;
@@ -95,19 +92,20 @@ bool SA_Trainer::SetupLoadingScreen() {
 
 bool SA_Trainer::SetupGameScreen() {
 	// create distance rings
-	hsd_distance_rings_ = new ImageObject(renderer_, kDistRingsFileName, kMFDCenter.x - (kDistRingsImageWidth / 2), (kMFDCenter.y - (kDistRingsImageHeight / 2)) + kDepOffset);
+	hsd_distance_rings_ = std::make_unique<ImageObject>(renderer_, kDistRingsFileName, kMFDCenter.x - (kDistRingsImageWidth / 2), (kMFDCenter.y - (kDistRingsImageHeight / 2)) + kDepOffset);
 
 	// create Bearing ring image
-	bearing_ring_ = new ImageObject(renderer_, kBearingCircle, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
-	bearing_pointer_ = new ImageObject(renderer_, kBearingPointer, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
+	bearing_ring_ = std::make_unique<ImageObject>(renderer_, kBearingCircle, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
+	bearing_pointer_ = std::make_unique<ImageObject>(renderer_, kBearingPointer, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
 
 	// create my aircraft
-	my_aircraft_ = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), (kMFDCenter.y - 5) + kDepOffset);
+	my_aircraft_ = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), (kMFDCenter.y - 5) + kDepOffset);
 
 	// create 3 bogey's even if we don't use the all. Which are used are decided by the RoundManager
-	bogeys[0] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
-	bogeys[1] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
-	bogeys[2] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+	for (int i = 0; i < 3;) {
+		std::unique_ptr<Aircraft> bogey = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+		bogey_list_.push_back(bogey);
+	}
 
 	// Create bullseye
 	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, 359 - (kBullsImageWidth / 2), 750 - (kBullsImageHeight / 2));
@@ -120,20 +118,20 @@ bool SA_Trainer::SetupGameScreen() {
 	wrong_guess_arc_ = std::make_unique<ImageObject>(renderer_, kRedPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
 
 	// Create the rectangles to indicate a correct or incorrect guess
-	correct_guess_rect_ = new ImageObject(renderer_, kGreenRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
-	wrong_guess_rect_ = new ImageObject(renderer_, kRedRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+	correct_guess_rect_ = std::make_unique<ImageObject>(renderer_, kGreenRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+	wrong_guess_rect_ = std::make_unique<ImageObject>(renderer_, kRedRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
 
 	// Create fonts in 22 and 16 point sizes
-	font_26_ = new TextObject(renderer_, kFontName, 26);
-	font_24_ = new TextObject(renderer_, kFontName, 24);
-	font_22_ = new TextObject(renderer_, kFontName, 22);
-	font_20_ = new TextObject(renderer_, kFontName, 20);
-	font_18_ = new TextObject(renderer_, kFontName, 18);
-	font_16_ = new TextObject(renderer_, kFontName, 16);
-	font_14_ = new TextObject(renderer_, kFontName, 14);
+	font_26_ = std::make_unique<TextObject>(renderer_, kFontName, 26);
+	font_24_ = std::make_unique<TextObject>(renderer_, kFontName, 24);
+	font_22_ = std::make_unique<TextObject>(renderer_, kFontName, 22);
+	font_20_ = std::make_unique<TextObject>(renderer_, kFontName, 20);
+	font_18_ = std::make_unique<TextObject>(renderer_, kFontName, 18);
+	font_16_ = std::make_unique<TextObject>(renderer_, kFontName, 16);
+	font_14_ = std::make_unique<TextObject>(renderer_, kFontName, 14);
 
 	// Create the round manager
-	round_manager_ = new RoundManager(my_aircraft_, bullseye_, hsd_distance_rings_, bearing_pointer_);
+	round_manager_ = std::make_unique<RoundManager>(my_aircraft_.get(), bullseye_.get(), hsd_distance_rings_.get(), bearing_pointer_.get());
 
 	return true;
 }
@@ -160,16 +158,6 @@ void SA_Trainer::Initialise() {
 void SA_Trainer::CloseDown() {
 	loading_screen_image_list_.clear();
 	options_screen_image_list_.clear();
-	delete hsd_distance_rings_;
-	delete bearing_ring_;
-	delete my_aircraft_;
-	delete bullseye_;
-	delete round_manager_;
-	delete bogeys[0];
-	delete bogeys[1];
-	delete bogeys[2];
-	delete font_22_;
-	delete font_16_;
 	TTF_CloseFont(font_);
 	SDL_DestroyRenderer(renderer_);
 	SDL_DestroyWindow(window_);
@@ -343,6 +331,11 @@ void SA_Trainer::RenderGameScreen() {
 			// Display the red arc but keep going with the remaining guesses
 		}
 		break;
+	
+		if (roundstate == RoundState::kWon) {
+			// Delay at the start of each round to allow player to see results before new round
+			Sleep(1500);
+		}
 	}
 
 	// Always call last so that it appears on top of everything else
@@ -583,7 +576,7 @@ void SA_Trainer::SetupRound() {
 	roundstate = RoundState::kRoundStarting;
 
 	// Create round manager object and setup round
-	round_manager_->StartRound(gameDifficulty, roundstate, bogeys);
+	round_manager_->StartRound(gameDifficulty, roundstate, bogey_list_);
 }
 
 void SA_Trainer::Run() {
@@ -591,7 +584,7 @@ void SA_Trainer::Run() {
 
 	while (is_game_running ) {
 		// Delay at the start of each round to allow player to see results before new round
-		Sleep(1500);
+		// Sleep(1500);  moved to line 336
 		SetupRound();
 		
 		while (roundstate != RoundState::kEnded) {

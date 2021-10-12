@@ -23,7 +23,7 @@ RoundManager::~RoundManager() {
 	ResetRound();
 }
 
-void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircraft* bogeys[]) {
+void RoundManager::StartRound(const Difficulty& level, RoundState& state, std::vector<std::unique_ptr<Aircraft>>& bogey_list_) {
 	// Set random bullseye position for this round
 	bullseye_->SetRandomPosition();
 	bulls_pos_.x = bullseye_->image_center_.x;
