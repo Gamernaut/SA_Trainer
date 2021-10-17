@@ -57,8 +57,9 @@ namespace cpv {
 		std::unique_ptr<ImageObject> hsd_distance_rings_ = nullptr;
 		std::unique_ptr<ImageObject> bearing_ring_ = nullptr;
 		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
+		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };
 		//std::unique_ptr<Aircraft> bogeys[3] = { nullptr, nullptr, nullptr };
-		std::vector <std::unique_ptr<Aircraft>> bogey_list_;
+		//std::vector <std::unique_ptr<Aircraft>> bogey_list_;
 		//std::array<std::unique_ptr<Aircraft>, 3> bogeys = { nullptr, nullptr, nullptr };
 		std::unique_ptr<Bullseye> bullseye_ = nullptr;
 		std::unique_ptr<ImageObject> mfd_frame_ = nullptr;
@@ -69,9 +70,11 @@ namespace cpv {
 		std::unique_ptr<ImageObject> bearing_pointer_ = nullptr;
 
 		// Collections to hold screen layout that doesn't change
-		std::vector<std::unique_ptr<ImageObject>> loading_screen_image_list_;
-		std::vector<std::unique_ptr<ImageObject>> options_screen_image_list_;
-		std::vector<std::unique_ptr<ImageObject>> game_screen_text_list_;
+		std::vector<ImageObject*> loading_screen_image_list_;
+		std::vector<ImageObject*> options_screen_image_list_;
+		//std::vector<std::unique_ptr<ImageObject>> loading_screen_image_list_;
+		//std::vector<std::unique_ptr<ImageObject>> options_screen_image_list_;
+		//std::vector<std::unique_ptr<ImageObject>> game_screen_text_list_;
 
 		// Fonts to be used in the game
 		std::unique_ptr<TextObject> font_26_;

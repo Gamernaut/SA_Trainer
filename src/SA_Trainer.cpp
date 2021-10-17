@@ -81,11 +81,20 @@ bool SA_Trainer::LoadAndSetUpSDL() {
 
 bool SA_Trainer::SetupLoadingScreen() {
 	// Allocate on the heap not the stack or when the function ends the object is destroyed and it looses it's link to the texture even though the object is copied into the vector the texture is lost.
-	std::unique_ptr<ImageObject> loadingScreenTitle = std::make_unique<ImageObject>(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
+	// 
+	ImageObject* loadingScreenTitle = new ImageObject(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
 	loading_screen_image_list_.push_back(loadingScreenTitle);
 
-	std::unique_ptr<ImageObject> mfdSurround = std::make_unique<ImageObject>(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
+	ImageObject* mfdSurround = new ImageObject(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
 	loading_screen_image_list_.push_back(mfdSurround);
+	// 
+	// 
+	// 
+	//std::unique_ptr<ImageObject> loadingScreenTitle = std::make_unique<ImageObject>(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
+	//loading_screen_image_list_.push_back(loadingScreenTitle);
+
+	//std::unique_ptr<ImageObject> mfdSurround = std::make_unique<ImageObject>(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
+	//loading_screen_image_list_.push_back(mfdSurround);
 
 	return true;
 }
@@ -102,10 +111,12 @@ bool SA_Trainer::SetupGameScreen() {
 	my_aircraft_ = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), (kMFDCenter.y - 5) + kDepOffset);
 
 	// create 3 bogey's even if we don't use the all. Which are used are decided by the RoundManager
-	for (int i = 0; i < 3;) {
-		std::unique_ptr<Aircraft> bogey = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
-		bogey_list_.push_back(bogey);
-	}
+	//bogeys[0] = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+	//bogeys[1] = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+	//bogeys[2] = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+	bogeys[0] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+	bogeys[1] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
+	bogeys[2] = new Aircraft(renderer_, kAircraftFileName, kMFDCenter.x - (kAircraftImageWidth / 2), kMFDCenter.y - 5);
 
 	// Create bullseye
 	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, 359 - (kBullsImageWidth / 2), 750 - (kBullsImageHeight / 2));
@@ -331,14 +342,13 @@ void SA_Trainer::RenderGameScreen() {
 			// Display the red arc but keep going with the remaining guesses
 		}
 		break;
-	
-		if (roundstate == RoundState::kWon) {
-			// Delay at the start of each round to allow player to see results before new round
-			Sleep(1500);
-		}
 	}
 
 	// Always call last so that it appears on top of everything else
+	//if (roundstate == RoundState::kEnded) {
+	//	// Delay at the start of each round to allow player to see results before new round
+	//	Sleep(1500);
+	//}
 	mfd_frame_->Draw(renderer_);
 	SDL_RenderPresent(renderer_);
 }
@@ -576,7 +586,7 @@ void SA_Trainer::SetupRound() {
 	roundstate = RoundState::kRoundStarting;
 
 	// Create round manager object and setup round
-	round_manager_->StartRound(gameDifficulty, roundstate, bogey_list_);
+	round_manager_->StartRound(gameDifficulty, roundstate, bogeys);
 }
 
 void SA_Trainer::Run() {
@@ -584,7 +594,7 @@ void SA_Trainer::Run() {
 
 	while (is_game_running ) {
 		// Delay at the start of each round to allow player to see results before new round
-		// Sleep(1500);  moved to line 336
+		Sleep(1500);
 		SetupRound();
 		
 		while (roundstate != RoundState::kEnded) {
