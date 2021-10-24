@@ -80,9 +80,11 @@ bool SA_Trainer::LoadAndSetUpSDL() {
 }
 
 bool SA_Trainer::SetupLoadingScreen() {
-	// Allocate on the heap not the stack or when the function ends the object is destroyed and it looses it's link to the texture even though the object is copied into the vector the texture is lost.
+	// Allocate on the heap not the stack or when the function ends the object is destroyed and it looses it's link to the texture even though the object
+	//  is copied into the vector the texture is lost.
 	// 
-	ImageObject* loadingScreenTitle = new ImageObject(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - (kGameTitleHeight / 2));
+	ImageObject* loadingScreenTitle = new ImageObject(renderer_, kGameTitleFilename, (kWindowWidth / 2) - (kGameTitleWidth / 2), (kMfdPaddingTop / 2) - 
+		(kGameTitleHeight / 2));
 	loading_screen_image_list_.push_back(loadingScreenTitle);
 
 	ImageObject* mfdSurround = new ImageObject(renderer_, kGameStartMenuFileName, kMfdPaddingLeft, kMfdPaddingTop);
@@ -101,7 +103,8 @@ bool SA_Trainer::SetupLoadingScreen() {
 
 bool SA_Trainer::SetupGameScreen() {
 	// create distance rings
-	hsd_distance_rings_ = std::make_unique<ImageObject>(renderer_, kDistRingsFileName, kMFDCenter.x - (kDistRingsImageWidth / 2), (kMFDCenter.y - (kDistRingsImageHeight / 2)) + kDepOffset);
+	hsd_distance_rings_ = std::make_unique<ImageObject>(renderer_, kDistRingsFileName, kMFDCenter.x - (kDistRingsImageWidth / 2), (kMFDCenter.y - 
+		(kDistRingsImageHeight / 2)) + kDepOffset);
 
 	// create Bearing ring image
 	bearing_ring_ = std::make_unique<ImageObject>(renderer_, kBearingCircle, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
@@ -475,7 +478,8 @@ void SA_Trainer::ProcessInput() {
 			std::cout << "Mouse position is x = " << mouseX << " and y = " << mouseY << std::endl;
 
 			// Handle click inside MFD, if game running assume it's the user indicating where the bogey is
-			if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge && mouseY >= kMfdScreenTopInsideEdge && mouseY <= kMfdScreenBottomInsideEdge && gameState == GameState::kPlaying) {
+			if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge && mouseY >= kMfdScreenTopInsideEdge && 
+					mouseY <= kMfdScreenBottomInsideEdge && gameState == GameState::kPlaying) {
 				roundstate = RoundState::kPlaying;
 				mouse_click_position.x = mouseX;
 				mouse_click_position.y = mouseY;
@@ -526,7 +530,8 @@ void SA_Trainer::ProcessInput() {
 			}
 
 			// Handle inc HSD range button in playing screen
-			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && mouseY <= kRecruitButtonBottomEdge && gameState == GameState::kPlaying) {
+			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && 
+					mouseY <= kRecruitButtonBottomEdge && gameState == GameState::kPlaying) {
 				if (hsd_range_level_ < 5) {
 					hsd_range_level_ += 1;
 				}
@@ -535,7 +540,8 @@ void SA_Trainer::ProcessInput() {
 			}
 
 			// Handle dec HSD range button in playing screen
-			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && gameState == GameState::kPlaying) {
+			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && 
+					gameState == GameState::kPlaying) {
 				if (hsd_range_level_ != 0) {
 					hsd_range_level_ -= 1;
 				}
@@ -544,35 +550,40 @@ void SA_Trainer::ProcessInput() {
 			}
 
 			// Handle Recruit difficulty selection in setup screen
-			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && mouseY <= kRecruitButtonBottomEdge && gameState == GameState::kSetup) {
+			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && mouseY <= kRecruitButtonBottomEdge && 
+					gameState == GameState::kSetup) {
 				gameDifficulty = Difficulty::kRecruit;
 				std::cout << "Difficulty changed to Recruit" << std::endl;
 				break;
 			}
 
 			// Handle Cadet selection in setup screen
-			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && gameState == GameState::kSetup) {
+			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && 
+					gameState == GameState::kSetup) {
 				gameDifficulty = Difficulty::kCadet;
 				std::cout << "Difficulty changed to Cadet" << std::endl;
 				break;
 			}
 
 			// Handle Rookie selection in setup screen
-			if (mouseX >= kRookieButtonLeftEdge && mouseX <= kRookieButtonRightEdge && mouseY >= kRookieButtonTopEdge && mouseY <= kRookieButtonBottomEdge && gameState == GameState::kSetup) {
+			if (mouseX >= kRookieButtonLeftEdge && mouseX <= kRookieButtonRightEdge && mouseY >= kRookieButtonTopEdge && mouseY <= kRookieButtonBottomEdge && 
+					gameState == GameState::kSetup) {
 				gameDifficulty = Difficulty::kRookie;
 				std::cout << "Difficulty changed to Rookie" << std::endl;
 				break;
 			}
 
 			// Handle Veteran selection in setup screen
-			if (mouseX >= kVeteranButtonLeftEdge && mouseX <= kVeteranButtonRightEdge && mouseY >= kVeteranButtonTopEdge && mouseY <= kVeteranButtonBottomEdge && gameState == GameState::kSetup) {
+			if (mouseX >= kVeteranButtonLeftEdge && mouseX <= kVeteranButtonRightEdge && mouseY >= kVeteranButtonTopEdge && mouseY <= kVeteranButtonBottomEdge && 
+					gameState == GameState::kSetup) {
 				gameDifficulty = Difficulty::kVeteran;
 				std::cout << "Difficulty changed to Veteran" << std::endl;
 				break;
 			}
 
 			// Handle Ace selection in setup screen
-			if (mouseX >= kAceButtonLeftEdge && mouseX <= kAceButtonRightEdge && mouseY >= kAceButtonTopEdge && mouseY <= kAceButtonBottomEdge && gameState == GameState::kSetup) {
+			if (mouseX >= kAceButtonLeftEdge && mouseX <= kAceButtonRightEdge && mouseY >= kAceButtonTopEdge && mouseY <= kAceButtonBottomEdge && 
+					gameState == GameState::kSetup) {
 				gameDifficulty = Difficulty::kAce;
 				std::cout << "Difficulty changed to Ace" << std::endl;
 				break;
