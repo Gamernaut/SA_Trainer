@@ -71,9 +71,9 @@ namespace cpv {
 
 		// Collections to hold screen layout that doesn't change
 		std::vector<ImageObject*> loading_screen_image_list_;
-		std::vector<ImageObject*> options_screen_image_list_;
-		//std::vector<std::unique_ptr<ImageObject>> loading_screen_image_list_;
-		//std::vector<std::unique_ptr<ImageObject>> options_screen_image_list_;
+		// std::vector<ImageObject*> options_screen_image_list_;
+		// std::vector<std::unique_ptr<ImageObject>> loading_screen_image_list_;
+		std::vector<std::unique_ptr<ImageObject>> options_screen_image_list_;
 		//std::vector<std::unique_ptr<ImageObject>> game_screen_text_list_;
 
 		// Fonts to be used in the game

@@ -47,6 +47,8 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	else if (HSD_Range > 60 && HSD_Range <= 120) { hsd_range_ = 120; }
 	else if (HSD_Range > 120 && HSD_Range <= 240) { hsd_range_ = 240; }
 
+	std::cout << "hsd_range_ set to =" << hsd_range_ << std::endl;
+
 	// Now we have the HSD range calculate the distance to the bullseye and scale by range
 	distance_to_bullseye_ = bullseye_->Distance_BetweenPoint1AndPoint2(my_aircraft_->image_center_, bullseye_->image_center_);
 	
@@ -115,7 +117,7 @@ void RoundManager::CheckWinStatus(const Difficulty& level, RoundState& state, Co
 	mouse_click_pos_ = mouse_click_position;
 
 	//if (hsd_range_in != hsd_range_) {
-	//	std::cout << "Range scale doesn't match. hsd_range_in = " << hsd_range_in << " and hsd_range_ = " << GetHSDRange() << ". distance_to_bullseye_ = " << distance_to_bullseye_ << std::endl;
+	std::cout << "Range scale doesn't match. hsd_range_in = " << hsd_range_in << " and hsd_range_ = " << GetHSDRange() << ". distance_to_bullseye_ = " << distance_to_bullseye_ << std::endl;
 	//	state = RoundState::kPlaying;
 	//	return;
 	//}
