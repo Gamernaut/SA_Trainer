@@ -1,4 +1,5 @@
 //#include <iostream>
+#include <string>
 #include "RoundManager.h"
 //#include "Main.h"
 #include "SA_Trainer.h"
@@ -47,7 +48,7 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	else if (HSD_Range > 60 && HSD_Range <= 120) { hsd_range_ = 120; }
 	else if (HSD_Range > 120 && HSD_Range <= 240) { hsd_range_ = 240; }
 
-	std::cout << "hsd_range_ set to =" << hsd_range_ << std::endl;
+std::cout << "hsd_range_ set to =" << hsd_range_ << std::endl;
 
 	// Now we have the HSD range calculate the distance to the bullseye and scale by range
 	distance_to_bullseye_ = bullseye_->Distance_BetweenPoint1AndPoint2(my_aircraft_->image_center_, bullseye_->image_center_);
@@ -61,16 +62,29 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	bogeys[0]->SetRandomHeading();
 	bogey_1_pos_.x = bogeys[0]->GetPosition().x;
 	bogey_1_pos_.y = bogeys[0]->GetPosition().y;
+	bogey_1_heading_ = static_cast<int>(bogeys[0]->current_heading_);
+	bogey_1_bulls_heading_ = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[0]->image_center_);
+	bogey_1_bulls_distance_ = bullseye_->Distance_BetweenPoint1AndPoint2(bullseye_->image_center_, bogeys[0]->image_center_);
+std::cout << "Bogey 1 heading = " << bogey_1_heading_ << ", Bulls distance = " << bogey_1_bulls_distance_ << " and bulls heading " << bogey_1_bulls_heading_ << std::endl;
 
 	bogeys[1]->SetRandomPosition();
 	bogeys[1]->SetRandomHeading();
 	bogey_2_pos_.x = bogeys[1]->GetPosition().x;
 	bogey_2_pos_.y = bogeys[1]->GetPosition().y;
+	bogey_2_heading_ = static_cast<int>(bogeys[1]->current_heading_);
+	bogey_2_bulls_heading_ = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[1]->image_center_);
+	bogey_2_bulls_distance_ = bullseye_->Distance_BetweenPoint1AndPoint2(bullseye_->image_center_, bogeys[1]->image_center_);
+std::cout << "Bogey 2 heading = " << bogey_2_heading_ << " and bulls heading " << bogey_2_bulls_heading_ << std::endl;
+
 
 	bogeys[2]->SetRandomPosition();
 	bogeys[2]->SetRandomHeading();
-	bogey_3_pos_.x = bogeys[3]->GetPosition().x;
-	bogey_3_pos_.y = bogeys[3]->GetPosition().y;
+	bogey_3_pos_.x = bogeys[2]->GetPosition().x;
+	bogey_3_pos_.y = bogeys[2]->GetPosition().y;
+	bogey_3_heading_ = static_cast<int>(bogeys[2]->current_heading_);
+	bogey_3_bulls_heading_ = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[2]->image_center_);
+	bogey_3_bulls_distance_ = bullseye_->Distance_BetweenPoint1AndPoint2(bullseye_->image_center_, bogeys[2]->image_center_);
+std::cout << "Bogey 3 heading = " << bogey_3_heading_ << " and bulls heading " << bogey_3_bulls_heading_ << std::endl;
 
 	// How many bogeys for this round
 	bogey_count = (std::rand() % 3);
@@ -84,6 +98,10 @@ void RoundManager::StartRound(const Difficulty& level, RoundState& state, Aircra
 	else {
 		total_guesses = 3;
 	}
+
+	// Now need to update the text in the display above the MDF with the info about the bogey so the user can use that info to determine
+	// the correct location of the bogey
+
 }
 
 int RoundManager::GetRemaingGuesses() const {
@@ -168,9 +186,9 @@ void RoundManager::CheckRecruitWinStatus(RoundState& state) {
 void RoundManager::CheckCadetWinStatus(RoundState& state) {
 	// Win condition same as recruit win condition but also range within +/- 20% of the HSD scale (i.e. +/- 16 miles on 80 mile range)
 
-	// set State to win if the bea
+	// set State to win if the click is in the box +/- 15 deg either side as well as short of and long of the bulls eye
 	if (IsClickInRectAroundBulls()) {
-		std::cout << "good guess cadet" << std::endl;
+		std::cout << "Good guess cadet" << std::endl;
 		state = RoundState::kWon;
 	}
 	// set State to playing if not correct and not last guess
@@ -186,13 +204,19 @@ void RoundManager::CheckCadetWinStatus(RoundState& state) {
 }
 
 void RoundManager::CheckRookieWinStatus(RoundState& state) {
+	// Win condition is to correctly identify the bearing from the bullseye to the bogey
+
+	// 	Calculate the actual and guessed bearing between the bullseye and the bogey
+	int user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(bulls_pos_, mouse_click_pos_);
+	int actual_bearing = bullseye_->Bearing_FromPoint1ToPoint2(bulls_pos_, bogey_1_pos_);
+
 	// set State to win if the bearing is correct
-	//if () {
-	//	state = RoundState::kWon;
-	//}
-	//// set State to playing if not correct and not last guess
-	//else
-	if (current_guess < total_guesses) {
+	if (user_bearing_guess >= (actual_bearing - 15) && user_bearing_guess <= (actual_bearing + 15)) {
+		state = RoundState::kWon;
+		std::cout << "Good guess Rookie" << std::endl;
+	}
+	// set State to playing if not correct and not last guess
+	else	if (current_guess < total_guesses) {
 		state = RoundState::kPlaying;
 		std::cout << "Keep going Rookie" << std::endl;
 	}
@@ -258,4 +282,45 @@ bool RoundManager::IsClickInRectAroundBulls() {
 	{
 		return false;
 	}
+}
+
+std::string RoundManager::AwacsCallString() {
+	// TODO: Whole method is extremely inefficient way to do this, re-factor
+	std::string bogey_heading;
+	if (bogey_1_heading_ >= 337 && bogey_1_heading_ < 22) {
+		bogey_heading = "North";
+	}
+	else if (bogey_1_heading_ >= 22 && bogey_1_heading_ < 67) {
+		bogey_heading = "North East";
+	}
+	else if (bogey_1_heading_ >= 67 && bogey_1_heading_ < 112) {
+		bogey_heading = "East";
+	}
+	else if (bogey_1_heading_ >= 112 && bogey_1_heading_ < 157) {
+		bogey_heading = "South East";
+	}
+	else if (bogey_1_heading_ >= 157 && bogey_1_heading_ < 202) {
+		bogey_heading = "South";
+	}
+	else if (bogey_1_heading_ >= 202 && bogey_1_heading_ < 247) {
+		bogey_heading = "South West";
+	}
+	else if (bogey_1_heading_ >= 247 && bogey_1_heading_ < 292) {
+		bogey_heading = "West";
+	}
+	else if (bogey_1_heading_ >= 292 && bogey_1_heading_ < 337) {
+		bogey_heading = "North West";
+	}
+	else {
+		bogey_heading = "Error: Unknown";
+	}
+
+	std::string awacs_call = "RM:Hostile group bulls ";
+	awacs_call += std::to_string(bogey_1_bulls_heading_);
+	awacs_call += " for ";
+	awacs_call += std::to_string(bogey_1_bulls_distance_);
+	awacs_call += ", Angels 20, tracking ";
+	awacs_call += bogey_heading;
+// std::cout << "awacs_call = " << awacs_call << std::endl;
+	return awacs_call;
 }

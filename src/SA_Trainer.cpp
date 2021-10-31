@@ -231,9 +231,9 @@ void SA_Trainer::RenderGameScreen() {
 	// AWACS header
 	font_20_->DrawCenteredText(renderer_, "AWACS Call:", kMfdWhiteColour, kMfdPaddingTop - 150);
 
-	// AWACS call text
-	std::string call_text = "Hostile group bulls 230 for 20, Angels 20, tracking South West";
-	font_18_->DrawCenteredText(renderer_, call_text, kMfdWhiteColour, kMfdPaddingTop - 100);
+	// This is the call that renders the AWCS call (constructed by RoundManager) to inform the user where the bogey is
+	// TODO: Method needs re-factoring
+	font_18_->DrawCenteredText(renderer_, round_manager_->AwacsCallString(), kMfdWhiteColour, kMfdPaddingTop - 100);
 
 	// Description of what to do
 	std::string difficulty_text1, difficulty_text2;
@@ -261,12 +261,12 @@ void SA_Trainer::RenderGameScreen() {
 	font_14_->DrawCenteredText(renderer_, difficulty_text1, kMfdBlueColour, kMfdPaddingTop - 50);
 	font_14_->DrawCenteredText(renderer_, difficulty_text2, kMfdBlueColour, kMfdPaddingTop - 30);
 
-	// TODO: refactor this so that we're just getting a previously calculated and stored value rather than recalculating
-	user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(my_aircraft_->image_center_, mouse_click_position);
-
-	// Using the roundState which is set in ResultManager and display the correct win symbology
+	// Using the roundState which is set in ResultManager and display the correct win symbol
 	switch (gameDifficulty) {
 	case Difficulty::kRecruit:
+		// TODO: re-factor this so that we're just getting a previously calculated and stored value rather than recalculating
+		user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(my_aircraft_->image_center_, mouse_click_position);
+
 		if (roundstate == RoundState::kWon) {
 			// Display the green arc with the bullseye after a correct guess
 			correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
@@ -305,16 +305,27 @@ void SA_Trainer::RenderGameScreen() {
 		break;
 
 	case Difficulty::kRookie:
+		// Determine the bearing of the actual bogey from the bullseye as well as the location the user clicked on
+		user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, mouse_click_position);
+		bogey_bearing_from_bulleye = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[0]->image_center_);
+
 		if (roundstate == RoundState::kWon) {
-			// Display the green arc with the bullseye after a correct guess
+			// Display the green arc from the bullseye to the bogey after a correct guess
+			correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
+			bullseye_->Draw(renderer_);
+			// bogeys[0]->Draw(renderer_);
 			roundstate = RoundState::kEnded;
 		}
 		else if (roundstate == RoundState::kFail) {
-			// Display the red arc with the bullseye after 3 guesses
+			// Display the red arc from the bulls eye to the bogey after 3 guesses
+			wrong_guess_arc_->DrawArc(renderer_, bogey_bearing_from_bulleye);
+			bullseye_->Draw(renderer_);
+			// bogeys[0]->Draw(renderer_);
 			roundstate = RoundState::kEnded;
 		}
 		else if (roundstate == RoundState::kPlaying) {
-			// Display the red arc but keep going with the remaining guesses
+			// Display the red arc from the bulls eye to the clicked on point and keep going with the remaining guesses
+			wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
 		}
 		break;
 
@@ -529,7 +540,7 @@ void SA_Trainer::ProcessInput() {
 				}
 			}
 
-			// Handle inc HSD range button in playing screen
+			// Handle increase HSD range button in playing screen
 			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && 
 					mouseY <= kRecruitButtonBottomEdge && gameState == GameState::kPlaying) {
 				if (hsd_range_level_ < 5) {
@@ -539,7 +550,7 @@ void SA_Trainer::ProcessInput() {
 				break;
 			}
 
-			// Handle dec HSD range button in playing screen
+			// Handle decrease HSD range button in playing screen
 			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && 
 					gameState == GameState::kPlaying) {
 				if (hsd_range_level_ != 0) {
@@ -605,11 +616,11 @@ void SA_Trainer::Run() {
 
 	while (is_game_running ) {
 		// Delay at the start of each round to allow player to see results before new round
-		Sleep(1500);
+		Sleep(3000);
 		SetupRound();
 		
 		while (roundstate != RoundState::kEnded) {
-			// Limit speed to consistent frame rate. Not really needed in this app, but good practice to include it anyway.
+			// Limit speed to consistent frame rate. Not really needed in this application, but good practice to include it anyway.
 			while (!SDL_TICKS_PASSED(SDL_GetTicks(), milliseconds_previous_frame_ + kmilliseconds_per_frame));
 
 			// Store the current frame time

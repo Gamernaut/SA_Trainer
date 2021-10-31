@@ -30,6 +30,15 @@ namespace cpv {
 		Coordinates bogey_1_pos_ = { 0,0 };
 		Coordinates bogey_2_pos_ = { 0,0 };
 		Coordinates bogey_3_pos_ = { 0,0 };
+		int bogey_1_heading_ = 0;
+		int bogey_2_heading_ = 0;
+		int bogey_3_heading_ = 0;
+		int bogey_1_bulls_heading_ = 0;
+		int bogey_2_bulls_heading_ = 0;
+		int bogey_3_bulls_heading_ = 0;
+		int bogey_1_bulls_distance_ = 0;
+		int bogey_2_bulls_distance_ = 0;
+		int bogey_3_bulls_distance_ = 0;
 		Coordinates mouse_click_pos_ = { 0,0 };
 		Bullseye* bullseye_;
 		Aircraft* my_aircraft_;
@@ -50,6 +59,7 @@ namespace cpv {
 		void CheckVeteranWinStatus(RoundState& state);
 		void CheckAceWinStatus(RoundState& state);
 		bool IsClickInRectAroundBulls();
+		
 
 	public:
 		// constructor just creates object need a start and end round method to handle each round
@@ -61,6 +71,7 @@ namespace cpv {
 		int GetRemaingGuesses() const;
 		int GetBullsDistance() const;
 		int GetHSDRange() const;
+		std::string AwacsCallString();
 	};
 
 }

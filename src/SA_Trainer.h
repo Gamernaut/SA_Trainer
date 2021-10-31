@@ -34,10 +34,14 @@ namespace cpv {
 		bool is_game_running = false;
 		bool round_is_running = false;
 		int user_bearing_guess = 0;
+		int bogey_bearing_from_bulleye = 0;
 		int actual_bearing = 0;
 		int bulls_range = 0;
 		bool user_guessed = false;
 		int user_guess_count = 0;
+
+		// This is the line that gets displayed above the MFD to the user that tells them the info they need to locate the bogey
+		std::string bogey_call_text = "Needs updating to match the data generated in the RoundManger.StartRound() method";
 
 		// Used to hold distances of HSD
 		// When the display is centered the HSD rings represent different ranges from when not centered
