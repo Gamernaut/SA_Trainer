@@ -206,11 +206,11 @@ void RoundManager::CheckCadetWinStatus(RoundState& state) {
 void RoundManager::CheckRookieWinStatus(RoundState& state) {
 	// Win condition is to correctly identify the bearing from the bullseye to the bogey
 
-	// 	Calculate the actual and guessed bearing between the bullseye and the bogey
+	// 	Calculate the actual and the user guessed bearing between the bullseye and the bogey
 	int user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(bulls_pos_, mouse_click_pos_);
 	int actual_bearing = bullseye_->Bearing_FromPoint1ToPoint2(bulls_pos_, bogey_1_pos_);
 
-	// set State to win if the bearing is correct
+	// Set State to win if the guessed bearing is within +/- 15 deg of the actual bearing
 	if (user_bearing_guess >= (actual_bearing - 15) && user_bearing_guess <= (actual_bearing + 15)) {
 		state = RoundState::kWon;
 		std::cout << "Good guess Rookie" << std::endl;
@@ -228,13 +228,13 @@ void RoundManager::CheckRookieWinStatus(RoundState& state) {
 }
 
 void RoundManager::CheckVeteranWinStatus(RoundState& state) {
-	// set State to win if the bearing is correct
-//if () {
-//	state = RoundState::kWon;
-//}
-//// set State to playing if not correct and not last guess
-//else
-	if (current_guess < total_guesses) {
+	// set State to win if the click within 32 pixels of the center of 1 bogey
+	if (IsClickInRectAroundBogey(bogeys[0], nullptr)) {
+		std::cout << "Good guess Veteran" << std::endl;
+		state = RoundState::kWon;
+	}
+	// set State to playing if not correct and not last guess
+	else if (current_guess < total_guesses) {
 		state = RoundState::kPlaying;
 		std::cout << "Keep going Veteran" << std::endl;
 	}
@@ -246,13 +246,13 @@ void RoundManager::CheckVeteranWinStatus(RoundState& state) {
 }
 
 void RoundManager::CheckAceWinStatus(RoundState& state) {
-	// set State to win if the bearing is correct
-//if () {
-//	state = RoundState::kWon;
-//}
-//// set State to playing if not correct and not last guess
-//else
-	if (current_guess < total_guesses) {
+	// set State to win if the click within 32 pixels of the center of each bogey
+	if (IsClickInRectAroundBogey(bogeys[0], bogeys[1])) {
+		std::cout << "Good guess Ace" << std::endl;
+		state = RoundState::kWon;
+	}
+	// set State to playing if not correct and not last guess
+	else if (current_guess < total_guesses) {
 		state = RoundState::kPlaying;
 		std::cout << "Keep going Ace" << std::endl;
 	}
@@ -284,8 +284,55 @@ bool RoundManager::IsClickInRectAroundBulls() {
 	}
 }
 
+bool RoundManager::IsClickInRectAroundBogey(Aircraft* bogey1, Aircraft* bogey2) {
+	int bogey_1_left_limit = bogey1->image_center_.x - 32;
+	int bogey_1_right_limit = bogey1->image_center_.x + 32;
+	int bogey_1_top_limit = bogey1->image_center_.y - 32;
+	int bogey_1_bottom_limit = bogey1->image_center_.y + 32;
+
+	// Check if there is a second aircraft, if not set the second data to the first ti simplify the if statements below
+	int bogey_2_left_limit;
+	int bogey_2_right_limit;
+	int bogey_2_top_limit;
+	int bogey_2_bottom_limit;
+
+	if (bogey2 != nullptr) {
+		bogey_2_left_limit = bogey2->image_center_.x - 32;
+		bogey_2_right_limit = bogey2->image_center_.x + 32;
+		bogey_2_top_limit = bogey2->image_center_.y - 32;
+		bogey_2_bottom_limit = bogey2->image_center_.y + 32;
+	}
+	else {
+		bogey_2_left_limit = bogey1->image_center_.x - 32;
+		bogey_2_right_limit = bogey1->image_center_.x + 32;
+		bogey_2_top_limit = bogey1->image_center_.y - 32;
+		bogey_2_bottom_limit = bogey1->image_center_.y + 32;
+	}
+
+	
+	std::cout << "bogey 1 left_limit = " << bogey_1_left_limit << " mouse x = " << mouse_click_pos_.x << " right limit" << bogey_1_right_limit << std::endl;
+	std::cout << "bogey 1 top_limit = " << bogey_1_top_limit << " mouse y = " << mouse_click_pos_.y << " bottom limit" << bogey_1_bottom_limit << std::endl;
+
+	if (mouse_click_pos_.x >= bogey_1_left_limit &&
+		mouse_click_pos_.x <= bogey_1_right_limit &&
+		mouse_click_pos_.y <= bogey_1_top_limit &&
+		mouse_click_pos_.y >= bogey_1_bottom_limit &&
+		mouse_click_pos_.x >= bogey_2_left_limit &&
+		mouse_click_pos_.x <= bogey_2_right_limit &&
+		mouse_click_pos_.y <= bogey_2_top_limit &&
+		mouse_click_pos_.y >= bogey_2_bottom_limit) {
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 std::string RoundManager::AwacsCallString() {
 	// TODO: Whole method is extremely inefficient way to do this, re-factor
+
+	// First convert the bogey heading into a cardinal heading
 	std::string bogey_heading;
 	if (bogey_1_heading_ >= 337 && bogey_1_heading_ < 22) {
 		bogey_heading = "North";

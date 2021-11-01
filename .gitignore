@@ -12,6 +12,7 @@
 [Ll]ibs/
 [Aa]ssets/
 *.exe
+*.vcxproj*
 
 
 # User-specific files (MonoDevelop/Xamarin Studio)
