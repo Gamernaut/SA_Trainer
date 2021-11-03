@@ -263,100 +263,106 @@ void SA_Trainer::RenderGameScreen() {
 
 	// Using the roundState which is set in ResultManager and display the correct win symbol
 	switch (gameDifficulty) {
-	case Difficulty::kRecruit:
-		// TODO: re-factor this so that we're just getting a previously calculated and stored value rather than recalculating
-		user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(my_aircraft_->image_center_, mouse_click_position);
+		case Difficulty::kRecruit:
+			// TODO: re-factor this so that we're just getting a previously calculated and stored value rather than recalculating
+			user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(my_aircraft_->image_center_, mouse_click_position);
 
-		if (roundstate == RoundState::kWon) {
-			// Display the green arc with the bullseye after a correct guess
-			correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
-			bullseye_->Draw(renderer_);
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kFail) {
-			// Display the red arc with the bullseye after 3 guesses
-			wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
-			bullseye_->Draw(renderer_);
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kPlaying) {
-			// Display the red arc but keep going with the remaining guesses
-			wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
-		}
-		break;
+			if (roundstate == RoundState::kWon) {
+				// Display the green arc with the bullseye after a correct guess
+				correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
+				bullseye_->Draw(renderer_);
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kFail) {
+				// Display the red arc with the bullseye after 3 guesses
+				wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+				bullseye_->Draw(renderer_);
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kPlaying) {
+				// Display the red arc but keep going with the remaining guesses
+				wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+			}
+			break;
 
-	case Difficulty::kCadet:
-		if (roundstate == RoundState::kWon) {
-			// Display the green arc with the bullseye after a correct guess
-			correct_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
-			bullseye_->Draw(renderer_);
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kFail) {
-			// Display the red arc with the bullseye after 3 guesses
-			wrong_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
-			bullseye_->Draw(renderer_);
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kPlaying) {
-			// Display the red arc but keep going with the remaining guesses
-			wrong_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
-		}
-		break;
+		case Difficulty::kCadet:
+			if (roundstate == RoundState::kWon) {
+				// Display the green arc with the bullseye after a correct guess
+				correct_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
+				bullseye_->Draw(renderer_);
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kFail) {
+				// Display the red arc with the bullseye after 3 guesses
+				wrong_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
+				bullseye_->Draw(renderer_);
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kPlaying) {
+				// Display the red arc but keep going with the remaining guesses
+				wrong_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
+			}
+			break;
 
-	case Difficulty::kRookie:
-		// Determine the bearing of the actual bogey from the bullseye as well as the location the user clicked on
-		user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, mouse_click_position);
-		bogey_bearing_from_bulleye = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[0]->image_center_);
+		case Difficulty::kRookie:
+			// Determine the bearing of the actual bogey from the bullseye as well as the location the user clicked on
+			user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, mouse_click_position);
+			bogey_bearing_from_bulleye = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[0]->image_center_);
 
-		if (roundstate == RoundState::kWon) {
-			// Display the green arc from the bullseye to the bogey after a correct guess
-			correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
-			bullseye_->Draw(renderer_);
-			// bogeys[0]->Draw(renderer_);
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kFail) {
-			// Display the red arc from the bulls eye to the bogey after 3 guesses
-			wrong_guess_arc_->DrawArc(renderer_, bogey_bearing_from_bulleye);
-			bullseye_->Draw(renderer_);
-			// bogeys[0]->Draw(renderer_);
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kPlaying) {
-			// Display the red arc from the bulls eye to the clicked on point and keep going with the remaining guesses
-			wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
-		}
-		break;
+			if (roundstate == RoundState::kWon) {
+				// Display the green arc from the bullseye to the bogey after a correct guess
+				correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
+				bullseye_->Draw(renderer_);
+				// bogeys[0]->Draw(renderer_);
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kFail) {
+				// Display the red arc from the bulls eye to the bogey after 3 guesses
+				wrong_guess_arc_->DrawArc(renderer_, bogey_bearing_from_bulleye);
+				bullseye_->Draw(renderer_);
+				// bogeys[0]->Draw(renderer_);
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kPlaying) {
+				// Display the red arc from the bulls eye to the clicked on point and keep going with the remaining guesses
+				wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+			}
+			break;
 
-	case Difficulty::kVeteran:
-		if (roundstate == RoundState::kWon) {
-			// Display the green arc with the bullseye after a correct guess
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kFail) {
-			// Display the red arc with the bullseye after 3 guesses
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kPlaying) {
-			// Display the red arc but keep going with the remaining guesses
-		}
-		break;
+		case Difficulty::kVeteran:
+			if (roundstate == RoundState::kWon) {
+				// Display the green arc with the bullseye after a correct guess
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kFail) {
+				// Display the red arc with the bullseye after 3 guesses
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kPlaying) {
+				// Display the red arc but keep going with the remaining guesses
+			}
+			break;
 
-	case Difficulty::kAce:
-		if (roundstate == RoundState::kWon) {
-			// Display the green arc with the bullseye after a correct guess
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kFail) {
-			// Display the red arc with the bullseye after 3 guesses
-			roundstate = RoundState::kEnded;
-		}
-		else if (roundstate == RoundState::kPlaying) {
-			// Display the red arc but keep going with the remaining guesses
-		}
-		break;
+		case Difficulty::kAce:
+			if (roundstate == RoundState::kWon) {
+				// Display the green arc with the bullseye after a correct guess
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kFail) {
+				// Display the red arc with the bullseye after 3 guesses
+				roundstate = RoundState::kEnded;
+			}
+			else if (roundstate == RoundState::kPlaying) {
+				// Display the red arc but keep going with the remaining guesses
+			}
+			break;
 	}
+
+	// debug, display all objects on the screen all the time
+	bogeys[0]->DrawBogey(renderer_);
+	bogeys[1]->DrawBogey(renderer_);
+	bogeys[2]->DrawBogey(renderer_);
+	bullseye_->Draw(renderer_);
 
 	// Always call last so that it appears on top of everything else
 	//if (roundstate == RoundState::kEnded) {

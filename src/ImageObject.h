@@ -37,7 +37,7 @@ namespace cpv {
 		public:
 			ImageObject(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
 			~ImageObject();
-			void Draw(SDL_Renderer* renderer);
+			virtual void Draw(SDL_Renderer* renderer);
 			void DrawCenteredAt(SDL_Renderer* renderer, Coordinates center_point);
 			void DrawArc(SDL_Renderer* renderer, int user_bearing_guess);
 			void SetRandomPosition();

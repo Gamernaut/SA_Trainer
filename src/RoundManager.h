@@ -59,6 +59,7 @@ namespace cpv {
 		void CheckVeteranWinStatus(RoundState& state);
 		void CheckAceWinStatus(RoundState& state);
 		bool IsClickInRectAroundBulls();
+		bool IsClickInRectAroundBogey(Aircraft* bogey1, Aircraft* bogey2);
 		
 
 	public:

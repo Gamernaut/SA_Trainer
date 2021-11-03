@@ -27,7 +27,7 @@ namespace cpv {
 			~Aircraft();
 			void SetRandomHeading();
 			int GetHeading();
-			//void Draw(SDL_Renderer* renderer);
+			void DrawBogey(SDL_Renderer* renderer);
 	};
 
 }
