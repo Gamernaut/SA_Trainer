@@ -61,12 +61,16 @@ void Aircraft::DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_a
 	double deg_to_rads = M_PI / 180;
 	int new_X = 0, new_Y = 0;
 	int difference_in_angle = 0;
-	int line_length = 10;
+	int line_length = 15;
 
 	difference_in_angle = (static_cast<int>(current_heading_) + static_cast<int>(my_aircraft_->current_heading_)) % 360;
+std::cout << "F16 heading is " << my_aircraft_->current_heading_ << ". Bogey center is " << image_center_.x << ", " << image_center_.y;
+std::cout << " and heading = " << current_heading_;
 
 	new_X = static_cast<int>(image_center_.x + (line_length * sin(difference_in_angle * deg_to_rads)));
-	new_Y = static_cast<int>(image_center_.x + (line_length * -cos(difference_in_angle * deg_to_rads)));
+	new_Y = static_cast<int>(image_center_.y + (line_length * -cos(difference_in_angle * deg_to_rads)));
+
+std::cout << "  ->  New X = " << new_X << " and new Y = , " << new_Y << "\r";
 
 	SDL_RenderDrawLine(renderer, image_center_.x, image_center_.y, new_X, new_Y);
 }
