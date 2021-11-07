@@ -359,9 +359,9 @@ void SA_Trainer::RenderGameScreen() {
 	}
 
 	// debug, display all objects on the screen all the time
-	bogeys[0]->DrawBogey(renderer_);
-	bogeys[1]->DrawBogey(renderer_);
-	bogeys[2]->DrawBogey(renderer_);
+	bogeys[0]->DrawBogey(renderer_, my_aircraft_);
+	// bogeys[1]->DrawBogey(renderer_);
+	// bogeys[2]->DrawBogey(renderer_);
 	bullseye_->Draw(renderer_);
 
 	// Always call last so that it appears on top of everything else

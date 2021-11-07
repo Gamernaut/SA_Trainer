@@ -12,6 +12,8 @@
 #define AIRCRAFT_H
 
 #include "ImageObject.h"
+#include <cmath>
+#include <memory>
 
 namespace cpv {
 
@@ -27,7 +29,7 @@ namespace cpv {
 			~Aircraft();
 			void SetRandomHeading();
 			int GetHeading();
-			void DrawBogey(SDL_Renderer* renderer);
+			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_aircraft_);
 	};
 
 }

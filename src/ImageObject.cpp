@@ -96,7 +96,7 @@ inline bool ImageObject::ValidPosition(int x, int y) {
 void ImageObject::SetRandomPosition() {
 	Coordinates newPosition;
 
-	srand((unsigned)time(0));
+//	srand((unsigned)time(0));
 
 	do {
 		newPosition.x = (rand() % kWindowWidth);
