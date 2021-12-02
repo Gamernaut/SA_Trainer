@@ -217,7 +217,7 @@ void SA_Trainer::RenderGameScreen() {
 	// HSD Scale Range
 	//std::string hsd_scale_range_text = std::to_string(round_manager_->GetHSDRange());
 	std::string hsd_scale_range_text = std::to_string(hsd_range_[hsd_range_level_]);
-	font_18_->Draw(renderer_, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 5, kMfdScreenTopInsideEdge + 152);
+	font_16_->Draw(renderer_, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 12, kMfdScreenTopInsideEdge + 152);
 
 	// Display remaining guesses
 	auto guesses = std::to_string(round_manager_->GetRemaingGuesses());
@@ -358,8 +358,8 @@ void SA_Trainer::RenderGameScreen() {
 			break;
 	}
 
-	// debug, display all objects on the screen all the time
-	bogeys[0]->DrawBogey(renderer_, my_aircraft_);
+	// DEBUG - display all objects on the screen all the time if they are in range of the current HSD range setting
+	bogeys[0]->DrawBogey(renderer_, my_aircraft_, hsd_range_level_);
 	// bogeys[1]->DrawBogey(renderer_);
 	// bogeys[2]->DrawBogey(renderer_);
 	bullseye_->Draw(renderer_);

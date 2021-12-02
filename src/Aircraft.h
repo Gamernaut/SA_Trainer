@@ -24,12 +24,13 @@ namespace cpv {
 		protected:
 			Coordinates Bearing_to_xy_position(int bearing);
 
+
 		public:
 			Aircraft(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
 			~Aircraft();
 			void SetRandomHeading();
 			int GetHeading();
-			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_aircraft_);
+			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_aircraft_, int hsd_range_level_);
 	};
 
 }

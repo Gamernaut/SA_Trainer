@@ -96,8 +96,6 @@ inline bool ImageObject::ValidPosition(int x, int y) {
 void ImageObject::SetRandomPosition() {
 	Coordinates newPosition;
 
-//	srand((unsigned)time(0));
-
 	do {
 		newPosition.x = (rand() % kWindowWidth);
 		newPosition.y = (rand() % kWindowHeight);
@@ -108,6 +106,7 @@ void ImageObject::SetRandomPosition() {
 	image_center_.y = newPosition.y + (image_height_ / 2);
 	position_.x = newPosition.x;
 	position_.y = newPosition.y;
+	hsd_range_to_aircraft = 0;	// Set HSD range to maximum (0th element in the HSD range array)
 }
 
 Coordinates ImageObject::GetPosition() {

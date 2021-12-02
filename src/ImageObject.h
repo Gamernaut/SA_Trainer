@@ -27,6 +27,8 @@ namespace cpv {
 			double rotation_angle_ = 0.0;
 			int image_width_ = 0;
 			int image_height_ = 0;
+			// Actually holds the scale setting from 0 to 6 which when used with the right  array gives the current HSD range
+			int hsd_range_to_aircraft = 0;
 
 		public:
 			Coordinates position_{ 0,0 };
