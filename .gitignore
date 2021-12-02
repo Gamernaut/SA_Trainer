@@ -3,6 +3,29 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+
+
+## Project Specific files ##
+# Ignore all directories except the source code
+assets/
+Debug/
+libs/
+
+# Ignore all files in the "root" (the same direction as the .gitignore file)
+*.h
+SA_Builder.*
+!SA_Builder.sln
+# all the resource ralated files for now
+R*
+# all documentation files for the project
+Doc*
+
+
+
+
+
+## .gitignore visual studio template file ##
 # User-specific files
 *.rsuser
 *.suo
@@ -348,3 +371,41 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+
+
+
+## Ignore settings from C/C++ template on Github ##
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
