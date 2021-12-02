@@ -3,17 +3,35 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+
+
+## Project Specific files ##
+# Ignore all directories except the source code
+assets/
+Debug/
+libs/
+
+# Ignore all files in the "root" (the same directory as the .gitignore file)
+*.h
+SA_Builder.*
+!SA_Builder.sln
+# all the resource related files for now
+R*
+# all documentation files for the project
+Doc*
+
+
+
+
+
+## .gitignore visual studio template file ##
 # User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
-[Ll]ibs/
-[Aa]ssets/
-*.exe
-*.vcxproj*
-
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -28,13 +46,11 @@ mono_crash.*
 [Rr]eleases/
 x64/
 x86/
-[Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
 [Oo]bj/
-[Oo]ut/
 [Ll]og/
 [Ll]ogs/
 
@@ -67,9 +83,6 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-
-# ASP.NET Scaffolding
-ScaffoldingReadMe.txt
 
 # StyleCop
 StyleCopReport.xml
@@ -146,11 +159,6 @@ _TeamCity*
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 !.axoCover/settings.json
-
-# Coverlet is a free, cross platform Code Coverage Tool
-coverage*.json
-coverage*.xml
-coverage*.info
 
 # Visual Studio code coverage results
 *.coverage
@@ -364,14 +372,40 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# Fody - auto-generated XML schema
-FodyWeavers.xsd
-/RCa10908
-/RCb18836
-/RCb10908
-/RCa18836
-/resource1.h
-/resource.h
-/SA_Builder.rc
-/libs/
-/assets/
+
+
+
+
+## Ignore settings from C/C++ template on Github ##
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
