@@ -12,7 +12,7 @@ assets/
 Debug/
 libs/
 
-# Ignore all files in the "root" (the same direction as the .gitignore file)
+# Ignore all files in the "root" (the same directory as the .gitignore file)
 *.h
 SA_Builder.*
 !SA_Builder.sln
