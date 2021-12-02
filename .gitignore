@@ -16,7 +16,11 @@ libs/
 *.h
 SA_Builder.*
 !SA_Builder.sln
+<<<<<<< HEAD
 # all the resource related files for now
+=======
+# all the resource ralated files for now
+>>>>>>> 00dba2d61d669a079922d931ad66c17720d87ee7
 R*
 # all documentation files for the project
 Doc*
