@@ -91,6 +91,6 @@ void Aircraft::DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_a
 }
 
 // Protected methods
-Coordinates Bearing_to_xy_position(int bearing) {
+Coordinate Bearing_to_xy_position(int bearing) {
 	return { 0,0 };
 }

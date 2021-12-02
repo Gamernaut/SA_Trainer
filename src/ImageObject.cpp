@@ -53,7 +53,7 @@ void ImageObject::Draw(SDL_Renderer* renderer) {
 	}
 }
 
-void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, Coordinates center_point) {
+void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, Coordinate center_point) {
 	SDL_Rect imageDestinationRectangle = { center_point.x - (image_width_/ 2), center_point.y - (image_height_ / 2), image_width_, image_height_ };
 
 	int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
@@ -94,7 +94,7 @@ inline bool ImageObject::ValidPosition(int x, int y) {
 }
 
 void ImageObject::SetRandomPosition() {
-	Coordinates newPosition;
+	Coordinate newPosition;
 
 	do {
 		newPosition.x = (rand() % kWindowWidth);
@@ -109,7 +109,7 @@ void ImageObject::SetRandomPosition() {
 	hsd_range_to_aircraft = 0;	// Set HSD range to maximum (0th element in the HSD range array)
 }
 
-Coordinates ImageObject::GetPosition() {
+Coordinate ImageObject::GetPosition() {
 	return image_center_;
 }
 

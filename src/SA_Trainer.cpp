@@ -14,6 +14,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <plog/Log.h>
 #include "SA_Trainer.h"
 #include "Main.h"
 #include "Bullseye.h"
@@ -152,6 +153,7 @@ bool SA_Trainer::SetupGameScreen() {
 
 void SA_Trainer::Initialise() {
 	// 1 - Import and set up SDl and libraries
+	PLOG_INFO << "SA_Trainer::Initialise called";
 
 	if (!LoadAndSetUpSDL()) {
 		std::cerr << "Error setting up SDL" << std::endl;

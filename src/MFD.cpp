@@ -11,8 +11,8 @@ MFD::~MFD() {
 
 }
 
-Coordinates MFD::GetCenterPoint(void) {
-	Coordinates CenterPoint{
+Coordinate MFD::GetCenterPoint(void) {
+	Coordinate CenterPoint{
 		kMfdScreenLeftInsideEdge + (kMfdScreenWidth / 2),
 		kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
 	};
@@ -20,7 +20,7 @@ Coordinates MFD::GetCenterPoint(void) {
 	return CenterPoint;
 }
 
-int MFD::Bearing_FromPoint1ToPoint2(Coordinates point1, Coordinates point2) {
+int MFD::Bearing_FromPoint1ToPoint2(Coordinate point1, Coordinate point2) {
 	// We'll be using the difference in x1,y1 and x2,y2 coordinates
 	// we can use the atan2(y,x) function where y = y2 - y1 and x = x2 - x1 where x1,y1 is the starting point
 	// However, this function can return a negative value when x < 0 so need to check for a negative number and add 2 PI to get an angle between 0 and 360

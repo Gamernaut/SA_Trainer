@@ -12,23 +12,28 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <plog/Log.h>
 #include "OnScreenButton.h"
 
 using namespace cpv;
 
-OnSceenButton::OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable) {
+OnSceenButton::OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string screen_text_) {
     button_x_pos_ = xPos;
     button_y_pos_ = yPos;
     button_x_pos_end_ = xPosEnd;
     button_y_pos_end_ = yPosEnd;
     is_button_toggelable_ = toggelable;
+    button_name_ = button_name;
+    button_screen_text_ = screen_text_;
+
+    PLOG_INFO << "Button " << button_name_ << "created";
 }
  
 OnSceenButton::~OnSceenButton()
 {
 }
 
-bool OnSceenButton::IsMousePointerOverButton(Coordinates mousePosition)
+bool OnSceenButton::IsMousePointerOverButton(Coordinate mousePosition)
 {
     if (mousePosition.x >= button_x_pos_ && mousePosition.x <= button_x_pos_end_ &&
         mousePosition.y >= button_y_pos_ && mousePosition.y <= button_y_pos_end_) {
@@ -42,9 +47,18 @@ bool OnSceenButton::IsMousePointerOverButton(Coordinates mousePosition)
     }
 }
 
-void OnSceenButton::SetButtonState(ButtonState state)
-{
-    return;
+void OnSceenButton::ToggleButtonState()
+{   
+    if (is_button_toggelable_ && buttonState_ == ButtonState::kButtonActive) {
+        buttonState_ = ButtonState::kButtonInactive;
+    }
+    else if (is_button_toggelable_ && buttonState_ == ButtonState::kButtonInactive) {
+        buttonState_ = ButtonState::kButtonActive;
+    }
+    else {
+        // log error to log file
+        PLOG_WARNING << "Button name " << button_name_ << "is toggelable but couldn't be set to the opposite state";
+    }
 }
 
 ButtonState OnSceenButton::GetButtonState()
@@ -54,12 +68,12 @@ ButtonState OnSceenButton::GetButtonState()
 
 void OnSceenButton::SetButtonText(std::string buttonText)
 {
-    button_text_ = buttonText;
+    button_screen_text_ = buttonText;
 }
 
 std::string OnSceenButton::GetButtonText()
 {
-    return button_text_;
+    return button_screen_text_;
 }
 
 void OnSceenButton::HighlightText(bool flag)

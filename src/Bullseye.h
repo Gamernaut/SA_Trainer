@@ -24,10 +24,10 @@ namespace cpv {
 		public:
 			Bullseye(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
 			~Bullseye();
-			void SetPosition(Coordinates);
-			Coordinates GetPosition();
-			int Bearing_FromPoint1ToPoint2(Coordinates point1, Coordinates point2);
-			int Distance_BetweenPoint1AndPoint2(Coordinates start_point, Coordinates end_point);
+			void SetPosition(Coordinate);
+			Coordinate GetPosition();
+			int Bearing_FromPoint1ToPoint2(Coordinate point1, Coordinate point2);
+			int Distance_BetweenPoint1AndPoint2(Coordinate start_point, Coordinate end_point);
 	};
 
 }

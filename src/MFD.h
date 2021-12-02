@@ -15,8 +15,8 @@ namespace cpv {
 	public:
 		MFD();
 		~MFD();
-		Coordinates GetCenterPoint(void);
-		int Bearing_FromPoint1ToPoint2(Coordinates point1, Coordinates point2);
+		Coordinate GetCenterPoint(void);
+		int Bearing_FromPoint1ToPoint2(Coordinate point1, Coordinate point2);
 	};
 
 } // namespace end

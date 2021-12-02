@@ -8,18 +8,29 @@ namespace cpv {
 
 // Header file with set up info and constants for SQ Trainer
 
+inline const char* log_path = "D:\\Development\\Projects\\C++\\SDL_Examples\\SA_Builder HSD Refactor\\logs\\log.txt";
+/*
+	fatal = 1,
+    error = 2,
+    warning = 3,
+    info = 4,
+    debug = 5,
+    verbose = 6
+*/
+inline const char* logging_level = "warning";
+
 const int kFPS = 10;
 const int kmilliseconds_per_frame = 1000 / kFPS;
 
 typedef struct {
 	int x;
 	int y;
-} Coordinates;
+} Coordinate;
 
 // Useful distances for positioning UI elements
 const int kWindowWidth = 730;
 const int kWindowHeight = 900;
-const Coordinates windowCenter{ kWindowWidth / 2, kWindowHeight / 2 };
+const Coordinate windowCenter{ kWindowWidth / 2, kWindowHeight / 2 };
 
 // MFD attributes, numbers are pixels in MFD image
 inline const char* kMfdFileName = "./assets/images/MFD_Frame.png";
@@ -42,7 +53,7 @@ const SDL_Color kMfdGreenColour{ 0, 175, 0 };
 const SDL_Color kMfdWhiteColour{ 255, 255, 255 };
 const SDL_Color kMfdBlueColour{ 0, 200, 200 };
 const SDL_Color kMfdBackground{ 0, 0, 0 };
-const Coordinates kMFDCenter{
+const Coordinate kMFDCenter{
 			kMfdScreenLeftInsideEdge + (kMfdScreenWidth / 2),
 			kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
 };
@@ -76,7 +87,7 @@ inline const char* kDistRingsFileName = "./assets/images/distance_rings_646x646.
 const int kDistRingsImageWidth = 646;
 const int kDistRingsImageHeight = 646;
 const int kDepOffset = 110;
-const Coordinates distRingsCenter{
+const Coordinate distRingsCenter{
 			kMfdScreenLeftInsideEdge + (kMfdScreenWidth / 2),
 			kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
 };
@@ -96,7 +107,7 @@ inline const char* kBearingCircle = "./assets/images/blue_bearing_ring_55x60.png
 const int kBearingCircleWidth = 55;
 const int kBearingCircleHeight = 60;
 inline const char* kBearingPointer = "./assets/images/bearing_pointer_53x65.png";
-const Coordinates bearingCircleCenter{
+const Coordinate bearingCircleCenter{
 			kBearingCircleWidth / 2,
 			kBearingCircleHeight / 2
 };

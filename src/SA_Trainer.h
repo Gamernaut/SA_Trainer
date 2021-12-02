@@ -91,7 +91,7 @@ namespace cpv {
 
 		std::unique_ptr<RoundManager> round_manager_ = nullptr;
 
-		Coordinates mouse_click_position{ 0, 0 };
+		Coordinate mouse_click_position{ 0, 0 };
 
 	public:
 		// Enum to hold state for rendering etc.
@@ -134,7 +134,7 @@ namespace cpv {
 		bool SetupLoadingScreen();
 		bool SetupGameScreen();
 		bool SetupOptionsScreen();
-		void WasUsersGuessRight(Coordinates mouse_click_position);
+		void WasUsersGuessRight(Coordinate mouse_click_position);
 
 	public:
 		SA_Trainer();

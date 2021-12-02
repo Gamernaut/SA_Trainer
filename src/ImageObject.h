@@ -31,8 +31,8 @@ namespace cpv {
 			int hsd_range_to_aircraft = 0;
 
 		public:
-			Coordinates position_{ 0,0 };
-			Coordinates image_center_{ 0, 0 };
+			Coordinate position_{ 0,0 };
+			Coordinate image_center_{ 0, 0 };
 
 		// Methods
 
@@ -40,10 +40,10 @@ namespace cpv {
 			ImageObject(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
 			~ImageObject();
 			virtual void Draw(SDL_Renderer* renderer);
-			void DrawCenteredAt(SDL_Renderer* renderer, Coordinates center_point);
+			void DrawCenteredAt(SDL_Renderer* renderer, Coordinate center_point);
 			void DrawArc(SDL_Renderer* renderer, int user_bearing_guess);
 			void SetRandomPosition();
-			Coordinates GetPosition();
+			Coordinate GetPosition();
 			void RotateToFinalAngle(double angleInDegrees);
 			std::string GetObjectName();
 			bool ValidPosition(int x, int y);

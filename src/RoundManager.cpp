@@ -127,7 +127,7 @@ void RoundManager::ResetRound() {
 	bogey_3_pos_ = { 0,0 };
 }
 
-void RoundManager::CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position, int hsd_range_in) {
+void RoundManager::CheckWinStatus(const Difficulty& level, RoundState& state, Coordinate mouse_click_position, int hsd_range_in) {
 	current_guess += 1;
 	
 	std::cout << "current_guess = " << current_guess << std::endl;

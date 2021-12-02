@@ -31,7 +31,8 @@ namespace cpv {
         int button_y_pos_ = 0;
         int button_x_pos_end_ = 0;
         int button_y_pos_end_ = 0;
-        std::string button_text_;
+        std::string button_name_;
+        std::string button_screen_text_;
         ButtonState buttonState_{ ButtonState::kButtonInactive };
 
     private:
@@ -41,10 +42,10 @@ namespace cpv {
     protected: 
 
     public:
-        OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable);
+        OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string button_screen_text_);
         ~OnSceenButton();
-        bool IsMousePointerOverButton(Coordinates mousePosition);
-        void SetButtonState(ButtonState);
+        bool IsMousePointerOverButton(Coordinate mousePosition);
+        void ToggleButtonState();
         ButtonState GetButtonState();
         void SetButtonText(std::string buttonText);
         std::string GetButtonText();

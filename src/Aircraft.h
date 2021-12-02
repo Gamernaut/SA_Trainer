@@ -22,7 +22,7 @@ namespace cpv {
 			double	current_heading_ = 0.0;
 
 		protected:
-			Coordinates Bearing_to_xy_position(int bearing);
+			Coordinate Bearing_to_xy_position(int bearing);
 
 
 		public:

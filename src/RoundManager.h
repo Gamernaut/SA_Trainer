@@ -25,11 +25,11 @@ namespace cpv {
 		int bogey_count = 0;
 		double distance_to_bullseye_ = 0;
 		int hsd_range_ = 0;
-		Coordinates my_aircraft_pos_ = { 0,0 };
-		Coordinates bulls_pos_ = { 0,0 };
-		Coordinates bogey_1_pos_ = { 0,0 };
-		Coordinates bogey_2_pos_ = { 0,0 };
-		Coordinates bogey_3_pos_ = { 0,0 };
+		Coordinate my_aircraft_pos_ = { 0,0 };
+		Coordinate bulls_pos_ = { 0,0 };
+		Coordinate bogey_1_pos_ = { 0,0 };
+		Coordinate bogey_2_pos_ = { 0,0 };
+		Coordinate bogey_3_pos_ = { 0,0 };
 		int bogey_1_heading_ = 0;
 		int bogey_2_heading_ = 0;
 		int bogey_3_heading_ = 0;
@@ -39,7 +39,7 @@ namespace cpv {
 		int bogey_1_bulls_distance_ = 0;
 		int bogey_2_bulls_distance_ = 0;
 		int bogey_3_bulls_distance_ = 0;
-		Coordinates mouse_click_pos_ = { 0,0 };
+		Coordinate mouse_click_pos_ = { 0,0 };
 		Bullseye* bullseye_;
 		Aircraft* my_aircraft_;
 		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };
@@ -66,7 +66,7 @@ namespace cpv {
 		// constructor just creates object need a start and end round method to handle each round
 		RoundManager(Aircraft* aircraft_Ptr, Bullseye* bullseye_Ptr, ImageObject* hsd_Ptr, ImageObject* bearing_ring_Ptr);
 		~RoundManager();
-		void CheckWinStatus(const Difficulty& level, RoundState& state, Coordinates mouse_click_position, int hsd_range_in);
+		void CheckWinStatus(const Difficulty& level, RoundState& state, Coordinate mouse_click_position, int hsd_range_in);
 		void StartRound(const Difficulty& level, RoundState& state, Aircraft* bogeys[]);
 		void ResetRound();
 		int GetRemaingGuesses() const;
