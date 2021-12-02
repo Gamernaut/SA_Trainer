@@ -23,7 +23,7 @@ OnSceenButton::OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool 
     button_y_pos_end_ = yPosEnd;
     is_button_toggelable_ = toggelable;
 }
-
+ 
 OnSceenButton::~OnSceenButton()
 {
 }

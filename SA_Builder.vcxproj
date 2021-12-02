@@ -153,7 +153,6 @@
     <ClCompile Include="src\Bullseye.cpp" />
     <ClCompile Include="src\HSD.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\MathsFunctions.cpp" />
     <ClCompile Include="src\MFD.cpp" />
     <ClCompile Include="src\OnScreenButton.cpp" />
     <ClCompile Include="src\RoundManager.cpp" />
