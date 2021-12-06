@@ -24,6 +24,7 @@
 #include "mfd.h"
 #include "on_screen_button.h"
 #include "image_object.h"
+#include "aircraft.h"
 
 namespace cpv {
 
@@ -39,7 +40,9 @@ namespace cpv {
 		// Various objects on the HSD
 		std::unique_ptr<ImageObject> hsd_distance_rings_ = nullptr;
 		std::unique_ptr<ImageObject> bearing_ring_ = nullptr;
-//		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
+		std::unique_ptr<ImageObject> bearing_pointer_ = nullptr;
+		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
+		std::unique_ptr<ImageObject> mfd_frame_ = nullptr;
 //		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };
 		//std::unique_ptr<Aircraft> bogeys[3] = { nullptr, nullptr, nullptr };
 		//std::vector <std::unique_ptr<Aircraft>> bogey_list_;
@@ -66,6 +69,7 @@ namespace cpv {
 		int Distance_BetweenPoint1AndPoint2(Coordinate point1, Coordinate point2);
 		std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text);
 		std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name);
+		void Draw();
 	};
 }
 

@@ -20,7 +20,10 @@
 using namespace cpv;
 
 MFD::MFD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_height, int mfd_width) {
-	renderer_ = renderer;
+	PLOG_INFO << "MFD constructor called";
+	if (!renderer_) {
+		renderer_ = renderer;
+	}
 	mfd_top_edge_ = mfd_top_edge;
 	mfd_left_edge_ = mfd_left_edge;
 	mfd_height_ = mfd_height;

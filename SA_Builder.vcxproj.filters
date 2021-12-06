@@ -15,34 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SA_Trainer.cpp">
+    <ClCompile Include="src\sa_trainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Bullseye.cpp">
+    <ClCompile Include="src\hsd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImageObject.cpp">
+    <ClCompile Include="src\mfd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextObject.cpp">
+    <ClCompile Include="src\on_screen_button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Aircraft.cpp">
+    <ClCompile Include="src\image_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RoundManager.cpp">
+    <ClCompile Include="src\start_screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\HSD.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MFD.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OnScreenButton.cpp">
+    <ClCompile Include="src\aircraft.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -812,32 +806,17 @@
     <ClInclude Include="src\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SA_Trainer.h">
+    <ClInclude Include="src\sa_trainer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Main.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Bullseye.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ImageObject.h">
+    <ClInclude Include="src\main.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TextObject.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Aircraft.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource1.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RoundManager.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="resource2.h">
       <Filter>Header Files</Filter>
@@ -845,10 +824,10 @@
     <ClInclude Include="resource3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\HSD.h">
+    <ClInclude Include="src\hsd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\MFD.h">
+    <ClInclude Include="src\mfd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="resource4.h">
@@ -857,10 +836,19 @@
     <ClInclude Include="resource5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OnScreenButton.h">
+    <ClInclude Include="src\on_screen_button.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\MathsFunctions.h">
+    <ClInclude Include="src\maths_functions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\image_object.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\start_screen.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\aircraft.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

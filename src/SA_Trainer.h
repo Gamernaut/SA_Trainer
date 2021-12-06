@@ -44,15 +44,6 @@ namespace cpv {
 		// This is the line that gets displayed above the MFD to the user that tells them the info they need to locate the bogey
 		std::string bogey_call_text = "Needs updating to match the data generated in the RoundManger.StartRound() method";
 
-		// Used to hold distances of HSD
-		// When the display is centered the HSD rings represent different ranges from when not centered
-		int hsd_range_centered_[6] = { 5, 10, 20, 40, 80, 160 };	
-
-		// None centered ranges
-		int hsd_range_[6] = { 8, 15, 30, 60, 120, 240 };
-		int fcr_range_[6] = { 5, 10, 20, 40, 80, 160 };
-		int hsd_range_level_ = 0;
-
 		// Pointers for the main SDL objects (needs converting to smart pointers)
 		SDL_Window* window_ = nullptr;
 		SDL_Renderer* renderer_ = nullptr;
@@ -60,18 +51,18 @@ namespace cpv {
 
 		// Pointers to MFDs
 		std::unique_ptr<StartScreen> start_screen_ = nullptr;
-//		std::unique_ptr<OptionsScreen> options_screen_ = nullptr;
-//		std::unique_ptr<HSD> hsd_screen_ = nullptr;
+		std::unique_ptr<HSD> hsd_screen_ = nullptr;
+		// std::unique_ptr<OptionsScreen> options_screen_ = nullptr;
 		// std::unique_ptr<FCR> fcr_screen_ = nullptr;
 
 		// Various objects on the HSD
 
-		std::unique_ptr<ImageObject> mfd_frame_ = nullptr;
+
 		std::unique_ptr<ImageObject> correct_guess_arc_ = nullptr;
 		std::unique_ptr<ImageObject> wrong_guess_arc_ = nullptr;
 		std::unique_ptr<ImageObject> correct_guess_rect_ = nullptr;
 		std::unique_ptr<ImageObject> wrong_guess_rect_ = nullptr;
-		std::unique_ptr<ImageObject> bearing_pointer_ = nullptr;
+		
 
 		// Collections to hold screen layout that doesn't change
 		std::vector<ImageObject*> loading_screen_image_list_;
@@ -94,13 +85,18 @@ namespace cpv {
 		Coordinate mouse_click_position{ 0, 0 };
 
 	public:
-		// Enum to hold state for rendering etc.
+		// Enum to hold state
 		enum class GameState {
-			kMenu,
-			kSetup,
-			kPlaying
+			kStartScreen,
+			kOptionsScreen,
+			kRoundStarting,
+			kRoundWon,
+			kRoundFail,
+			kRoundPlaying,
+			kRoundEnded
 		};
-		GameState gameState{ GameState::kMenu };
+		GameState game_state{ GameState::kStartScreen };
+		GameState temp_game_state{ game_state };
 
 		// Needs to be public so the RoundManager can access it as it's NOT a child of SA_Trainer
 		enum class Difficulty {
@@ -112,18 +108,6 @@ namespace cpv {
 		};
 		Difficulty gameDifficulty{ Difficulty::kCadet };
 		Difficulty tempDiff{ gameDifficulty };		// holds the difficulty setting when the user is in the setup screen.
-
-		// Enum to hold state of current guess in current round
-		enum class RoundState {
-			kRoundStarting,
-			kWon,
-			kFail,
-			kPlaying,
-			kEnded
-		};
-		RoundState roundstate{ RoundState::kRoundStarting };
-		RoundState temproundstate{ roundstate };
-
 
 	// Methods
 	private:

@@ -32,6 +32,8 @@ namespace cpv {
 		int mfd_height_ = 0;
 		int mfd_width_ = 0;
 		Coordinate center_point_{ 0 , 0 };
+
+		// Watch for a clash with the definition here as well as in sa_trainer.h
 		SDL_Renderer* renderer_ = nullptr;
 
 		// To hold the on screen buttons
