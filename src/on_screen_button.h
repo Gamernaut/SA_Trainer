@@ -16,6 +16,7 @@
 #define OSB_H
 
 #include <iostream>
+#include <SDL.h>
 #include "Main.h"
 
 namespace cpv {
@@ -32,24 +33,32 @@ namespace cpv {
         int button_x_pos_end_ = 0;
         int button_y_pos_end_ = 0;
         std::string button_name_;
-        std::string button_screen_text_;
+        std::string button_onscreen_text_;
         ButtonState buttonState_{ ButtonState::kButtonInactive };
 
     private:
-        bool is_button_toggelable_;
+        bool is_button_toggelable_ = false;
+        bool is_draw_outline_enabled_ = false;
     
     // Methods
     protected: 
 
+
     public:
-        OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string button_screen_text_);
+        OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name);
+        OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text);
         ~OnSceenButton();
+        void SetButtonName(std::string buttonText);
+        std::string GetButtonName();
+        void SetOnScreenText(std::string text);
+        std::string GetOnScreenText();
+        void HighlightOnScreenText(bool flag);
+        void SetDrawOutlineState(bool required_state);
+        bool GetDrawOutlineState();
         bool IsMousePointerOverButton(Coordinate mousePosition);
         void ToggleButtonState();
-        ButtonState GetButtonState();
-        void SetButtonText(std::string buttonText);
-        std::string GetButtonText();
-        void HighlightText(bool flag);
+        ButtonState GetButtonToggeledState();
+        void DrawOutline(SDL_Renderer* renderer);
     };
 }
 

@@ -20,42 +20,42 @@
 #include <vector>
 #include <memory>
 #include <plog/Log.h>
-#include "Main.h"
-#include "MFD.h"
-#include "OnScreenButton.h"
+#include "main.h"
+#include "mfd.h"
+#include "on_screen_button.h"
+#include "image_object.h"
 
 namespace cpv {
 
 	class HSD : public MFD {
-		// Constants
+	// Attributes
 	private:
-		// Distance rings attributes, needs to rotate so needs to have a center
-		const char* kDistRingsFileName = "./assets/images/distance_rings_646x646.png";
-		const int kHSDDistRingsImageWidth_ = 646;
-		const int kHSDDistRingsImageHeight_ = 646;
-		const int kHSDCenterOffset_ = 110;
 
-		// Attributes
 	protected:
 		bool centered_ = false;
 		std::vector<int> HSD_centered_ranges = { 5, 10, 20, 40, 80, 160 };
 		std::vector<int> HSD_ranges = { 8, 15, 30, 60, 120, 240 };
 
-		std::unique_ptr<OnSceenButton> osb1 = nullptr;
-		std::unique_ptr<OnSceenButton> osb19 = nullptr;
-		std::unique_ptr<OnSceenButton> osb20 = nullptr;
-
+		// Various objects on the HSD
+		std::unique_ptr<ImageObject> hsd_distance_rings_ = nullptr;
+		std::unique_ptr<ImageObject> bearing_ring_ = nullptr;
+//		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
+//		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };
+		//std::unique_ptr<Aircraft> bogeys[3] = { nullptr, nullptr, nullptr };
+		//std::vector <std::unique_ptr<Aircraft>> bogey_list_;
+		//std::array<std::unique_ptr<Aircraft>, 3> bogeys = { nullptr, nullptr, nullptr };
+//		std::unique_ptr<Bullseye> bullseye_ = nullptr;
 
 	public:
-		// std::unique_ptr<int> myInt(new int(47));
+		
 
 
-		// Methods
+	// Methods
 	protected:
 
 
 	public:
-		HSD();
+		HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_height, int mfd_width);
 		~HSD();
 		void SetCenteredState(bool new_state);
 		bool GetCenteredState(void);
@@ -64,6 +64,8 @@ namespace cpv {
 		int GetCurrentRange(void);
 		double GetMilesPerPixel(void);
 		int Distance_BetweenPoint1AndPoint2(Coordinate point1, Coordinate point2);
+		std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text);
+		std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name);
 	};
 }
 

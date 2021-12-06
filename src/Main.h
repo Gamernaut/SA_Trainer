@@ -9,15 +9,6 @@ namespace cpv {
 // Header file with set up info and constants for SQ Trainer
 
 inline const char* log_path = "D:\\Development\\Projects\\C++\\SDL_Examples\\SA_Builder HSD Refactor\\logs\\log.txt";
-/*
-	fatal = 1,
-    error = 2,
-    warning = 3,
-    info = 4,
-    debug = 5,
-    verbose = 6
-*/
-inline const char* logging_level = "warning";
 
 const int kFPS = 10;
 const int kmilliseconds_per_frame = 1000 / kFPS;
@@ -82,10 +73,10 @@ inline const char* kGameTitleFilename = "./assets/images/main_title_396x74.png";
 const int kGameTitleWidth = 396;
 const int kGameTitleHeight = 74;
 
-// Distance rings attributes, needs to rotate so needs to have a center
-inline const char* kDistRingsFileName = "./assets/images/distance_rings_646x646.png";
-const int kDistRingsImageWidth = 646;
-const int kDistRingsImageHeight = 646;
+// HSD Distance rings attributes, needs to rotate so needs to have a center
+inline const char* kHSD_DistRingsFileName = "./assets/images/distance_rings_646x646.png";
+const int kHSDDistRingsImageWidth_ = 646;
+const int kHSDDistRingsImageHeight_ = 646;
 const int kDepOffset = 110;
 const Coordinate distRingsCenter{
 			kMfdScreenLeftInsideEdge + (kMfdScreenWidth / 2),

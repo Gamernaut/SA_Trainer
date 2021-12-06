@@ -11,9 +11,9 @@
 #ifndef AIRCRAFT_H
 #define AIRCRAFT_H
 
-#include "ImageObject.h"
 #include <cmath>
 #include <memory>
+#include "image_object.h"
 
 namespace cpv {
 

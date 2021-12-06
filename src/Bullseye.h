@@ -11,7 +11,7 @@
 #ifndef BULLSEYE_H
 #define BULLSEYE_H
 
-#include "ImageObject.h"
+#include "image_object.h"
 
 namespace cpv {
 

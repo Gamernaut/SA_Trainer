@@ -1,10 +1,32 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Author:	Carmelo Volpe
+//
+//	Date:	December 2021
+//
+//	Purpose:    Abstraction of the Horizontal Situation Display. This is a type of MFD (Multi Function Display) and is surrounded 
+//				by OSBs (On-Screen Buttons).
+//              This class holds the overall state of the HSD, it knows settings such as the range, in the app world, and where the 
+//				various objects are on the HSD. It uses the maths functions and returns the in app distance and angles between various
+//				objects. It also knows about the buttons around the edge and updates the state based on their settings.
+// 
+// Coding Style:    Google C++ -> https://google.github.io/styleguide/cppguide.html
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #include "Main.h"
 #include "MFD.h"
 
 using namespace cpv;
 
-MFD::MFD() {
-
+MFD::MFD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_height, int mfd_width) {
+	renderer_ = renderer;
+	mfd_top_edge_ = mfd_top_edge;
+	mfd_left_edge_ = mfd_left_edge;
+	mfd_height_ = mfd_height;
+	mfd_width_ = mfd_width;
+	center_point_.x = mfd_left_edge_ + (mfd_width_ / 2);
+	center_point_.y = mfd_top_edge_ + (mfd_height_ / 2);
 }
 
 MFD::~MFD() {
@@ -12,31 +34,10 @@ MFD::~MFD() {
 }
 
 Coordinate MFD::GetCenterPoint(void) {
-	Coordinate CenterPoint{
-		kMfdScreenLeftInsideEdge + (kMfdScreenWidth / 2),
-		kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
-	};
-
-	return CenterPoint;
+	return center_point_;
 }
 
-int MFD::Bearing_FromPoint1ToPoint2(Coordinate point1, Coordinate point2) {
-	// We'll be using the difference in x1,y1 and x2,y2 coordinates
-	// we can use the atan2(y,x) function where y = y2 - y1 and x = x2 - x1 where x1,y1 is the starting point
-	// However, this function can return a negative value when x < 0 so need to check for a negative number and add 2 PI to get an angle between 0 and 360
 
-	const double kTwoPi = 6.2831853071795865;
-	const double kRad2Deg = 57.2957795130823209;
-
-	double x1 = static_cast<double>(point1.x);
-	double y1 = static_cast<double>(point1.y);
-	double x2 = static_cast<double>(point2.x);
-	double y2 = static_cast<double>(point2.y);
-	double theta = 0.0;
-
-	theta = atan2(x2 - x1, y1 - y2);
-	if (theta < 0.0)
-		theta += kTwoPi;
-	return static_cast<int>(kRad2Deg * theta);
+void MFD::Draw() {
+	PLOG_VERBOSE << "Need to implement MFD::Draw()";
 }
-

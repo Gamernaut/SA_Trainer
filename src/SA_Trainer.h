@@ -15,15 +15,16 @@
 #include <memory>
 #include <array>
 #include <SDL_ttf.h>
-#include "ImageObject.h"
-#include "TextObject.h"
-#include "Bullseye.h"
-#include "Aircraft.h"
-#include "HSD.h"
+#include "image_object.h"
+#include "bullseye.h"
+#include "aircraft.h"
+#include "hsd.h"
+#include "options_screen.h"
+#include "start_screen.h"
 
 namespace cpv {
 
-	class RoundManager;	// Add forward declaration
+//	class RoundManager;	// Add forward declaration
 
 	class SA_Trainer {
 	// Properties
@@ -57,15 +58,14 @@ namespace cpv {
 		SDL_Renderer* renderer_ = nullptr;
 		TTF_Font* font_ = nullptr;
 
+		// Pointers to MFDs
+		std::unique_ptr<StartScreen> start_screen_ = nullptr;
+//		std::unique_ptr<OptionsScreen> options_screen_ = nullptr;
+//		std::unique_ptr<HSD> hsd_screen_ = nullptr;
+		// std::unique_ptr<FCR> fcr_screen_ = nullptr;
+
 		// Various objects on the HSD
-		std::unique_ptr<ImageObject> hsd_distance_rings_ = nullptr;
-		std::unique_ptr<ImageObject> bearing_ring_ = nullptr;
-		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
-		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };
-		//std::unique_ptr<Aircraft> bogeys[3] = { nullptr, nullptr, nullptr };
-		//std::vector <std::unique_ptr<Aircraft>> bogey_list_;
-		//std::array<std::unique_ptr<Aircraft>, 3> bogeys = { nullptr, nullptr, nullptr };
-		std::unique_ptr<Bullseye> bullseye_ = nullptr;
+
 		std::unique_ptr<ImageObject> mfd_frame_ = nullptr;
 		std::unique_ptr<ImageObject> correct_guess_arc_ = nullptr;
 		std::unique_ptr<ImageObject> wrong_guess_arc_ = nullptr;
@@ -81,15 +81,15 @@ namespace cpv {
 		//std::vector<std::unique_ptr<ImageObject>> game_screen_text_list_;
 
 		// Fonts to be used in the game
-		std::unique_ptr<TextObject> font_26_;
+		/*std::unique_ptr<TextObject> font_26_;
 		std::unique_ptr<TextObject> font_24_;
 		std::unique_ptr<TextObject> font_22_;
 		std::unique_ptr<TextObject> font_20_;
 		std::unique_ptr<TextObject> font_18_;
 		std::unique_ptr<TextObject> font_16_;
-		std::unique_ptr<TextObject> font_14_;
+		std::unique_ptr<TextObject> font_14_;*/
 
-		std::unique_ptr<RoundManager> round_manager_ = nullptr;
+//		std::unique_ptr<RoundManager> round_manager_ = nullptr;
 
 		Coordinate mouse_click_position{ 0, 0 };
 

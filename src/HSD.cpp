@@ -15,15 +15,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include "HSD.h"
+#include "hsd.h"
 
 using namespace cpv;
 
-HSD::HSD() : MFD() {
-	PLOG_INFO << "HSD created";
-	osb1 = std::make_unique<OnSceenButton>(100, 100, 200, 100, true, "OSB1", "DEP");
-	osb19 = std::make_unique<OnSceenButton>(100, 100, 200, 100, true, "OSB19", "IncRange");
-	osb20 = std::make_unique<OnSceenButton>(100, 100, 200, 100, true, "OSB20", "DecRange");
+HSD::HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_height, int mfd_width) : MFD(renderer, mfd_top_edge, mfd_left_edge, mfd_height, mfd_width) {
+	PLOG_INFO << "HSD constructor called";
 }
 
 HSD::~HSD() {
@@ -31,6 +28,7 @@ HSD::~HSD() {
 }
 
 void HSD::SetCenteredState(bool new_state) {
+	// Do I need to tie this into the display
 	centered_ = new_state;
 }
 
@@ -72,15 +70,27 @@ int HSD::GetCurrentRange() {
 	}
 }
 
+
+// TODO: Need to rewrite this to use the distance_between_point_a_and_b_in_pixels function in MathsFunctions then multiply by GetMilesPerPixel()
 int HSD::Distance_BetweenPoint1AndPoint2(Coordinate point1, Coordinate point2) {
 	// Use Pythagoras' therom to calculate the number of pixels between the 2 points
 	double xdist = static_cast<double>(point1.x) - static_cast<double>(point2.x);
 	double ydist = static_cast<double>(point1.y) - static_cast<double>(point2.y);
 
-	// convert pixels to a distance based on the range setting then calculate the actual distance between the points
+	// convert pixels to a distance based on the range setting on the HSD so we have the "in sim" distance between the points
 	xdist = xdist * GetMilesPerPixel();
 	ydist = ydist * GetMilesPerPixel();
 
 	double distance = sqrt((xdist * xdist) + (ydist * ydist));
 	return static_cast<int>(distance);
+}
+
+std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text) {
+	PLOG_VERBOSE << "HSD::AddObcButton called with 7 parameters";
+	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name, onscreen_text);
+}
+
+std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name) {
+	PLOG_VERBOSE << "HSD::AddObcButton called with 6 parameters";
+	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name);
 }

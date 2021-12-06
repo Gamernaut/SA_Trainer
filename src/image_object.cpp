@@ -11,7 +11,8 @@
 //#include <iostream>
 //#include <SDL.h>
 #include <SDL_image.h>
-#include "ImageObject.h"
+#include <plog/Log.h>
+#include "image_object.h"
 
 using namespace cpv;
 
@@ -23,12 +24,13 @@ ImageObject::ImageObject(SDL_Renderer* renderer, std::string filename, int xPosi
 
 	image_surface_ = IMG_Load(filename.c_str());
 	if (!image_surface_) {
-		std::cout << "Couldn't load image " << filename << std::endl;
+		PLOG_ERROR << "Couldn't load image " << filename;
 		return;
 	}
 	image_texture_ = SDL_CreateTextureFromSurface(renderer, image_surface_);
 	if (!image_texture_) {
-		std::cout << "Couldn't create texture for " << filename << std::endl;
+		PLOG_ERROR << "Couldn't create texture for " << filename << "SDL returned error " << SDL_GetError();
+		std::cout << "Couldn't create texture for " << filename << "SDL returned error " << SDL_GetError() << std::endl;
 		return;
 	}
 
@@ -49,6 +51,7 @@ void ImageObject::Draw(SDL_Renderer* renderer) {
 
 	int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
 	if (renderSuccess != 0) {
+		PLOG_ERROR << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()";
 		std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()" << std::endl;
 	}
 }
@@ -58,7 +61,8 @@ void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, Coordinate center_point
 
 	int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
 	if (renderSuccess != 0) {
-		std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()" << std::endl;
+		PLOG_ERROR << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::DrawCenteredAt()";
+		std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::DrawCenteredAt()" << std::endl;
 	}
 }
 
@@ -88,7 +92,7 @@ inline bool ImageObject::ValidPosition(int x, int y) {
 
 	if (x >= kMfdScreenLeftInsideEdge && x <= kMfdScreenRightInsideEdge && y >= kMfdScreenTopInsideEdge && y <= kMfdScreenBottomInsideEdge) {
 		square_dist = (kMFDCenter.x - x) ^ 2 + (kMFDCenter.y - y) ^ 2;
-		result = square_dist <= kDistRingsImageWidth / 2;
+		result = square_dist <= kHSDDistRingsImageWidth_ / 2;
 	}
 	return result;
 }

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "..\src\MathsFunctions.h"
+#include "..\src\maths_functions.h"
 
 #include "gtest/gtest.h"
 
