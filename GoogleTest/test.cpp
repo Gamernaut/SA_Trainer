@@ -12,19 +12,19 @@ using namespace cpv;
 TEST(MathsFunction, Distance1) {
     Coordinate point_a = {0 , 0};
     Coordinate point_b = {0 , 0};
-    EXPECT_EQ(distance_between_point_a_and_b_in_pixels(point_a, point_b), 0);
+    EXPECT_EQ(pixels_between_point_a_and_b(point_a, point_b), 0);
 }
 
 TEST(MathsFunction, Distance2) {
     Coordinate point_a = { 0 , 0 };
     Coordinate point_b = { 100 , 0 };
-    EXPECT_EQ(distance_between_point_a_and_b_in_pixels(point_a, point_b), 100);
+    EXPECT_EQ(pixels_between_point_a_and_b(point_a, point_b), 100);
 }
 
 TEST(MathsFunction, Distance3) {
     Coordinate point_a = { 0 , 0 };
     Coordinate point_b = { 100 , 100 };
-    EXPECT_EQ(distance_between_point_a_and_b_in_pixels(point_a, point_b), 141);
+    EXPECT_EQ(pixels_between_point_a_and_b(point_a, point_b), 141);
 }
 
 TEST(MathsFunction, Angle1) {

@@ -3,7 +3,7 @@
 //#include <SDL_image.h>
 //#include <SDL_ttf.h>
 #include "Main.h"
-#include "TextObject.h"
+#include "text_object.h"
 
 using namespace cpv;
 
@@ -25,6 +25,15 @@ TextObject::~TextObject() {
 
 void TextObject::Draw(SDL_Renderer* renderer, std::string text, SDL_Color text_colour, int x_position, int y_position) {
 	text_surface_ = TTF_RenderText_Blended(font_, text.c_str(), text_colour);
+	text_texture_ = SDL_CreateTextureFromSurface(renderer, text_surface_);
+
+	SDL_Rect textDestinationRectangle = { x_position, y_position, text_surface_->w, text_surface_->h };
+
+	SDL_RenderCopy(renderer, text_texture_, NULL, &textDestinationRectangle);
+}
+
+void TextObject::HighlightedDraw(SDL_Renderer* renderer, std::string text, SDL_Color fg_colour, SDL_Color bg_colour, int x_position, int y_position) {
+	text_surface_ = TTF_RenderText_Shaded(font_, text.c_str(), fg_colour, bg_colour);
 	text_texture_ = SDL_CreateTextureFromSurface(renderer, text_surface_);
 
 	SDL_Rect textDestinationRectangle = { x_position, y_position, text_surface_->w, text_surface_->h };

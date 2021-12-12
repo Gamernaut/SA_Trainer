@@ -117,6 +117,11 @@ Coordinate ImageObject::GetPosition() {
 	return image_center_;
 }
 
+void ImageObject::SetPosition(Coordinate new_position) {
+	position_.x = new_position.x;
+	position_.y = new_position.y;
+}
+
 void ImageObject::RotateToFinalAngle(double angleInDegrees) {
 	rotation_angle_ = angleInDegrees;
 }

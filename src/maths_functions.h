@@ -1,12 +1,14 @@
-#ifndef MATHS_FUNCTIONS_H
-#define MATHS_FUNCTIONS_H
+#ifndef CPV_MATHS_FUNCTIONS_H
+#define CPV_MATHS_FUNCTIONS_H
 
-#include <iostream>
-#include "Main.h"
+#include "main.h"
 
 namespace cpv {
-    // Define a list of functions here to use in the code
-    int distance_between_point_a_and_b_in_pixels(Coordinate start_point, Coordinate end_point) {
+
+	// Use inlined functions so each translation unit doesn't include a copy in the obj or we get symbol redefinition error during the linking
+
+	// Use Pythagoras' therom to calculate the number of pixels between the 2 points
+	inline int pixels_between_point_a_and_b(Coordinate start_point, Coordinate end_point) {
 		int xdist = start_point.x - end_point.x;
 		int ydist = start_point.y - end_point.y;
 		double distance = sqrt((xdist * xdist) + (ydist * ydist));
@@ -14,7 +16,7 @@ namespace cpv {
     }
 
 
-    int angle_between_point_a_and_b(Coordinate point1, Coordinate point2) {
+    inline int angle_between_point_a_and_b(Coordinate point1, Coordinate point2) {
 		// We'll be using the difference in x1,y1 and x2,y2 coordinates
 		// we can use the atan2(y,x) function where y = y2 - y1 and x = x2 - x1 where x1,y1 is the starting point
 		// However, this function can return a negative value when x < 0 so need to adapt formula to give a result between 0 and 359 deg
@@ -34,8 +36,17 @@ namespace cpv {
 		return static_cast<int>(kRad2Deg * theta);
     }
 
+
+	inline int MilesBetweenPoint1AndPoint2(Coordinate point_1, Coordinate point_2, double miles_per_pixel) {
+
+		int pixel_distance = pixels_between_point_a_and_b(point_1, point_2);
+		
+		return static_cast<int>(pixel_distance * miles_per_pixel);
+	}
+
+
 	//Coordinate endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
-	int endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
+	inline int endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
 		// Bit of trigonometry to work out the end co-ordinates based on the relative headings.
 		// The basic equation is to add the sin of the angle multiplied by the line length to get the new X position.
 		// For the new y position you use the cosine function. However, as the y position increases in value as you go down the screen we have to use
@@ -65,10 +76,9 @@ namespace cpv {
 		new_X = static_cast<int>(start_point.x + (line_length * sin(difference_in_angle * deg_to_rads)));
 		new_Y = static_cast<int>(start_point.y + (line_length * -cos(difference_in_angle * deg_to_rads)));
 
-		// return Coordinate{ new_X , new_Y };
+		// return Coordinate{ new_X , new_Y }; original to use when not using googletest suit
 		return new_X;
 	}
-
 }
 
-#endif // MATHS_FUNCTIONS_H
+#endif // CPV_MATHS_FUNCTIONS_H

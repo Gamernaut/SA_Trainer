@@ -19,18 +19,20 @@ using namespace cpv;
 
 OnSceenButton::OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name)
 {
+    PLOG_INFO << "Button " << button_name_ << "created";
+
     button_x_pos_ = xPos;
     button_y_pos_ = yPos;
     button_x_pos_end_ = xPosEnd;
     button_y_pos_end_ = yPosEnd;
     is_button_toggelable_ = toggelable;
     button_name_ = button_name;
-
-    PLOG_INFO << "Button " << button_name_ << "created";
 }
 
 OnSceenButton::OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text)
 {
+    PLOG_INFO << "Button " << button_name_ << "created with onscreen text";
+
     button_x_pos_ = xPos;
     button_y_pos_ = yPos;
     button_x_pos_end_ = xPosEnd;
@@ -39,7 +41,6 @@ OnSceenButton::OnSceenButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool 
     button_name_ = button_name;
     button_onscreen_text_ = onscreen_text;
 
-    PLOG_INFO << "Button " << button_name_ << "created with onscreen text";
 }
 
  
@@ -50,8 +51,9 @@ OnSceenButton::~OnSceenButton()
 
 void OnSceenButton::SetButtonName(std::string button_name_text)
 {
-    button_name_ = button_name_text;
     PLOG_VERBOSE << "Button " << button_name_ << " name changed to " << button_name_;
+
+    button_name_ = button_name_text;
 }
 
 
@@ -63,8 +65,9 @@ std::string OnSceenButton::GetButtonName()
 
 void OnSceenButton::SetOnScreenText(std::string onscreen_text)
 {
-    button_onscreen_text_ = onscreen_text;
     PLOG_VERBOSE << "Button " << button_name_ << " On screen text changed to " << button_onscreen_text_;
+
+    button_onscreen_text_ = onscreen_text;
 }
 
 
@@ -83,23 +86,10 @@ void OnSceenButton::HighlightOnScreenText(bool flag)
 }
 
 
-void OnSceenButton::SetDrawOutlineState(bool required_state)
+bool OnSceenButton::IsMousePointerOverButton(int mouse_x, int mouse_y)
 {
-    is_draw_outline_enabled_ = required_state;
-    PLOG_VERBOSE << "Button " << button_name_ << " draw outline state changed to " << std::to_string(is_draw_outline_enabled_);
-}
-
-
-bool OnSceenButton::GetDrawOutlineState()
-    {
-        return is_draw_outline_enabled_;
-    }
-
-
-bool OnSceenButton::IsMousePointerOverButton(Coordinate mousePosition)
-{
-    if (mousePosition.x >= button_x_pos_ && mousePosition.x <= button_x_pos_end_ &&
-        mousePosition.y >= button_y_pos_ && mousePosition.y <= button_y_pos_end_) {
+    if (mouse_x >= button_x_pos_ && mouse_x <= button_x_pos_end_ &&
+        mouse_y >= button_y_pos_ && mouse_y <= button_y_pos_end_) {
         // We might want to update the Button State to reflect that it's been clicked on
         // how do we handle the DEP button that is a toggle to center the display versus 
         // a single click to 
@@ -137,17 +127,18 @@ ButtonState OnSceenButton::GetButtonToggeledState()
 
 
 void OnSceenButton::DrawOutline(SDL_Renderer* renderer) {
-    if (is_draw_outline_enabled_) {
-        // Add the 4 draw calls to the render stack to outline the button
-        SDL_Point points[4] = {
-            {button_x_pos_ , button_y_pos_},
-            {button_x_pos_end_ , button_y_pos_},
-            {button_x_pos_end_ , button_y_pos_end_},
-            {button_x_pos_, button_y_pos_end_}
-        };
 
-        // Don't call RenderClear or SDL_RenderPresent here
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_RenderDrawLines(renderer, points, 4);
-    }
+    // Add the 4 draw calls to the render stack to outline the button
+    SDL_Point points[5] = {
+        {button_x_pos_ , button_y_pos_},
+        {button_x_pos_end_ , button_y_pos_},
+        {button_x_pos_end_ , button_y_pos_end_},
+        {button_x_pos_, button_y_pos_end_},
+        {button_x_pos_ , button_y_pos_}
+    };
+
+    // Don't call RenderClear or SDL_RenderPresent here
+    SDL_SetRenderDrawColor(renderer, 255, 255, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawLines(renderer, points, 5);
+
 }

@@ -18,6 +18,7 @@
 #include <SDL.h>
 #include <plog/Log.h>
 #include "main.h"
+#include "image_object.h"
 #include "on_screen_button.h"
 
 // Base Class that represents the MFD, holds all the MFD settings
@@ -35,28 +36,9 @@ namespace cpv {
 
 		// Watch for a clash with the definition here as well as in sa_trainer.h
 		SDL_Renderer* renderer_ = nullptr;
+		std::unique_ptr<ImageObject> mfd_frame_ = nullptr;
 
-		// To hold the on screen buttons
-		std::unique_ptr<OnSceenButton> osb1 = nullptr;
-		std::unique_ptr<OnSceenButton> osb2 = nullptr;
-		std::unique_ptr<OnSceenButton> osb3 = nullptr;
-		std::unique_ptr<OnSceenButton> osb4 = nullptr;
-		std::unique_ptr<OnSceenButton> osb5 = nullptr;
-		std::unique_ptr<OnSceenButton> osb6 = nullptr;
-		std::unique_ptr<OnSceenButton> osb7 = nullptr;
-		std::unique_ptr<OnSceenButton> osb8 = nullptr;
-		std::unique_ptr<OnSceenButton> osb9 = nullptr;
-		std::unique_ptr<OnSceenButton> osb10 = nullptr;
-		std::unique_ptr<OnSceenButton> osb11 = nullptr;
-		std::unique_ptr<OnSceenButton> osb12 = nullptr;
-		std::unique_ptr<OnSceenButton> osb13 = nullptr;
-		std::unique_ptr<OnSceenButton> osb14 = nullptr;
-		std::unique_ptr<OnSceenButton> osb15 = nullptr;
-		std::unique_ptr<OnSceenButton> osb16 = nullptr;
-		std::unique_ptr<OnSceenButton> osb17 = nullptr;
-		std::unique_ptr<OnSceenButton> osb18 = nullptr;
-		std::unique_ptr<OnSceenButton> osb19 = nullptr;
-		std::unique_ptr<OnSceenButton> osb20 = nullptr;
+	public:
 
 	// Methods common to all MFDs
 	public:

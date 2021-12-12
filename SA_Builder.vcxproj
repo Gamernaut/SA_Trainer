@@ -151,13 +151,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\aircraft.cpp" />
+    <ClCompile Include="src\Bullseye.cpp" />
     <ClCompile Include="src\hsd.cpp" />
     <ClCompile Include="src\image_object.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mfd.cpp" />
     <ClCompile Include="src\on_screen_button.cpp" />
+    <ClCompile Include="src\options_screen.cpp" />
     <ClCompile Include="src\sa_trainer.cpp" />
     <ClCompile Include="src\start_screen.cpp" />
+    <ClCompile Include="src\text_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\glm\common.hpp" />
@@ -421,6 +424,7 @@
     <ClInclude Include="resource4.h" />
     <ClInclude Include="resource5.h" />
     <ClInclude Include="src\aircraft.h" />
+    <ClInclude Include="src\Bullseye.h" />
     <ClInclude Include="src\hsd.h" />
     <ClInclude Include="src\image_object.h" />
     <ClInclude Include="src\main.h" />
@@ -428,8 +432,10 @@
     <ClInclude Include="src\maths_functions.h" />
     <ClInclude Include="src\mfd.h" />
     <ClInclude Include="src\on_screen_button.h" />
+    <ClInclude Include="src\options_screen.h" />
     <ClInclude Include="src\sa_trainer.h" />
     <ClInclude Include="src\start_screen.h" />
+    <ClInclude Include="src\text_object.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\glm\detail\func_common.inl" />

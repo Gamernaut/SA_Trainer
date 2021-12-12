@@ -30,6 +30,9 @@ MFD::MFD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_he
 	mfd_width_ = mfd_width;
 	center_point_.x = mfd_left_edge_ + (mfd_width_ / 2);
 	center_point_.y = mfd_top_edge_ + (mfd_height_ / 2);
+
+	// create MFD surround
+	mfd_frame_ = std::make_unique<ImageObject>(renderer_, kMfdFileName, kMfdPaddingLeft, kMfdPaddingTop);
 }
 
 MFD::~MFD() {

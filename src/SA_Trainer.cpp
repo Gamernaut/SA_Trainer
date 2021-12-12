@@ -99,25 +99,19 @@ void SA_Trainer::Initialise() {
 		PLOG_ERROR << "Error setting up SDL";
 	}
 
-	// Create the screens (HSD only in this version but maybe FCR in future versions
+	// Create the screens (Start screen, Options and main HSD, the only one in this version but have FCR in future versions)
 	start_screen_ = std::make_unique<StartScreen>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
 	start_screen_->Draw();
 	SDL_RenderPresent(renderer_);
 
-//	options_screen_ = std::make_unique<OptionsScreen>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
-	hsd_screen_ = std::make_unique<HSD>(renderer_, 0, 180 , kMfdImageHeight, kMfdImageWidth);
+	options_screen_ = std::make_unique<OptionsScreen>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
+	hsd_screen_ = std::make_unique<HSD>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
 	// fcr_screen_ = std::make_unique<FCR>(0, 180, kMfdImageHeight, kMfdImageWidth);
 
-
-	//if (!SetupLoadingScreen()) {
-	//	PLOG_ERROR << "Error creating Loading screen";
-	//}
 }
 
 
 void SA_Trainer::CloseDown() {
-	loading_screen_image_list_.clear();
-	options_screen_image_list_.clear();
 	TTF_CloseFont(font_);
 	SDL_DestroyRenderer(renderer_);
 	SDL_DestroyWindow(window_);
@@ -133,82 +127,36 @@ void SA_Trainer::RenderGameScreen() {
 }
 
 void SA_Trainer::RenderLoadingScreen() {
-	
+
 	start_screen_->Draw();
 	SDL_RenderPresent(renderer_);
 }
 
-//void SA_Trainer::RenderOptionsSceen() {
-//	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
-//	SDL_RenderClear(renderer_);
-//
-//	font_26_->DrawCenteredText(renderer_, "Choose the level of difficulty", kMfdWhiteColour, kMfdPaddingTop + 123);
-//	font_16_->Draw(renderer_, "Recruit", kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 200);
-//	font_16_->Draw(renderer_, "Cadet", kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 275);
-//	font_16_->Draw(renderer_, "Rookie", kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 355);
-//	font_16_->Draw(renderer_, "Veteran", kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 430);
-//	font_16_->Draw(renderer_, "Ace", kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 510);
-//	font_16_->Draw(renderer_, "CANCEL", kMfdWhiteColour, 430, 795);
-//	font_16_->Draw(renderer_, "SELECT", kMfdWhiteColour, 255, 795);
-//	font_16_->DrawCenteredText(renderer_, "Click on a level to get a description.", kMfdWhiteColour, kMfdPaddingTop + 570);
-//
-//	if (gameDifficulty == Difficulty::kAce) {
-//		font_18_->DrawCenteredText(renderer_, "Description for Ace level", kMfdWhiteColour, kMfdPaddingTop + 225);
-//		font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 260);
-//		font_16_->Draw(renderer_, "where you think the bogey's are, using", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 280);
-//		font_16_->Draw(renderer_, "where you think the bullseye is. Both ", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 300);
-//		font_16_->Draw(renderer_, "bearing and distance from the bullseye", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 320);
-//		font_16_->Draw(renderer_, "to each bogey counts.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 340);
-//		font_16_->Draw(renderer_, "Objective", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 400);
-//		font_16_->Draw(renderer_, "Click within +/- 15 deg and 20% of", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 420);
-//		font_16_->Draw(renderer_, "distance to the bogey's.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 440);
-//	}
-//	else if (gameDifficulty == Difficulty::kCadet) {
-//		font_18_->DrawCenteredText(renderer_, "Description for Cadet level", kMfdWhiteColour, kMfdPaddingTop + 225);
-//		font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 260);
-//		font_16_->Draw(renderer_, "where you think the bullseye is. Both", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 280);
-//		font_16_->Draw(renderer_, "bearing and distance count.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 300);
-//		font_16_->Draw(renderer_, "Objective", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 400);
-//		font_16_->Draw(renderer_, "Click within +/- 15 deg and 20% of", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 420);
-//		font_16_->Draw(renderer_, "distance to the bullseye.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 440);
-//	}
-//	else if (gameDifficulty == Difficulty::kRecruit) {
-//		font_18_->DrawCenteredText(renderer_, "Description for Recruit level", kMfdWhiteColour, kMfdPaddingTop + 225);
-//		font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 260);
-//		font_16_->Draw(renderer_, "where you think the bullseye is,", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 280);
-//		font_16_->Draw(renderer_, "distance is NOT important.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 300);
-//		font_16_->Draw(renderer_, "Objective", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 400);
-//		font_16_->Draw(renderer_, "Get within +/- 15 deg of the bearing", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 420);
-//		font_16_->Draw(renderer_, "to the bullseye.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 440);
-//	}
-//	else if (gameDifficulty == Difficulty::kRookie) {
-//		font_18_->DrawCenteredText(renderer_, "Description for Rookie level", kMfdWhiteColour, kMfdPaddingTop + 225);
-//
-//		font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 260);
-//		font_16_->Draw(renderer_, "where you think the bogey is, using", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 280);
-//		font_16_->Draw(renderer_, "where you think the bullseye is. Only ", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 300);
-//		font_16_->Draw(renderer_, "bearing to the bogey from the bullseye", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 320);
-//		font_16_->Draw(renderer_, "counts.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 340);
-//		font_16_->Draw(renderer_, "Objective", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 400);
-//		font_16_->Draw(renderer_, "Get within +/- 15 deg of the bearing to", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 420);
-//		font_16_->Draw(renderer_, "the bogey from the bullseye.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 440);
-//	}
-//	else if (gameDifficulty == Difficulty::kVeteran) {
-//		font_18_->DrawCenteredText(renderer_, "Description for Veteran level", kMfdWhiteColour, kMfdPaddingTop + 225);
-//		font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 260);
-//		font_16_->Draw(renderer_, "where you think the bogey is, using", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 280);
-//		font_16_->Draw(renderer_, "where you think the bullseye is. Both ", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 300);
-//		font_16_->Draw(renderer_, "bearing and distance to the bogey", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 320);
-//		font_16_->Draw(renderer_, "count.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 340);
-//		font_16_->Draw(renderer_, "Objective", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 400);
-//		font_16_->Draw(renderer_, "Get within +/- 15 deg and 20% of", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 420);
-//		font_16_->Draw(renderer_, "distance to the bogey.", kMfdWhiteColour, kMfdPaddingLeft + 200, kMfdPaddingTop + 440);
-//	}
-//
-//	mfd_frame_->Draw(renderer_);
-//
-//	SDL_RenderPresent(renderer_);
-//}
+void SA_Trainer::RenderOptionsSceen() {
+
+	options_screen_->Draw(logging_level);
+
+	if (gameDifficulty == Difficulty::kRecruit) {
+		options_screen_->DrawRecruitText();
+	} else 	if (gameDifficulty == Difficulty::kCadet) {
+		options_screen_->DrawCadetText();
+	}
+	else	if (gameDifficulty == Difficulty::kRookie) {
+		options_screen_->DrawRookieText();
+	}
+	else	if (gameDifficulty == Difficulty::kVeteran) {
+		options_screen_->DrawVeteranText();
+	}
+	else	if (gameDifficulty == Difficulty::kAce) {
+		options_screen_->DrawAceText();
+	}
+	else {
+
+	}
+
+	SDL_RenderPresent(renderer_);
+}
+
 
 void SA_Trainer::Render() {
 	// basically check the game state and then render the appropriate view
@@ -216,10 +164,13 @@ void SA_Trainer::Render() {
 	case GameState::kStartScreen:
 		RenderLoadingScreen();
 		break;
-	//case GameState::kOptionsScreen:
-	//	RenderOptionsSceen();
-	//	break;
+	case GameState::kOptionsScreen:
+		RenderOptionsSceen();
+		break;
 	case GameState::kRoundPlaying:
+		RenderGameScreen();
+		break;
+	case GameState::kNewRound:
 		RenderGameScreen();
 		break;
 	}
@@ -231,13 +182,15 @@ void SA_Trainer::ProcessInput() {
 	while (SDL_PollEvent(&sdlEvent)) {
 		switch (sdlEvent.type) {
 		case SDL_QUIT:
-			game_state = GameState::kRoundEnded;
+			game_state = GameState::kGameEnded;
 			is_game_running = false;
+			PLOG_INFO << "Close widget clicked -> game state set to kGameEnded";
 			break;
 		case SDL_KEYDOWN:
 			if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
-				game_state = GameState::kRoundEnded;
+				game_state = GameState::kGameEnded;
 				is_game_running = false;
+				PLOG_INFO << "ESC key pressed -> game state set to kGameEnded";
 				break;
 			}
 
@@ -246,122 +199,224 @@ void SA_Trainer::ProcessInput() {
 			int mouseX, mouseY;
 			SDL_GetMouseState(&mouseX, &mouseY);
 
-			std::cout << "Mouse position is x = " << mouseX << " and y = " << mouseY << std::endl;
-			std::cout << "Start button x = " << kStartButtonLeftEdge << " x end = " << kStartButtonRightEdge << std::endl;
-			std::cout << "Start button y = " << kStartButtonTopEdge << " y end = " << kStartButtonBottomEdge << std::endl;
+			// std::cout << "Mouse position is x = " << mouseX << " and y = " << mouseY << std::endl;
 
-			// Handle click inside MFD, if game running assume it's the user indicating where the bogey is
-			if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge && mouseY >= kMfdScreenTopInsideEdge && 
-					mouseY <= kMfdScreenBottomInsideEdge && game_state == GameState::kRoundPlaying) {
-				game_state = GameState::kRoundPlaying;
-				mouse_click_position.x = mouseX;
-				mouse_click_position.y = mouseY;
-// 				round_manager_->CheckWinStatus(gameDifficulty, game_state, mouse_click_position, hsd_range_[hsd_range_level_]);
-				break;
-			}
-
-			// Handle Start button on the start screen
-			if (mouseX >= kStartButtonLeftEdge && mouseX <= kStartButtonRightEdge && mouseY >= kStartButtonTopEdge && mouseY <= kStartButtonBottomEdge) {
-				if (game_state == GameState::kStartScreen) {
-					game_state = GameState::kRoundPlaying;
+			// Handle clicks whilst on the start screen. Can only transition to the Main screen from here through OSB 13
+			if (game_state == GameState::kStartScreen) {
+				if (mouseX >= kOSB13LeftEdge && mouseX <= kOSB13RightEdge && mouseY >= kOSB13TopEdge && mouseY <= kOSB13BottomEdge) {
+					game_state = GameState::kNewRound;
+					PLOG_INFO << "Start screen -> Start button clicked";
 					break;
 				}
 			}
 
-			// Handle Setup/Select button
-			if (mouseX >= kSetupButtonLeftEdge && mouseX <= kSetupButtonRightEdge && mouseY >= kSetupButtonTopEdge && mouseY <= kSetupButtonBottomEdge) {
-				// Handle Setup button click
-				if (game_state == GameState::kRoundPlaying) {
+			// Handle clicks when a new round has just begun. User can enter Options Screen from this state only. 
+			// Once they make their first guess they cannot change their settings
+			if (game_state == GameState::kNewRound) {
+				// Handle Setup button press (should not be active when round is being played)
+				if (mouseX >= kOSB14LeftEdge && mouseX <= kOSB14RightEdge && mouseY >= kOSB14TopEdge && mouseY <= kOSB14BottomEdge) {
 					tempDiff = gameDifficulty;	// Store the setting the user had when they enter the setup screen so if they cancel it can be restored
-					temp_game_state = game_state;	// Store the game state so we can restore when we come out of the setup screen
+					temp_game_state = game_state;	// Store the game state so we can restore when we come out of the setup screen if they cancel
 					game_state = GameState::kOptionsScreen;
+					PLOG_INFO << "Main screen -> Setup button clicked, saving game difficulty and game state";
 					break;
-				}
-				// Handle Select button press in setup screen
-				if (game_state == GameState::kOptionsScreen) {
-					game_state = GameState::kRoundPlaying;
-					break;
-				}
-			}
-
-			// Handle the Cancel/Exit button
-			if (mouseX >= kExitButtonLeftEdge && mouseX <= kExitButtonRightEdge && mouseY >= kExitButtonTopEdge && mouseY <= kExitButtonBottomEdge) {
-				// Handle the exit button on the main game screen
-				if (game_state == GameState::kRoundPlaying) {
-					std::cout << "Mouse is inside the Exit button" << std::endl;
-					game_state = GameState::kRoundEnded;
+				} 
+				// Exit if OSB 12
+				else if (mouseX >= kOSB12LeftEdge && mouseX <= kOSB12RightEdge && mouseY >= kOSB12TopEdge && mouseY <= kOSB12BottomEdge) {
+					game_state = GameState::kGameEnded;
 					is_game_running = false;
+					PLOG_INFO << "Main screen -> Exit button clicked";
 					break;
 				}
-				// Handle the Cancel button in the setup screen
-				if (game_state == GameState::kOptionsScreen) {
-					game_state = GameState::kRoundPlaying; // This is probably what is causing the arc to appear when we come out of the setup (if state is kStarting)
-					game_state = temp_game_state;
-					gameDifficulty = tempDiff;		// restore the difficulty level to the one before they entered the setup screen
+
+				/////////////////////////////////////////////////////////////////////
+				// 
+				//	These 3 are repeated below in the round playing bit as well
+				// 
+				// ////////////////////////////////////////////////////////////////
+				
+				// Handle DEP button press, toggle between centered and not centered
+				if (mouseX >= kOSB1LeftEdge && mouseX <= kOSB1RightEdge && mouseY >= kOSB1TopEdge && mouseY <= kOSB1BottomEdge) {
+					if (hsd_screen_->GetCenteredState()) {
+						hsd_screen_->SetCenteredState(false);
+						PLOG_INFO << "HSD DEP button press -> HSD centered state set to false";
+						break;
+					}
+					else {
+						hsd_screen_->SetCenteredState(true);
+						PLOG_INFO << "HSD DEP button press -> HSD state changed to centered";
+					}
+				}
+				// Handle Increase Range button press
+				if (mouseX >= kOSB20LeftEdge && mouseX <= kOSB20RightEdge && mouseY >= kOSB20TopEdge && mouseY <= kOSB20BottomEdge) {
+					hsd_screen_->IncreaseRange();
+					PLOG_INFO << "HSD increase range button pressed";
+					break;
+				}
+
+				// Handle Decrease Range button press
+				if (mouseX >= kOSB19LeftEdge && mouseX <= kOSB19RightEdge && mouseY >= kOSB19TopEdge && mouseY <= kOSB19BottomEdge) {
+					hsd_screen_->DecreaseRange();
+					PLOG_INFO << "HSD decrease range button pressed";
 					break;
 				}
 			}
 
-			// Handle increase HSD range button in playing screen
-			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && 
-					mouseY <= kRecruitButtonBottomEdge && game_state == GameState::kRoundPlaying) {
-				hsd_screen_->IncreaseRange();
-				break;
+			// Handle clicks in the options screen, can set the difficulty and logging level here
+			if (game_state == GameState::kOptionsScreen) {
+
+				// Set logging level to High
+				if (mouseX >= kOSB7LeftEdge && mouseX <= kOSB7RightEdge && mouseY >= kOSB7TopEdge && mouseY <= kOSB7BottomEdge) {
+					logging_level = 1;
+					plog::get()->setMaxSeverity(plog::verbose);
+					PLOG_INFO << "Logging level changed to High";
+					break;
+				}
+
+				// Set logging level to Medium
+				if (mouseX >= kOSB8LeftEdge && mouseX <= kOSB8RightEdge && mouseY >= kOSB8TopEdge && mouseY <= kOSB8BottomEdge) {
+					logging_level = 2;
+					plog::get()->setMaxSeverity(plog::info);
+					PLOG_INFO << "Logging level changed to Medium";
+					break;
+				}
+
+				// Set logging level to Low
+				if (mouseX >= kOSB9LeftEdge && mouseX <= kOSB9RightEdge && mouseY >= kOSB9TopEdge && mouseY <= kOSB9BottomEdge) {
+					logging_level = 3;
+					plog::get()->setMaxSeverity(plog::warning);
+					PLOG_INFO << "Logging level changed to Low";
+					break;
+				}
+
+				// Handle the Cancel button and restore previous difficulty as this was updated in real time to match the users clicks in the options screen
+				if (mouseX >= kOSB12LeftEdge && mouseX <= kOSB12RightEdge && mouseY >= kOSB12TopEdge && mouseY <= kOSB12BottomEdge) {
+					// Restore the difficulty level to the one before the user entered the setup screen
+					gameDifficulty = tempDiff;
+					// Reset the game mode to NewRound from OptionsScreen
+					game_state = GameState::kNewRound;
+					PLOG_INFO << "Options screen Cancel button pressed -> restoring previous game state";
+					// As neither the game state nor the logging level are updated "real time" in the options screen we do not need to restore them
+					break;
+				}
+
+				// Handle the select button (set the selected options as the current states)
+				if (mouseX >= kOSB14LeftEdge && mouseX <= kOSB14RightEdge && mouseY >= kOSB14TopEdge && mouseY <= kOSB14BottomEdge) {
+					// Reset the game mode to NewRound from OptionsScreen
+					game_state = GameState::kNewRound;
+
+					PLOG_INFO << "Options screen Select button pressed -> Reset game state to NewRound and setting the selected logging level";
+					// The new difficulty level was set in "real time" in the options screen so just need to set the logging level here
+					//if ( is verbose) {
+					//  PLOG_WARNING << "Logging level changes to Verbose";
+					//	plog::get()->setMaxSeverity(plog::verbose);
+					//}
+					//else if (logging level is useful info) {
+					//  PLOG_WARNING << "Logging level changes to Info";
+					//	plog::get()->setMaxSeverity(plog::info);
+					//}
+					//else if (logging level is warnings) {
+					//  PLOG_WARNING << "Logging level changes to Warning";
+					//	plog::get()->setMaxSeverity(plog::warning);
+					//}
+					//else {
+					//  PLOG_ERROR << "Default option set logging to Info";
+					//	plog::get()->setMaxSeverity(plog::info);
+					//}
+					break;
+				}
+
+
+				// Set Recruit difficulty selection in options screen
+				if (mouseX >= kOSB20LeftEdge && mouseX <= kOSB20RightEdge && mouseY >= kOSB20TopEdge && mouseY <= kOSB20BottomEdge) {
+					gameDifficulty = Difficulty::kRecruit;
+					PLOG_INFO << "Difficulty changed to Recruit";
+					break;
+				}
+
+				// Set Cadet difficulty selection in options screen
+				if (mouseX >= kOSB19LeftEdge && mouseX <= kOSB19RightEdge && mouseY >= kOSB19TopEdge && mouseY <= kOSB19BottomEdge) {
+					gameDifficulty = Difficulty::kCadet;
+					PLOG_INFO << "Difficulty changed to Cadet";
+					break;
+				}
+
+				// Set Rookie difficulty selection in options screen
+				if (mouseX >= kOSB18LeftEdge && mouseX <= kOSB18RightEdge && mouseY >= kOSB18TopEdge && mouseY <= kOSB18BottomEdge) {
+					gameDifficulty = Difficulty::kRookie;
+					PLOG_INFO << "Difficulty changed to Rookie";
+					break;
+				}
+
+				// Set Veteran difficulty selection in options screen
+				if (mouseX >= kOSB17LeftEdge && mouseX <= kOSB17RightEdge && mouseY >= kOSB17TopEdge && mouseY <= kOSB17BottomEdge) {
+					gameDifficulty = Difficulty::kVeteran;
+					PLOG_INFO << "Difficulty changed to Veteran";
+					break;
+				}
+
+				// Set Ace difficulty selection in options screen
+				if (mouseX >= kOSB16LeftEdge && mouseX <= kOSB16RightEdge && mouseY >= kOSB16TopEdge && mouseY <= kOSB16BottomEdge) {
+					gameDifficulty = Difficulty::kAce;
+					PLOG_INFO << "Difficulty changed to Ace";
+					break;
+				}
 			}
 
-			// Handle decrease HSD range button in playing screen
-			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && 
-					game_state == GameState::kRoundPlaying) {
-				hsd_screen_->DecreaseRange();
-				break;
-			}
+			// Handle clicks when game is running
+			if (game_state == GameState::kRoundPlaying) {
 
-			// Handle Recruit difficulty selection in setup screen
-			if (mouseX >= kRecruitButtonLeftEdge && mouseX <= kRecruitButtonRightEdge && mouseY >= kRecruitButtonTopEdge && mouseY <= kRecruitButtonBottomEdge && 
-					game_state == GameState::kOptionsScreen) {
-				gameDifficulty = Difficulty::kRecruit;
-				std::cout << "Difficulty changed to Recruit" << std::endl;
-				break;
-			}
+				// Handle a click that's inside the MFD surround (not a button press but a guess by the user)
+				if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge && 
+						mouseY >= kMfdScreenTopInsideEdge && mouseY <= kMfdScreenBottomInsideEdge) {
+					mouse_click_position.x = mouseX;
+					mouse_click_position.y = mouseY;
+					PLOG_INFO << "HSD guess made -> Calling CheckWinStatus()";
+					// round_manager_->CheckWinStatus(gameDifficulty, game_state, mouse_click_position, hsd_range_[hsd_range_level_]);
+					break;
+				}
 
-			// Handle Cadet selection in setup screen
-			if (mouseX >= kCadetButtonLeftEdge && mouseX <= kCadetButtonRightEdge && mouseY >= kCadetButtonTopEdge && mouseY <= kCadetButtonBottomEdge && 
-					game_state == GameState::kOptionsScreen) {
-				gameDifficulty = Difficulty::kCadet;
-				std::cout << "Difficulty changed to Cadet" << std::endl;
-				break;
-			}
+				// Handle DEP button press, toggle between centered and not centered
+				if (mouseX >= kOSB1LeftEdge && mouseX <= kOSB1RightEdge && mouseY >= kOSB1TopEdge && mouseY <= kOSB1BottomEdge) {
+					if (hsd_screen_->GetCenteredState()) {
+						hsd_screen_->SetCenteredState(true);
+						PLOG_INFO << "HSD DEP button press -> HSD state changed to centered";
+						break;
+					}
+					else {
+						hsd_screen_->SetCenteredState(false);
+						PLOG_INFO << "HSD DEP button press -> HSD centered state set to false";
+					}
+				}
 
-			// Handle Rookie selection in setup screen
-			if (mouseX >= kRookieButtonLeftEdge && mouseX <= kRookieButtonRightEdge && mouseY >= kRookieButtonTopEdge && mouseY <= kRookieButtonBottomEdge && 
-					game_state == GameState::kOptionsScreen) {
-				gameDifficulty = Difficulty::kRookie;
-				std::cout << "Difficulty changed to Rookie" << std::endl;
-				break;
-			}
+				// Handle Increase Range button press
+				if (mouseX >= kOSB20LeftEdge && mouseX <= kOSB20RightEdge && mouseY >= kOSB20TopEdge && mouseY <= kOSB20BottomEdge) {
+					hsd_screen_->IncreaseRange();
+					PLOG_INFO << "HSD increase range button pressed";
+					break;
+				}
 
-			// Handle Veteran selection in setup screen
-			if (mouseX >= kVeteranButtonLeftEdge && mouseX <= kVeteranButtonRightEdge && mouseY >= kVeteranButtonTopEdge && mouseY <= kVeteranButtonBottomEdge && 
-					game_state == GameState::kOptionsScreen) {
-				gameDifficulty = Difficulty::kVeteran;
-				std::cout << "Difficulty changed to Veteran" << std::endl;
-				break;
-			}
+				// Handle Decrease Range button press
+				if (mouseX >= kOSB19LeftEdge && mouseX <= kOSB19RightEdge && mouseY >= kOSB19TopEdge && mouseY <= kOSB19BottomEdge) {
+					hsd_screen_->DecreaseRange();
+					PLOG_INFO << "HSD decrease range button pressed";
+					break;
+				}
 
-			// Handle Ace selection in setup screen
-			if (mouseX >= kAceButtonLeftEdge && mouseX <= kAceButtonRightEdge && mouseY >= kAceButtonTopEdge && mouseY <= kAceButtonBottomEdge && 
-					game_state == GameState::kOptionsScreen) {
-				gameDifficulty = Difficulty::kAce;
-				std::cout << "Difficulty changed to Ace" << std::endl;
-				break;
-			}
-
-		}
-	}
+				// Handle Exit button press
+				else if (mouseX >= kOSB12LeftEdge && mouseX <= kOSB12RightEdge && mouseY >= kOSB12TopEdge && mouseY <= kOSB12BottomEdge) {
+					game_state = GameState::kGameEnded;
+					is_game_running = false;
+					PLOG_INFO << "HSD Exit button pressed -> game state set to kGameEnded";
+					break;
+				}
+			}	// end of game state == kRoundPlaying if loop
+		}	// end of switch
+	}	// end of while loop
 }
 
 void SA_Trainer::SetupRound() {
-	game_state = GameState::kRoundStarting;
+	game_state = GameState::kNewRound;
 
 	// Create round manager object and setup round
 //	round_manager_->StartRound(gameDifficulty, game_state, bogeys);
@@ -372,10 +427,10 @@ void SA_Trainer::Run() {
 
 	while (is_game_running ) {
 		// Delay at the start of each round to allow player to see results before new round
-		Sleep(3000);
+		// Sleep(3000);
 		// SetupRound();
 		
-		while (game_state != GameState::kRoundEnded) {
+		while (game_state != GameState::kGameEnded) {
 			// Limit speed to consistent frame rate. Not really needed in this application, but good practice to include it anyway.
 			while (!SDL_TICKS_PASSED(SDL_GetTicks(), milliseconds_previous_frame_ + kmilliseconds_per_frame));
 

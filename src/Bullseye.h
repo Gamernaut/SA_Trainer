@@ -26,8 +26,6 @@ namespace cpv {
 			~Bullseye();
 			void SetPosition(Coordinate);
 			Coordinate GetPosition();
-			int Bearing_FromPoint1ToPoint2(Coordinate point1, Coordinate point2);
-			int Distance_BetweenPoint1AndPoint2(Coordinate start_point, Coordinate end_point);
 	};
 
 }

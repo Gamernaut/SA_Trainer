@@ -38,7 +38,6 @@ namespace cpv {
 
     private:
         bool is_button_toggelable_ = false;
-        bool is_draw_outline_enabled_ = false;
     
     // Methods
     protected: 
@@ -53,9 +52,7 @@ namespace cpv {
         void SetOnScreenText(std::string text);
         std::string GetOnScreenText();
         void HighlightOnScreenText(bool flag);
-        void SetDrawOutlineState(bool required_state);
-        bool GetDrawOutlineState();
-        bool IsMousePointerOverButton(Coordinate mousePosition);
+        bool IsMousePointerOverButton(int mouse_x, int mouse_y);
         void ToggleButtonState();
         ButtonState GetButtonToggeledState();
         void DrawOutline(SDL_Renderer* renderer);
