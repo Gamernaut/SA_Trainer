@@ -94,3 +94,12 @@ void Aircraft::DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_a
 Coordinate Bearing_to_xy_position(int bearing) {
 	return { 0,0 };
 }
+
+// Method to position the bogey in any orientation around the bullseye at between 5 and 40nm
+BearingDistance Aircraft::RandomiseBearingAndDistance() {
+	BearingDistance tempBearingDist = { 0,0 };
+	tempBearingDist.bearing = rand() % 359 + 1;
+	// Create bulls between 5 and 40nm away
+	tempBearingDist.distance = rand() % 35 + 5;
+	return tempBearingDist;
+}

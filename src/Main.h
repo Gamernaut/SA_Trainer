@@ -18,6 +18,12 @@ typedef struct {
 	int y;
 } Coordinate;
 
+// Holds the bearing and distance from the users aircraft to the bullseye NOT bullseye to aircraft
+typedef struct {
+	int bearing;
+	int distance;
+} BearingDistance;
+
 // Useful distances for positioning UI elements
 const int kWindowWidth = 730;
 const int kWindowHeight = 900;
@@ -49,8 +55,8 @@ const Coordinate kMFDCenter{
 			kMfdScreenTopInsideEdge + (kMfdScreenHeight / 2)
 };
 
-//const Coordinate kMFDCenter{ 360, 686 };
-const Coordinate kRingsAndAircraftNonCentered{ 360, 695};
+const Coordinate kHSDDepActive = { 360, 570 };
+const Coordinate kHSDDepInactive = { 360, 695 };
 
 // MFD setup screen
 inline const char* kMfdSetupFileName = "./assets/images/setup_screen_727x720.png";

@@ -45,8 +45,8 @@ namespace cpv {
 	}
 
 
-	//Coordinate endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
-	inline int endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
+	inline Coordinate endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int distance_in_miles, double miles_per_pixel) {
+	//inline int endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
 		// Bit of trigonometry to work out the end co-ordinates based on the relative headings.
 		// The basic equation is to add the sin of the angle multiplied by the line length to get the new X position.
 		// For the new y position you use the cosine function. However, as the y position increases in value as you go down the screen we have to use
@@ -72,12 +72,13 @@ namespace cpv {
 		int new_X = 0, new_Y = 0;
 		int difference_in_angle = 0;
 
-		difference_in_angle = (static_cast<int>(bogey_current_heading) + static_cast<int>(my_aircraft_current_heading)) % 360;
-		new_X = static_cast<int>(start_point.x + (line_length * sin(difference_in_angle * deg_to_rads)));
-		new_Y = static_cast<int>(start_point.y + (line_length * -cos(difference_in_angle * deg_to_rads)));
+		double scaled_dist = distance_in_miles / miles_per_pixel;
 
-		// return Coordinate{ new_X , new_Y }; original to use when not using googletest suit
-		return new_X;
+		difference_in_angle = (static_cast<int>(bogey_current_heading) + static_cast<int>(my_aircraft_current_heading)) % 360;
+		new_X = static_cast<int>(start_point.x + (scaled_dist * sin(difference_in_angle * deg_to_rads)));
+		new_Y = static_cast<int>(start_point.y + (scaled_dist * -cos(difference_in_angle * deg_to_rads)));
+
+		return Coordinate{ new_X , new_Y };		// original to use when not using googletest suit
 	}
 }
 

@@ -31,6 +31,7 @@ namespace cpv {
 			void SetRandomHeading();
 			int GetHeading();
 			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_aircraft_, int hsd_range_level_);
+			BearingDistance RandomiseBearingAndDistance();
 	};
 
 }

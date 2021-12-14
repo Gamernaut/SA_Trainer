@@ -56,8 +56,9 @@ void ImageObject::Draw(SDL_Renderer* renderer) {
 	}
 }
 
-void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, Coordinate center_point) {
-	SDL_Rect imageDestinationRectangle = { center_point.x - (image_width_/ 2), center_point.y - (image_height_ / 2), image_width_, image_height_ };
+//void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, Coordinate center_point) {
+void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, int x, int y) {
+	SDL_Rect imageDestinationRectangle = { x - (image_width_/ 2), y - (image_height_ / 2), image_width_, image_height_ };
 
 	int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
 	if (renderSuccess != 0) {

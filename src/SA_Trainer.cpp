@@ -304,25 +304,7 @@ void SA_Trainer::ProcessInput() {
 				if (mouseX >= kOSB14LeftEdge && mouseX <= kOSB14RightEdge && mouseY >= kOSB14TopEdge && mouseY <= kOSB14BottomEdge) {
 					// Reset the game mode to NewRound from OptionsScreen
 					game_state = GameState::kNewRound;
-
-					PLOG_INFO << "Options screen Select button pressed -> Reset game state to NewRound and setting the selected logging level";
-					// The new difficulty level was set in "real time" in the options screen so just need to set the logging level here
-					//if ( is verbose) {
-					//  PLOG_WARNING << "Logging level changes to Verbose";
-					//	plog::get()->setMaxSeverity(plog::verbose);
-					//}
-					//else if (logging level is useful info) {
-					//  PLOG_WARNING << "Logging level changes to Info";
-					//	plog::get()->setMaxSeverity(plog::info);
-					//}
-					//else if (logging level is warnings) {
-					//  PLOG_WARNING << "Logging level changes to Warning";
-					//	plog::get()->setMaxSeverity(plog::warning);
-					//}
-					//else {
-					//  PLOG_ERROR << "Default option set logging to Info";
-					//	plog::get()->setMaxSeverity(plog::info);
-					//}
+					PLOG_INFO << "Options screen Select button pressed -> Reset game state to NewRound";
 					break;
 				}
 
