@@ -23,8 +23,9 @@
 #include "start_screen.h"
 
 namespace cpv {
-
-//	class RoundManager;	// Add forward declaration
+	
+	// Forward declarations
+	//class RoundManager;	
 
 	class SA_Trainer {
 	// Properties
@@ -103,7 +104,7 @@ namespace cpv {
 		GameState game_state{ GameState::kStartScreen };
 		GameState temp_game_state{ game_state };
 
-		// Needs to be public so the RoundManager can access it as it's NOT a child of SA_Trainer
+		// Needs to be public so other classes can access it as it's NOT a child of SA_Trainer
 		enum class Difficulty {
 			kRecruit,
 			kCadet,
@@ -116,7 +117,7 @@ namespace cpv {
 
 	// Methods
 	private:
-		void RenderLoadingScreen();
+		void RenderStartScreen();
 		void RenderOptionsSceen();
 		void RenderGameScreen();
 		bool LoadAndSetUpSDL();

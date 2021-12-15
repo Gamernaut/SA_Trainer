@@ -47,24 +47,29 @@ ImageObject::~ImageObject() {
 }
 
 void ImageObject::Draw(SDL_Renderer* renderer) {
-	SDL_Rect imageDestinationRectangle = { position_.x, position_.y, image_width_, image_height_ };
+	if (IsVisable()) {
+		SDL_Rect imageDestinationRectangle = { position_.x, position_.y, image_width_, image_height_ };
 
-	int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
-	if (renderSuccess != 0) {
-		PLOG_ERROR << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()";
-		std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()" << std::endl;
+		int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
+		if (renderSuccess != 0) {
+			PLOG_ERROR << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()";
+			std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::Draw()" << std::endl;
+		}
 	}
 }
 
 //void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, Coordinate center_point) {
 void ImageObject::DrawCenteredAt(SDL_Renderer* renderer, int x, int y) {
-	SDL_Rect imageDestinationRectangle = { x - (image_width_/ 2), y - (image_height_ / 2), image_width_, image_height_ };
+	if (IsVisable()) {
+		SDL_Rect imageDestinationRectangle = { x - (image_width_/ 2), y - (image_height_ / 2), image_width_, image_height_ };
 
-	int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
-	if (renderSuccess != 0) {
-		PLOG_ERROR << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::DrawCenteredAt()";
-		std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::DrawCenteredAt()" << std::endl;
+		int renderSuccess = SDL_RenderCopyEx(renderer, image_texture_, NULL, &imageDestinationRectangle, rotation_angle_, NULL, SDL_FLIP_NONE);
+		if (renderSuccess != 0) {
+			PLOG_ERROR << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::DrawCenteredAt()";
+			std::cout << "SDL_RenderCopy returned " << SDL_GetError() << "in ImageObject::DrawCenteredAt()" << std::endl;
+		}
 	}
+
 }
 
 void ImageObject::DrawArc(SDL_Renderer* renderer, int user_bearing_guess) {
@@ -133,6 +138,16 @@ int ImageObject::GetWidth(){
 
 int ImageObject::GetHeight() {
 	return image_height_;
+}
+
+bool cpv::ImageObject::IsVisable()
+{
+	return image_is_visable;
+}
+
+void cpv::ImageObject::SetVisibility(bool flag)
+{
+	image_is_visable = flag;
 }
 
 std::string ImageObject::GetObjectName() {

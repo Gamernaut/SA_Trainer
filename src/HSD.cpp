@@ -25,10 +25,6 @@ HSD::HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_he
 	// create distance rings
 	hsd_distance_rings_ = std::make_unique<ImageObject>(renderer_, kHSD_DistRingsFileName, kHSDDepInactive.x , kHSDDepInactive.y);
 
-	PLOG_VERBOSE << "HSD constructor -> creating HSD bearing ring and pointer";
-	// create Bearing ring image
-	bearing_ring_ = std::make_unique<ImageObject>(renderer_, kBearingCircle, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
-	bearing_pointer_ = std::make_unique<ImageObject>(renderer_, kBearingPointer, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
 
 	PLOG_VERBOSE << "HSD constructor -> creating aircraft datum";
 	// create my aircraft
@@ -37,8 +33,21 @@ HSD::HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_he
 	PLOG_VERBOSE << "HSD constructor -> creating bullseye";
 	// Create bullseye
 	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, kHSDDepInactive.x , kHSDDepInactive.y);
+//	bullseye_->SetVisibility(false);
 	bullseye_->RandomiseBearingAndDistance();
 //	bullseye_->SetPosition({45 , 20});
+
+	PLOG_VERBOSE << "HSD constructor -> creating HSD bearing ring and pointer";
+	// create Bearing ring image
+	bearing_ring_ = std::make_unique<ImageObject>(renderer_, kBearingCircle, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
+	bearing_pointer_ = std::make_unique<ImageObject>(renderer_, kBearingPointer, kMfdScreenLeftInsideEdge + 20, kMfdScreenBottomInsideEdge - 85);
+	// needs to be set from round manager
+//	bearing_pointer_->RotateToFinalAngle(bullseye_->GetBearing());
+
+	// Create the up and down arrows for setting the scale
+	scale_up_arrow_ = std::make_unique<ImageObject>(renderer_, kIncScaleFileName, kHSDDepInactive.x, kHSDDepInactive.y);
+	scale_down_arrow_ = std::make_unique<ImageObject>(renderer_, kDecScaleFileName, kHSDDepInactive.x, kHSDDepInactive.y);
+
 
 	// Add On Screen Buttons
 	exit_button = std::make_unique<OnSceenButton>(kOSB12LeftEdge, kOSB12TopEdge, kOSB12RightEdge, kOSB12BottomEdge, false, "OSB12", "EXIT");
@@ -123,17 +132,11 @@ void HSD::Draw() {
 	bearing_ring_->Draw(renderer_);
 	bearing_pointer_->Draw(renderer_);
 
-	// Set drawing colour to white
-	SDL_SetRenderDrawColor(renderer_, 255, 255, 255, SDL_ALPHA_OPAQUE);
-	// Increase range up arrow
-	SDL_RenderDrawLine(renderer_, 90, 395, 105, 380);
-	SDL_RenderDrawLine(renderer_, 105, 380, 120, 395);
-	SDL_RenderDrawLine(renderer_, 120, 395, 90, 395);
-
-	// Decrease range down arrow
-	SDL_RenderDrawLine(renderer_, 90, 445, 120, 445);
-	SDL_RenderDrawLine(renderer_, 120, 445, 105, 460);
-	SDL_RenderDrawLine(renderer_, 105, 460, 90, 445);
+	// HSD Scale Range
+	scale_up_arrow_->DrawCenteredAt(renderer_, 105, 385);
+	scale_down_arrow_->DrawCenteredAt(renderer_, 105, 455);
+	std::string hsd_scale_range_text = std::to_string(GetHSDCurrentRange());
+	font_16_->Draw(renderer_, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 12, kMfdScreenTopInsideEdge + 152);
 
 
 	// Text for buttons
@@ -144,10 +147,7 @@ void HSD::Draw() {
 	font_16_->Draw(renderer_, kDepButtonText, kMfdWhiteColour, 183, 276);
 
 
-
-
 	// display bulls distance
-	// std::string distance_text = std::to_string(distance_to_bulls);
 	std::string distance_text = std::to_string(bullseye_->GetDistance());
 	std::string padded_dist_text = std::string(3 - distance_text.length(), '0') + distance_text;
 	font_16_->Draw(renderer_, padded_dist_text, kMfdBlueColour, kMfdScreenLeftInsideEdge + 35, kMfdScreenBottomInsideEdge - 59);
@@ -160,21 +160,17 @@ void HSD::Draw() {
 	font_16_->Draw(renderer_, padded_bearing_text, kMfdBlueColour, kMfdScreenLeftInsideEdge + 34, kMfdScreenBottomInsideEdge - 20);
 
 
-	// HSD Scale Range
-	std::string hsd_scale_range_text = std::to_string(GetHSDCurrentRange());
-	font_16_->Draw(renderer_, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 12, kMfdScreenTopInsideEdge + 152);
-
-
 	// Display remaining guesses - probably needs to go in the round manager
 	// auto guesses = std::to_string(round_manager_->GetRemaingGuesses());
 	//font_16_->Draw(renderer_, "Guesses left " + guesses, kMfdGreenColour, 475, 280);
 
 
-	// Handle position of these depending on if the HSD is centered or not
+	// Adjust the position of these depending on if the HSD is centered or not and if the object is in range
 	if (GetCenteredState()) {
 		hsd_distance_rings_->DrawCenteredAt(renderer_, kHSDDepActive.x, kHSDDepActive.y);
-		my_aircraft_->DrawCenteredAt(renderer_, kHSDDepActive.x, kHSDDepActive.y);
-		// Draw the following if they are in range
+		// Offset image in y axis so it looks better lined up
+		my_aircraft_->DrawCenteredAt(renderer_, kHSDDepActive.x, kHSDDepActive.y + 15);
+		// Draw the following if they are in range and their visibility is set to true
 		int debug_current_range = GetHSDCurrentRange();
 		if (bullseye_->GetDistance() <= debug_current_range) {
 			// Need to scale the distance to match the HSD range esp. if the HSD range is much bigger than the distance to the bulls
@@ -185,8 +181,9 @@ void HSD::Draw() {
 		}
 	} else {
 		hsd_distance_rings_->DrawCenteredAt(renderer_, kHSDDepInactive.x, kHSDDepInactive.y);
-		my_aircraft_->DrawCenteredAt(renderer_, kHSDDepInactive.x, kHSDDepInactive.y);
-		// Draw the following if they are in range
+		// Offset image in y axis so it looks better lined up
+		my_aircraft_->DrawCenteredAt(renderer_, kHSDDepInactive.x, kHSDDepInactive.y + 15);
+		// Draw the following if they are in range and their visibility is set to true
 		int debug_current_range = GetHSDCurrentRange();
 		if (bullseye_->GetDistance() <= debug_current_range) {
 			// Need to scale the distance to match the HSD range esp. if the HSD range is much bigger than the distance to the bulls

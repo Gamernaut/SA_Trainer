@@ -57,18 +57,16 @@ void OptionsScreen::Draw(int loggingLevel) {
 	font_16_->DrawCenteredText(renderer_, "Click on a button to get a description.", kMfdWhiteColour, kMfdPaddingTop + 570);
 	
 	font_18_->Draw(renderer_, "Logging Level", kMfdGreenColour, kMfdPaddingLeft + 475, kMfdPaddingTop + 123);
+	font_16_->Draw(renderer_, "High", kMfdWhiteColour, kMfdPaddingLeft + 596, kMfdPaddingTop + 275);
+	font_16_->Draw(renderer_, "Medium", kMfdWhiteColour, kMfdPaddingLeft + 576, kMfdPaddingTop + 355);
+	font_16_->Draw(renderer_, "Low", kMfdWhiteColour, kMfdPaddingLeft + 601, kMfdPaddingTop + 430);
+
 	if (loggingLevel == 1) {
-		font_16_->HighlightedDraw(renderer_, "High", kMfdBlack, kMfdGreenColour, kMfdPaddingLeft + 596, kMfdPaddingTop + 275);
-		font_16_->Draw(renderer_, "Medium", kMfdWhiteColour, kMfdPaddingLeft + 576, kMfdPaddingTop + 355);
-		font_16_->Draw(renderer_, "Low", kMfdWhiteColour, kMfdPaddingLeft + 601, kMfdPaddingTop + 430);
+		font_16_->HighlightedDraw(renderer_, "High", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 596, kMfdPaddingTop + 275);
 	} else if (loggingLevel == 2) {
-		font_16_->Draw(renderer_, "High",  kMfdWhiteColour, kMfdPaddingLeft + 596, kMfdPaddingTop + 275);
-		font_16_->HighlightedDraw(renderer_, "Medium", kMfdBlack, kMfdGreenColour, kMfdPaddingLeft + 576, kMfdPaddingTop + 355);
-		font_16_->Draw(renderer_, "Low", kMfdWhiteColour, kMfdPaddingLeft + 601, kMfdPaddingTop + 430);
+		font_16_->HighlightedDraw(renderer_, "Medium", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 576, kMfdPaddingTop + 355);
 	} else if (loggingLevel == 3) {
-		font_16_->Draw(renderer_, "High", kMfdWhiteColour, kMfdPaddingLeft + 596, kMfdPaddingTop + 275);
-		font_16_->Draw(renderer_, "Medium", kMfdWhiteColour, kMfdPaddingLeft + 576, kMfdPaddingTop + 355);
-		font_16_->HighlightedDraw(renderer_, "Low", kMfdBlack, kMfdGreenColour, kMfdPaddingLeft + 601, kMfdPaddingTop + 430);
+		font_16_->HighlightedDraw(renderer_, "Low", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 601, kMfdPaddingTop + 430);
 	}  else {
 		PLOG_ERROR << "OptionsScreen::Draw loggingLevel was not 1, 2 or 3. Caught by default else";
 	}
@@ -92,6 +90,7 @@ void OptionsScreen::Draw(int loggingLevel) {
 
 
 void OptionsScreen::DrawRecruitText() {
+	font_16_->HighlightedDraw(renderer_, "Recruit", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 200);
 	font_16_->Draw(renderer_, "Description for Recruit level", kMfdGreenColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 225);
 	font_16_->Draw(renderer_, "Click on the HSD as close as you can", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 260);
 	font_16_->Draw(renderer_, "to where you think the bullseye is,", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 280);
@@ -103,6 +102,7 @@ void OptionsScreen::DrawRecruitText() {
 
 
 void OptionsScreen::DrawCadetText() {
+	font_16_->HighlightedDraw(renderer_, "Cadet", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 275);
 	font_16_->Draw(renderer_, "Description for Cadet level", kMfdGreenColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 225);
 	font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 260);
 	font_16_->Draw(renderer_, "where you think the bullseye is. Both", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 280);
@@ -114,6 +114,7 @@ void OptionsScreen::DrawCadetText() {
 
 
 void OptionsScreen::DrawRookieText() {
+	font_16_->HighlightedDraw(renderer_, "Rookie", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 355);
 	font_16_->Draw(renderer_, "Description for Rookie level", kMfdGreenColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 225);
 	font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 260);
 	font_16_->Draw(renderer_, "where you think the bogey is, using", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 280);
@@ -127,6 +128,7 @@ void OptionsScreen::DrawRookieText() {
 
 
 void OptionsScreen::DrawVeteranText() {
+	font_16_->HighlightedDraw(renderer_, "Veteran", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 430);
 	font_16_->Draw(renderer_, "Description for Veteran level", kMfdGreenColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 225);
 	font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 260);
 	font_16_->Draw(renderer_, "where you think the bogey is, using", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 280);
@@ -141,6 +143,7 @@ void OptionsScreen::DrawVeteranText() {
 
 
 void OptionsScreen::DrawAceText() {
+	font_16_->HighlightedDraw(renderer_, "Ace", kMfdBlack, kMfdWhiteColour, kMfdPaddingLeft + 90, kMfdPaddingTop + 510);
 	font_16_->Draw(renderer_, "Description for Ace level", kMfdGreenColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 225);
 	font_16_->Draw(renderer_, "Click on the HSD as close as you can to", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 260);
 	font_16_->Draw(renderer_, "where you think the bogey's are, using", kMfdWhiteColour, kMfdPaddingLeft + textOffset, kMfdPaddingTop + 280);

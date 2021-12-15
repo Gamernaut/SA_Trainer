@@ -126,7 +126,7 @@ void SA_Trainer::RenderGameScreen() {
 	SDL_RenderPresent(renderer_);
 }
 
-void SA_Trainer::RenderLoadingScreen() {
+void SA_Trainer::RenderStartScreen() {
 
 	start_screen_->Draw();
 	SDL_RenderPresent(renderer_);
@@ -162,7 +162,7 @@ void SA_Trainer::Render() {
 	// basically check the game state and then render the appropriate view
 	switch (game_state) {
 	case GameState::kStartScreen:
-		RenderLoadingScreen();
+		RenderStartScreen();
 		break;
 	case GameState::kOptionsScreen:
 		RenderOptionsSceen();

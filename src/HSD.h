@@ -44,6 +44,8 @@ namespace cpv {
 		std::unique_ptr<ImageObject> hsd_distance_rings_ = nullptr;
 		std::unique_ptr<ImageObject> bearing_ring_ = nullptr;
 		std::unique_ptr<ImageObject> bearing_pointer_ = nullptr;
+		std::unique_ptr<ImageObject> scale_up_arrow_ = nullptr;
+		std::unique_ptr<ImageObject> scale_down_arrow_ = nullptr;
 		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
 		std::unique_ptr<Bullseye> bullseye_ = nullptr;
 //		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };

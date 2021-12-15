@@ -113,6 +113,10 @@ const Coordinate bearingCircleCenter{
 			kBearingCircleHeight / 2
 };
 
+// Scale arrow buttons
+inline const char* kIncScaleFileName = "./assets/images/inc_scale_arrow_26x16.png";
+inline const char* kDecScaleFileName = "./assets/images/dec_scale_arrow_26x16.png";
+
 // Fonts used in game
 inline const char* kFontName2 = "C:/Windows/Fonts/Arial.ttf";
 inline const char* kFontName = "./assets/fonts/white-rabbit/whitrabt.ttf";
