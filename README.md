@@ -6,7 +6,7 @@ A training tool to allow virtual pilots to practice interpreting AWACS brevity c
 I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepage](http://72-ghosts.com/)
 
 ### Dependencies/Libraries:
-- [PLOG] (https://github.com/SergiusTheBest/plog)
+- [PLOG](https://github.com/SergiusTheBest/plog)
 - [SDL](https://www.libsdl.org/)
               
 ### Development Environment and Language: 
@@ -14,7 +14,8 @@ I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepa
 - C++ 20
 
 ### Visuals:
-![]()
+![Start Screen](SA_Trainer1.jpg)
+![Incorrect Guess](SA_Trainer2.jpg)
 
 ### Coding lessons learnt and techniques used
 
