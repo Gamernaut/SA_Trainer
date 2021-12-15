@@ -13,11 +13,9 @@ I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepa
 - Visual Studio 2019
 - C++ 20
 
-### Visuals:
-![Start Screen](SA_Trainer1.jpg)
-![Incorrect Guess](SA_Trainer2.jpg)
-
 ### Coding lessons learnt and techniques used
 
 
 ### Detailed Description
+![Start Screen](SA_Trainer1.jpg)
+![Incorrect Guess](SA_Trainer2.jpg)
