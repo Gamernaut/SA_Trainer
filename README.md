@@ -5,10 +5,11 @@ Building a mental 3D map of the position of threat aircraft in the 3D space arou
 
 I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepage](http://72-ghosts.com/)
 
-### Techniques used:
+### Techniques used/Learnings:
 - Developed trigonometry based functions to determine the relative positions, distances of the various aircraft so they can be plotted on the cockpit display 
 - OOP design principles - Inheritance, polymorphism, composition
 - Integrating SDL, PLOG and the GoogleTest framework into the codebase
+- Using Smartpointers, managing header files (circular dependencies), state machines to control game state/flow/difficulty
 
 ### Languages/Packages:
 - Visual Studio 2019
