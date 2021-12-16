@@ -1,7 +1,7 @@
 # Situational Awareness Trainer - HSD only version
 
 ### Inspiration:
-Building a mental 3D map of the position of threat aircraft in the 3D space around you is vitally important as a fighter pilot. Learning to do that in a combat environment is very difficult so I built this training tool to allow virtual pilots to practice translating AWACS threat calls, in conjunction with the information in the cockpit,  he use of the HSD and bullseye positon , regarding the position of enemy flights, to build a mental map by simulating the in-cockpit display in a safe environment. This set up allows a realistic training environment without the threats and time pressure of the actual in game environment.
+Building a mental 3D map of the position of threat aircraft in the 3D space around you is vitally important as a fighter pilot. Learning to do that in a combat environment is very difficult so I built this training tool to allow virtual pilots to practice translating AWACS threat calls, with the information in the cockpit, into a picture of the threats in a safe controlled environment. This tool replicates the Horizontal Situation Display (HSD) and allows the user to combine the bullseye information in the HSD with the AWACS info in a safe environment. This set up allows a realistic training environment without the threats and time pressure of the actual in game environment.
 
 I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepage](http://72-ghosts.com/)
 
