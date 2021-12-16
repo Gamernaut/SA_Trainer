@@ -9,9 +9,9 @@ I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepa
 
 ### Techniques used/Learnings:
 - Developed trigonometry based functions to determine the relative positions, distances of the various aircraft so they can be plotted on the cockpit display 
-- OOP design principles - Inheritance, polymorphism, composition
+- OOP architecture and design principles - Inheritance, polymorphism, composition
 - Integrating SDL, PLOG and the GoogleTest framework into the codebase
-- Using Smartpointers, managing header files (circular dependencies), state machines to control game state/flow/difficulty
+- Using Smartpointers, manging modular codebase and avoiding design issues (circular dependencies), state machines to control game state/flow/difficulty
 
 ### Languages/Packages:
 - Visual Studio 2019
