@@ -17,14 +17,9 @@
 #ifndef CPV_HSD_H_
 #define CPV_HSD_H_
 
-#include <vector>
-#include <memory>
-#include <plog/Log.h>
 #include "main.h"
 #include "maths_functions.h"
 #include "mfd.h"
-#include "on_screen_button.h"
-#include "image_object.h"
 #include "aircraft.h"
 #include "bullseye.h"
 #include "text_object.h"
@@ -47,7 +42,7 @@ namespace cpv {
 		std::unique_ptr<ImageObject> scale_up_arrow_ = nullptr;
 		std::unique_ptr<ImageObject> scale_down_arrow_ = nullptr;
 		std::unique_ptr<Aircraft> my_aircraft_ = nullptr;
-		std::unique_ptr<Bullseye> bullseye_ = nullptr;
+//		std::unique_ptr<Bullseye> bullseye_ = nullptr;
 //		Aircraft* bogeys[3] = { nullptr, nullptr, nullptr };
 		//std::unique_ptr<Aircraft> bogeys[3] = { nullptr, nullptr, nullptr };
 		//std::vector <std::unique_ptr<Aircraft>> bogey_list_;
@@ -81,16 +76,20 @@ namespace cpv {
 	public:
 		HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_height, int mfd_width);
 		~HSD();
+		void AddRandomBullsToHSD(std::unique_ptr<Bullseye>& bullseye);
+		void AddRandomBogeyToHSD(std::unique_ptr<Aircraft>& bogey);
+		void AddAwacsCallToDisplay(std::string awacs_call);
 		void SetCenteredState(bool new_state);
 		bool GetCenteredState(void);
 		void IncreaseRange(void);
 		void DecreaseRange(void);
 		int GetHSDCurrentRange(void);
 		double GetMilesPerPixel(void);
-		std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text);
-		std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name);
-		void Draw();
-		void DisplayAwacsMessage(std::string awacs_call);
+		//std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text);
+		//std::unique_ptr<OnSceenButton> AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name);
+		void Draw(SDL_Renderer* renderer, std::unique_ptr<Bullseye>& bullseye, std::unique_ptr<Aircraft>& bogey1, std::string const& bogey_1_awacs, std::unique_ptr<Aircraft>& bogey2, std::string bogey_2_awacs, std::unique_ptr<Aircraft>& bogey3, std::string bogey_3_awacs, int remaining_guesses);
+		void Draw(SDL_Renderer* renderer, std::unique_ptr<Bullseye>& bullseye, std::unique_ptr<Aircraft>& bogey1, std::unique_ptr<Aircraft>& bogey2, std::unique_ptr<Aircraft>& bogey3, int remaining_guesses);
+		//void DisplayAwacsMessage(std::string awacs_call);
 	};
 }
 

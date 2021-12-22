@@ -30,12 +30,6 @@ HSD::HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_he
 	// create my aircraft
 	my_aircraft_ = std::make_unique<Aircraft>(renderer_, kAircraftFileName, kHSDDepInactive.x , kHSDDepInactive.y);
 
-	PLOG_VERBOSE << "HSD constructor -> creating bullseye";
-	// Create bullseye
-	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, kHSDDepInactive.x , kHSDDepInactive.y);
-//	bullseye_->SetVisibility(false);
-	bullseye_->RandomiseBearingAndDistance();
-//	bullseye_->SetPosition({45 , 20});
 
 	PLOG_VERBOSE << "HSD constructor -> creating HSD bearing ring and pointer";
 	// create Bearing ring image
@@ -63,6 +57,25 @@ HSD::HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_he
 }
 
 HSD::~HSD() {
+
+}
+
+
+void HSD::AddRandomBullsToHSD(std::unique_ptr<Bullseye>& bullseye) {
+//	PLOG_VERBOSE << "HSD AddRandomBullsToHSD -> creating bullseye";
+//	// Create bullseye
+//	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, kHSDDepInactive.x , kHSDDepInactive.y);
+////	bullseye_->SetVisibility(false);
+//	bullseye_->RandomiseBearingAndDistance();
+////	bullseye_->SetPosition({45 , 20});
+}
+
+
+void HSD::AddRandomBogeyToHSD(std::unique_ptr<Aircraft>& bogey) {
+
+}
+
+void HSD::AddAwacsCallToDisplay(std::string awacs_call) {
 
 }
 
@@ -111,110 +124,138 @@ int HSD::GetHSDCurrentRange() {
 	}
 }
 
-std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text) {
-	PLOG_VERBOSE << "HSD::AddObcButton called with 7 parameters";
-	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name, onscreen_text);
-}
+//std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text) {
+//	PLOG_VERBOSE << "HSD::AddObcButton called with 7 parameters";
+//	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name, onscreen_text);
+//}
+//
+//std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name) {
+//	PLOG_VERBOSE << "HSD::AddObcButton called with 6 parameters";
+//	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name);
+//}
 
-std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name) {
-	PLOG_VERBOSE << "HSD::AddObcButton called with 6 parameters";
-	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name);
-}
 
-void HSD::Draw() {
-	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
-	SDL_RenderClear(renderer_);
 
-	// Distance to bullseye
-	// int distance_to_bulls = MilesBetweenPoint1AndPoint2(my_aircraft_.get()->GetPosition(), bullseye_.get()->GetPosition(), GetMilesPerPixel());
+//void HSD::Draw(SDL_Renderer* renderer, std::unique_ptr<Bullseye>& bullseye, std::unique_ptr<Aircraft>& bogey1, std::string const& bogey_1_awacs, std::unique_ptr<Aircraft>& bogey2, std::string bogey_2_awacs, std::unique_ptr<Aircraft>& bogey3, std::string bogey_3_awacs, int remaining_guesses) {
+void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std::unique_ptr<Aircraft>&bogey1, std::unique_ptr<Aircraft>&bogey2, std::unique_ptr<Aircraft>&bogey3, int remaining_guesses) {
+	// This method separates the data from the visuals.
+	PLOG_VERBOSE << "HSD::Draw with bulls and bogey info called";
+
+	// 1 - clear screen
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
 
 	// Draw images on game screen, call them with those on the lowest layer first so they get written over
-	bearing_ring_->Draw(renderer_);
-	bearing_pointer_->Draw(renderer_);
+	bearing_ring_->Draw(renderer);
+	bearing_pointer_->Draw(renderer);
 
 	// HSD Scale Range
-	scale_up_arrow_->DrawCenteredAt(renderer_, 105, 385);
-	scale_down_arrow_->DrawCenteredAt(renderer_, 105, 455);
+	scale_up_arrow_->DrawCenteredAt(renderer, 105, 385);
+	scale_down_arrow_->DrawCenteredAt(renderer, 105, 455);
 	std::string hsd_scale_range_text = std::to_string(GetHSDCurrentRange());
-	font_16_->Draw(renderer_, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 12, kMfdScreenTopInsideEdge + 152);
+	font_16_->Draw(renderer, hsd_scale_range_text, kMfdWhiteColour, kMfdScreenLeftInsideEdge + 12, kMfdScreenTopInsideEdge + 152);
 
 
 	// Text for buttons
-	font_16_->Draw(renderer_, kExitButtonText, kMfdWhiteColour, 433, 795);
+	font_16_->Draw(renderer, kExitButtonText, kMfdWhiteColour, 433, 795);
 	// if a round is in progress then don't display the setup button as we don't want to change the difficulty mid round
 	// if (game_state == RoundState::kRoundStarting || game_state == RoundState::kGameEnded) { font_16_->Draw(renderer_, kSetupButtonText, kMfdWhiteColour, 260, 795); }
-	font_16_->Draw(renderer_, kSetupButtonText, kMfdWhiteColour, 260, 795);
-	font_16_->Draw(renderer_, kDepButtonText, kMfdWhiteColour, 183, 276);
+	font_16_->Draw(renderer, kSetupButtonText, kMfdWhiteColour, 260, 795);
+	font_16_->Draw(renderer, kDepButtonText, kMfdWhiteColour, 183, 276);
 
 
-	// display bulls distance
-	std::string distance_text = std::to_string(bullseye_->GetDistance());
-	std::string padded_dist_text = std::string(3 - distance_text.length(), '0') + distance_text;
-	font_16_->Draw(renderer_, padded_dist_text, kMfdBlueColour, kMfdScreenLeftInsideEdge + 35, kMfdScreenBottomInsideEdge - 59);
-	
+	if (bullseye) {
+		// display bulls distance
+		std::string distance_text = std::to_string(bullseye->GetDistance());
+		std::string padded_dist_text = std::string(3 - distance_text.length(), '0') + distance_text;
+		font_16_->Draw(renderer, padded_dist_text, kMfdBlueColour, kMfdScreenLeftInsideEdge + 35, kMfdScreenBottomInsideEdge - 59);
 
-	// Bearing to bullseye
-	// std::string bearing_text = std::to_string(angle_between_point_a_and_b(my_aircraft_->image_center_, bullseye_->image_center_));
-	std::string bearing_text = std::to_string(bullseye_->GetBearing());
-	std::string padded_bearing_text = std::string(3 - bearing_text.length(), '0') + bearing_text; // Add leading zeros if bearing less than 100 deg
-	font_16_->Draw(renderer_, padded_bearing_text, kMfdBlueColour, kMfdScreenLeftInsideEdge + 34, kMfdScreenBottomInsideEdge - 20);
+		// Bearing to bullseye
+		std::string bearing_text = std::to_string(bullseye->GetBearing());
+		std::string padded_bearing_text = std::string(3 - bearing_text.length(), '0') + bearing_text; // Add leading zeros if bearing less than 100 deg
+		font_16_->Draw(renderer, padded_bearing_text, kMfdBlueColour, kMfdScreenLeftInsideEdge + 34, kMfdScreenBottomInsideEdge - 20);
+	}
+
+	// Let the user know how many guesses they have left
+	font_16_->Draw(renderer_, "Guesses left " + remaining_guesses, kMfdGreenColour, 475, 280);
 
 
-	// Display remaining guesses - probably needs to go in the round manager
-	// auto guesses = std::to_string(round_manager_->GetRemaingGuesses());
-	//font_16_->Draw(renderer_, "Guesses left " + guesses, kMfdGreenColour, 475, 280);
 
+
+	// Draw on screen buttons
+	exit_button->DrawOutline(renderer);
+	setup_button->DrawOutline(renderer);
+	inc_rng_button->DrawOutline(renderer);
+	dec_rng_button->DrawOutline(renderer);
+	dep_rng_button->DrawOutline(renderer);
+
+	// Text for the instruction box 
+	// AWACS header
+	font_20_->DrawCenteredText(renderer, "AWACS Call:", kMfdGreenColour, kMfdPaddingTop - 150);
+	if (bogey1) {
+		font_18_->DrawCenteredText(renderer_, bogey1->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 100);
+	}
+	if (bogey2) {
+		font_18_->DrawCenteredText(renderer_, bogey2->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 80);
+	}
+	if (bogey3) {
+		font_18_->DrawCenteredText(renderer_, bogey3->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 60);
+	}
 
 	// Adjust the position of these depending on if the HSD is centered or not and if the object is in range
 	if (GetCenteredState()) {
-		hsd_distance_rings_->DrawCenteredAt(renderer_, kHSDDepActive.x, kHSDDepActive.y);
+		hsd_distance_rings_->DrawCenteredAt(renderer, kHSDDepActive.x, kHSDDepActive.y);
 		// Offset image in y axis so it looks better lined up
-		my_aircraft_->DrawCenteredAt(renderer_, kHSDDepActive.x, kHSDDepActive.y + 15);
+		my_aircraft_->DrawCenteredAt(renderer, kHSDDepActive.x, kHSDDepActive.y + 15);
 		// Draw the following if they are in range and their visibility is set to true
 		int debug_current_range = GetHSDCurrentRange();
-		if (bullseye_->GetDistance() <= debug_current_range) {
+		if (bullseye && bullseye->GetDistance() <= debug_current_range) {
 			// Need to scale the distance to match the HSD range esp. if the HSD range is much bigger than the distance to the bulls
-			float scale = (static_cast<float>(bullseye_->GetDistance() / static_cast<float>(GetHSDCurrentRange())));
+			float scale = (static_cast<float>(bullseye->GetDistance() / static_cast<float>(GetHSDCurrentRange())));
 			float scaled_dist_to_bulls = static_cast<float>(GetHSDCurrentRange()) * scale;
-			Coordinate bulls_pos = endpoint_given_start_and_bearing(kHSDDepActive, bullseye_->GetBearing(), 0, static_cast<int>(scaled_dist_to_bulls), GetMilesPerPixel());
-			bullseye_->DrawCenteredAt(renderer_, bulls_pos.x, bulls_pos.y);
+			Coordinate bulls_pos = endpoint_given_start_and_bearing(kHSDDepActive, bullseye->GetBearing(), 0, static_cast<int>(scaled_dist_to_bulls), GetMilesPerPixel());
+			bullseye->DrawCenteredAt(renderer, bulls_pos.x, bulls_pos.y);
+			// Code to draw bogey in testing mode
+			if (bogey1 ) {
+				int total_range = bullseye->GetDistance() + bogey1->GetDistanceFromBullseye();
+				if (total_range <= debug_current_range) {
+					bogey1->SetVisibility(true);
+					bogey1->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
+				}
+			}
 		}
-	} else {
-		hsd_distance_rings_->DrawCenteredAt(renderer_, kHSDDepInactive.x, kHSDDepInactive.y);
+	}
+	else {
+		hsd_distance_rings_->DrawCenteredAt(renderer, kHSDDepInactive.x, kHSDDepInactive.y);
 		// Offset image in y axis so it looks better lined up
 		my_aircraft_->DrawCenteredAt(renderer_, kHSDDepInactive.x, kHSDDepInactive.y + 15);
 		// Draw the following if they are in range and their visibility is set to true
 		int debug_current_range = GetHSDCurrentRange();
-		if (bullseye_->GetDistance() <= debug_current_range) {
+		if (bullseye && bullseye->GetDistance() <= debug_current_range) {
 			// Need to scale the distance to match the HSD range esp. if the HSD range is much bigger than the distance to the bulls
-			float scale = (static_cast<float>(bullseye_->GetDistance() / static_cast<float>(GetHSDCurrentRange())));
+			float scale = (static_cast<float>(bullseye->GetDistance() / static_cast<float>(GetHSDCurrentRange())));
 			float scaled_dist_to_bulls = static_cast<float>(GetHSDCurrentRange()) * scale;
-			Coordinate bulls_pos = endpoint_given_start_and_bearing(kHSDDepInactive, bullseye_->GetBearing(), 0, static_cast<int>(scaled_dist_to_bulls), GetMilesPerPixel());
-			bullseye_->DrawCenteredAt(renderer_, bulls_pos.x, bulls_pos.y);
+			Coordinate bulls_pos = endpoint_given_start_and_bearing(kHSDDepInactive, bullseye->GetBearing(), 0, static_cast<int>(scaled_dist_to_bulls), GetMilesPerPixel());
+			bullseye->DrawCenteredAt(renderer, bulls_pos.x, bulls_pos.y);
+			// Code to draw bogey in testing mode
+			if (bogey1) {
+				int total_range = bullseye->GetDistance() + bogey1->GetDistanceFromBullseye();
+				if (total_range <= debug_current_range) {
+					bogey1->SetVisibility(true);
+					bogey1->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
+				}
+			}
 		}
 	}
 
-
-	// Draw on screen buttons
-	exit_button->DrawOutline(renderer_);
-	setup_button->DrawOutline(renderer_);
-	inc_rng_button->DrawOutline(renderer_);
-	dec_rng_button->DrawOutline(renderer_);
-	dep_rng_button->DrawOutline(renderer_);
 	// Always draw frame last so it's on top of everything
-	mfd_frame_->Draw(renderer_);
-
-	// Text for the instruction box 
-	// AWACS header
-	font_20_->DrawCenteredText(renderer_, "AWACS Call:", kMfdWhiteColour, kMfdPaddingTop - 150);
+	mfd_frame_->Draw(renderer);
 
 	// Render screen
-	SDL_RenderPresent(renderer_);
+	SDL_RenderPresent(renderer);
+
 }
 
-void HSD::DisplayAwacsMessage(std::string awacs_call) {
-	font_18_->DrawCenteredText(renderer_, awacs_call, kMfdWhiteColour, kMfdPaddingTop - 100);
-}
 
 //bool SA_Trainer::SetupGameScreen() {
 //

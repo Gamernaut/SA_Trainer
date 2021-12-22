@@ -20,18 +20,19 @@ namespace cpv {
 			SDL_Surface* bullseye_surface_ = nullptr;
 			SDL_Texture* bullseye_texture_ = nullptr;
 			const double PI_ = 3.14159265;
-			BearingDistance bulls_relative_bd_ = { 0, 0 };
+			BearingRangeAltitude bulls_relative_bra_ = { 0, 0, 0 };
 
 		public:
 			Bullseye(SDL_Renderer* renderer, std::string filename, int xPosition, int yPosition);
 			~Bullseye();
 			Coordinate GetPosition();
-			void RandomiseBearingAndDistance();
+			void SetRandomBearingAndDistance();
 			int GetDistance();
 			int GetBearing();
+			int GetAltitude();
 
 			// delete after testing
-			void SetPosition(BearingDistance start_position);
+			void SetPosition(BearingRangeAltitude start_position);
 	};
 
 }

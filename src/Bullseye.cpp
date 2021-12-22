@@ -11,6 +11,7 @@
 
 #include "Bullseye.h"
 
+
 using namespace cpv;
 
 // Call the constructor in the base class to load the image
@@ -25,22 +26,28 @@ Coordinate Bullseye::GetPosition() {
 }
 
 // Method to position the bulls eye in any orientation around the aircraft at between 5 and 60nm
-void Bullseye::RandomiseBearingAndDistance() {
-	bulls_relative_bd_.bearing = rand() % 359 + 1;
+void Bullseye::SetRandomBearingAndDistance() {
+	bulls_relative_bra_.bearing = rand() % 359 + 1;
 	// Create bulls between 5 and 60nm away
-	bulls_relative_bd_.distance = rand() % 55 + 5;
+	bulls_relative_bra_.distance = rand() % 55 + 5;
+
 }
 
 int Bullseye::GetDistance() {
-	return bulls_relative_bd_.distance;
+	return bulls_relative_bra_.distance;
 }
 
 
 int Bullseye::GetBearing() {
-	return bulls_relative_bd_.bearing;
+	return bulls_relative_bra_.bearing;
 }
 
-void Bullseye::SetPosition(BearingDistance start_position) {
-	bulls_relative_bd_.bearing = start_position.bearing;
-	bulls_relative_bd_.distance = start_position.distance;
+int Bullseye::GetAltitude() {
+	return bulls_relative_bra_.altitude;
+}
+
+void Bullseye::SetPosition(BearingRangeAltitude start_position) {
+	bulls_relative_bra_.bearing = start_position.bearing;
+	bulls_relative_bra_.distance = start_position.distance;
+	bulls_relative_bra_.altitude = start_position.altitude;
 }

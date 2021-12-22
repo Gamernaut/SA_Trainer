@@ -1,7 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <SDL.h>
 #include <SDL_ttf.h>
 
 namespace cpv {
@@ -22,7 +21,8 @@ typedef struct {
 typedef struct {
 	int bearing;
 	int distance;
-} BearingDistance;
+	int altitude;
+} BearingRangeAltitude;
 
 // Useful distances for positioning UI elements
 const int kWindowWidth = 730;

@@ -17,7 +17,6 @@
 
 #include <SDL.h>
 #include <plog/Log.h>
-#include "main.h"
 #include "image_object.h"
 #include "on_screen_button.h"
 

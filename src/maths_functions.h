@@ -1,18 +1,16 @@
 #ifndef CPV_MATHS_FUNCTIONS_H
-#define CPV_MATHS_FUNCTIONS_H
-
-#include "main.h"
+#define CPV_MATHS_FUNCTIONS_Hu
 
 namespace cpv {
 
-	// Use inlined functions so each translation unit doesn't include a copy in the obj or we get symbol redefinition error during the linking
+	// Use in-lined functions so each translation unit doesn't include a copy in the obj or we get symbol redefinition error during the linking
 
 	// Use Pythagoras' therom to calculate the number of pixels between the 2 points
-	inline int pixels_between_point_a_and_b(Coordinate start_point, Coordinate end_point) {
-		int xdist = start_point.x - end_point.x;
-		int ydist = start_point.y - end_point.y;
+	inline double pixels_between_point_a_and_b(Coordinate start_point, Coordinate end_point) {
+		double xdist = static_cast<double>(start_point.x) - static_cast<double>(end_point.x);
+		double ydist = static_cast<double>(start_point.y) - static_cast<double>(end_point.y);
 		double distance = sqrt((xdist * xdist) + (ydist * ydist));
-		return static_cast<int>(distance);
+		return distance;
     }
 
 
@@ -37,16 +35,21 @@ namespace cpv {
     }
 
 
-	inline int MilesBetweenPoint1AndPoint2(Coordinate point_1, Coordinate point_2, double miles_per_pixel) {
+	//inline int MilesBetweenPoint1AndPoint2(Coordinate point_1, Coordinate point_2) {
 
-		int pixel_distance = pixels_between_point_a_and_b(point_1, point_2);
-		
-		return static_cast<int>(pixel_distance * miles_per_pixel);
-	}
+	//	int pixel_distance = pixels_between_point_a_and_b(point_1, point_2);
+	//	
+	//	return static_cast<int>(pixel_distance * GetMilesPerPixel());
+	//}
 
 
-	inline Coordinate endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int distance_in_miles, double miles_per_pixel) {
-	//inline int endpoint_given_start_and_bearing(Coordinate start_point, int bogey_current_heading, int my_aircraft_current_heading, int line_length = 20) {
+	inline Coordinate endpoint_given_start_and_bearing(Coordinate start_point, int bearing_from_start_point, int my_aircraft_current_heading, int distance_in_miles, double miles_per_pixel) {
+	//inline int endpoint_given_start_and_bearing(Coordinate start_point, int bearing_from_start_point, int my_aircraft_current_heading, int line_length = 20) {
+	// 
+	// start_point - x,y coordinate to use a starting point
+	// 
+	// 
+	// 
 		// Bit of trigonometry to work out the end co-ordinates based on the relative headings.
 		// The basic equation is to add the sin of the angle multiplied by the line length to get the new X position.
 		// For the new y position you use the cosine function. However, as the y position increases in value as you go down the screen we have to use
@@ -74,7 +77,7 @@ namespace cpv {
 
 		double scaled_dist = distance_in_miles / miles_per_pixel;
 
-		difference_in_angle = (static_cast<int>(bogey_current_heading) + static_cast<int>(my_aircraft_current_heading)) % 360;
+		difference_in_angle = (static_cast<int>(bearing_from_start_point) + static_cast<int>(my_aircraft_current_heading)) % 360;
 		new_X = static_cast<int>(start_point.x + (scaled_dist * sin(difference_in_angle * deg_to_rads)));
 		new_Y = static_cast<int>(start_point.y + (scaled_dist * -cos(difference_in_angle * deg_to_rads)));
 

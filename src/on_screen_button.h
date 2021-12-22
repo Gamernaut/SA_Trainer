@@ -15,9 +15,7 @@
 #ifndef OSB_H
 #define OSB_H
 
-#include <iostream>
 #include <SDL.h>
-#include "Main.h"
 
 namespace cpv {
     enum class ButtonState {

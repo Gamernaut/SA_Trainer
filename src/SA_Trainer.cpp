@@ -8,19 +8,19 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <string>
 #include <windows.h>		// For sleep function
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <plog/Log.h>
-#include <random>
 #include "sa_trainer.h"
-#include "main.h"
-#include "image_object.h"
-//#include "text_object.h"
-//#include "round_manager.h"
+
+//#include <iostream>
+//#include <string>
+//#include <SDL.h>
+//#include <SDL_image.h>
+//#include <SDL_ttf.h>
+//#include <plog/Log.h>
+//#include <random>
+//#include "main.h"
+//#include "image_object.h"
+
 
 using namespace cpv;
 
@@ -105,9 +105,9 @@ void SA_Trainer::Initialise() {
 	SDL_RenderPresent(renderer_);
 
 	options_screen_ = std::make_unique<OptionsScreen>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
-	hsd_screen_ = std::make_unique<HSD>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
+	//hsd_screen_ = std::make_unique<HSD>(renderer_, 0, 180, kMfdImageHeight, kMfdImageWidth);
 	// fcr_screen_ = std::make_unique<FCR>(0, 180, kMfdImageHeight, kMfdImageWidth);
-
+	round_manager_ = std::make_unique<RoundManager>(renderer_);
 }
 
 
@@ -122,7 +122,7 @@ void SA_Trainer::CloseDown() {
 
 void SA_Trainer::RenderGameScreen() {
 
-	hsd_screen_->Draw();
+	round_manager_->Draw(renderer_);
 	SDL_RenderPresent(renderer_);
 }
 
@@ -237,26 +237,26 @@ void SA_Trainer::ProcessInput() {
 				
 				// Handle DEP button press, toggle between centered and not centered
 				if (mouseX >= kOSB1LeftEdge && mouseX <= kOSB1RightEdge && mouseY >= kOSB1TopEdge && mouseY <= kOSB1BottomEdge) {
-					if (hsd_screen_->GetCenteredState()) {
-						hsd_screen_->SetCenteredState(false);
+					if (round_manager_->hsd_screen_->GetCenteredState()) {
+						round_manager_->hsd_screen_->SetCenteredState(false);
 						PLOG_INFO << "HSD DEP button press -> HSD centered state set to false";
 						break;
 					}
 					else {
-						hsd_screen_->SetCenteredState(true);
+						round_manager_->hsd_screen_->SetCenteredState(true);
 						PLOG_INFO << "HSD DEP button press -> HSD state changed to centered";
 					}
 				}
 				// Handle Increase Range button press
 				if (mouseX >= kOSB20LeftEdge && mouseX <= kOSB20RightEdge && mouseY >= kOSB20TopEdge && mouseY <= kOSB20BottomEdge) {
-					hsd_screen_->IncreaseRange();
+					round_manager_->hsd_screen_->IncreaseRange();
 					PLOG_INFO << "HSD increase range button pressed";
 					break;
 				}
 
 				// Handle Decrease Range button press
 				if (mouseX >= kOSB19LeftEdge && mouseX <= kOSB19RightEdge && mouseY >= kOSB19TopEdge && mouseY <= kOSB19BottomEdge) {
-					hsd_screen_->DecreaseRange();
+					round_manager_->hsd_screen_->DecreaseRange();
 					PLOG_INFO << "HSD decrease range button pressed";
 					break;
 				}
@@ -302,10 +302,10 @@ void SA_Trainer::ProcessInput() {
 
 				// Handle the select button (set the selected options as the current states)
 				if (mouseX >= kOSB14LeftEdge && mouseX <= kOSB14RightEdge && mouseY >= kOSB14TopEdge && mouseY <= kOSB14BottomEdge) {
-					// Reset the game mode to NewRound from OptionsScreen
-					game_state = GameState::kNewRound;
-					PLOG_INFO << "Options screen Select button pressed -> Reset game state to NewRound";
-					break;
+// Reset the game mode to NewRound from OptionsScreen
+game_state = GameState::kNewRound;
+PLOG_INFO << "Options screen Select button pressed -> Reset game state to NewRound";
+break;
 				}
 
 
@@ -338,19 +338,19 @@ void SA_Trainer::ProcessInput() {
 				}
 
 				// Set Ace difficulty selection in options screen
-				if (mouseX >= kOSB16LeftEdge && mouseX <= kOSB16RightEdge && mouseY >= kOSB16TopEdge && mouseY <= kOSB16BottomEdge) {
-					gameDifficulty = Difficulty::kAce;
-					PLOG_INFO << "Difficulty changed to Ace";
-					break;
-				}
+				//if (mouseX >= kOSB16LeftEdge && mouseX <= kOSB16RightEdge && mouseY >= kOSB16TopEdge && mouseY <= kOSB16BottomEdge) {
+				//	gameDifficulty = Difficulty::kAce;
+				//	PLOG_INFO << "Difficulty changed to Ace";
+				//	break;
+				//}
 			}
 
 			// Handle clicks when game is running
 			if (game_state == GameState::kRoundPlaying) {
 
 				// Handle a click that's inside the MFD surround (not a button press but a guess by the user)
-				if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge && 
-						mouseY >= kMfdScreenTopInsideEdge && mouseY <= kMfdScreenBottomInsideEdge) {
+				if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge &&
+					mouseY >= kMfdScreenTopInsideEdge && mouseY <= kMfdScreenBottomInsideEdge) {
 					mouse_click_position.x = mouseX;
 					mouse_click_position.y = mouseY;
 					PLOG_INFO << "HSD guess made -> Calling CheckWinStatus()";
@@ -360,27 +360,27 @@ void SA_Trainer::ProcessInput() {
 
 				// Handle DEP button press, toggle between centered and not centered
 				if (mouseX >= kOSB1LeftEdge && mouseX <= kOSB1RightEdge && mouseY >= kOSB1TopEdge && mouseY <= kOSB1BottomEdge) {
-					if (hsd_screen_->GetCenteredState()) {
-						hsd_screen_->SetCenteredState(true);
+					if (round_manager_->hsd_screen_->GetCenteredState()) {
+						round_manager_->hsd_screen_->SetCenteredState(true);
 						PLOG_INFO << "HSD DEP button press -> HSD state changed to centered";
 						break;
 					}
 					else {
-						hsd_screen_->SetCenteredState(false);
+						round_manager_->hsd_screen_->SetCenteredState(false);
 						PLOG_INFO << "HSD DEP button press -> HSD centered state set to false";
 					}
 				}
 
 				// Handle Increase Range button press
 				if (mouseX >= kOSB20LeftEdge && mouseX <= kOSB20RightEdge && mouseY >= kOSB20TopEdge && mouseY <= kOSB20BottomEdge) {
-					hsd_screen_->IncreaseRange();
+					round_manager_->hsd_screen_->IncreaseRange();
 					PLOG_INFO << "HSD increase range button pressed";
 					break;
 				}
 
 				// Handle Decrease Range button press
 				if (mouseX >= kOSB19LeftEdge && mouseX <= kOSB19RightEdge && mouseY >= kOSB19TopEdge && mouseY <= kOSB19BottomEdge) {
-					hsd_screen_->DecreaseRange();
+					round_manager_->hsd_screen_->DecreaseRange();
 					PLOG_INFO << "HSD decrease range button pressed";
 					break;
 				}
@@ -398,10 +398,9 @@ void SA_Trainer::ProcessInput() {
 }
 
 void SA_Trainer::SetupRound() {
-	game_state = GameState::kNewRound;
-
 	// Create round manager object and setup round
-//	round_manager_->StartRound(gameDifficulty, game_state, bogeys);
+	// Round manager manages the  
+	//round_manager_->SetupRound(gameDifficulty, game_state, hsd_screen_);
 }
 
 void SA_Trainer::Run() {
@@ -410,7 +409,7 @@ void SA_Trainer::Run() {
 	while (is_game_running ) {
 		// Delay at the start of each round to allow player to see results before new round
 		// Sleep(3000);
-		// SetupRound();
+		round_manager_->SetupRound(gameDifficulty, game_state);
 		
 		while (game_state != GameState::kGameEnded) {
 			// Limit speed to consistent frame rate. Not really needed in this application, but good practice to include it anyway.
@@ -422,6 +421,6 @@ void SA_Trainer::Run() {
 			ProcessInput();
 			Render();
 		}
-//		round_manager_->ResetRound();
+		round_manager_->ResetRound();
 	}
 }

@@ -11,18 +11,20 @@
 #ifndef AIRCRAFT_H
 #define AIRCRAFT_H
 
-#include <cmath>
-#include <memory>
-#include "image_object.h"
+#include "Bullseye.h"
+
 
 namespace cpv {
 
 	class Aircraft : public ImageObject {
 		public:
 			double	current_heading_ = 0.0;
+			BearingRangeAltitude aircraft_relative_bra_ = { 0, 0, 0 };
 
 		protected:
 			Coordinate Bearing_to_xy_position(int bearing);
+			std::string awacs_call_string = "";
+
 
 
 		public:
@@ -30,8 +32,16 @@ namespace cpv {
 			~Aircraft();
 			void SetRandomHeading();
 			int GetHeading();
-			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft> &my_aircraft_, int hsd_range_level_);
-			BearingDistance RandomiseBearingAndDistance();
+			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft>& my_aircraft, Coordinate bulls_pos,/*std::unique_ptr<Bullseye>& bullseye*/ double miles_per_pixel);
+			void SetRandomBearingAndDistanceFromBullseye();
+			int GetDistanceFromBullseye();
+			int GetBearingFromBullseye();
+			int GetAltitude();
+			void SetAwacsString(std::string awacs_call);
+			std::string GetAwacsString();
+
+			// For debugging
+			void SetPosition(BearingRangeAltitude start_position);
 	};
 
 }
