@@ -12,6 +12,7 @@ I'm a founding member of the 72nd Ghosts. Find out more here [72nd Ghosts Homepa
 - OOP architecture and design principles - Inheritance, polymorphism, composition
 - Integrating SDL, PLOG and the GoogleTest framework into the codebase
 - Using Smartpointers, manging modular codebase and avoiding design issues (circular dependencies), state machines to control game state/flow/difficulty
+- Use test cases to optimise how the data is stored and manipulated (game logic) before developing the UI
 
 ### Languages/Packages:
 - Visual Studio 2019
