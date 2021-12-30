@@ -14,6 +14,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <windows.h>		// For sleep function
 #include "hsd.h"
 
 using namespace cpv;
@@ -54,39 +55,35 @@ HSD::HSD(SDL_Renderer* renderer, int mfd_top_edge, int mfd_left_edge, int mfd_he
 	font_20_ = std::make_unique<TextObject>(renderer_, kFontName, 20);
 	font_18_ = std::make_unique<TextObject>(renderer_, kFontName, 18);
 	font_16_ = std::make_unique<TextObject>(renderer_, kFontName, 16);
+	font_14_ = std::make_unique<TextObject>(renderer_, kFontName, 14);
+
+	// Create the images to be used to indicate to the user if their guess was correct or not
+	// Create the pie slices to indicate a correct or incorrect bearing guess
+	correct_guess_arc_ = std::make_unique<ImageObject>(renderer_, kGreenPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+	wrong_guess_arc_ = std::make_unique<ImageObject>(renderer_, kRedPieSlice, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+
+	// Create the rectangles to indicate a correct or incorrect distance and direction guess
+	correct_guess_rect_ = std::make_unique<ImageObject>(renderer_, kGreenRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
+	wrong_guess_rect_ = std::make_unique<ImageObject>(renderer_, kRedRectangle, my_aircraft_->image_center_.x, my_aircraft_->image_center_.y);
 }
+
 
 HSD::~HSD() {
 
 }
 
 
-void HSD::AddRandomBullsToHSD(std::unique_ptr<Bullseye>& bullseye) {
-//	PLOG_VERBOSE << "HSD AddRandomBullsToHSD -> creating bullseye";
-//	// Create bullseye
-//	bullseye_ = std::make_unique<Bullseye>(renderer_, kBullsFileName, kHSDDepInactive.x , kHSDDepInactive.y);
-////	bullseye_->SetVisibility(false);
-//	bullseye_->RandomiseBearingAndDistance();
-////	bullseye_->SetPosition({45 , 20});
-}
-
-
-void HSD::AddRandomBogeyToHSD(std::unique_ptr<Aircraft>& bogey) {
-
-}
-
-void HSD::AddAwacsCallToDisplay(std::string awacs_call) {
-
-}
 
 void HSD::SetCenteredState(bool new_state) {
 	// Do I need to tie this into the display
 	centered_ = new_state;
 }
 
+
 bool HSD::GetCenteredState(void) {
 	return centered_;
 }
+
 
 double HSD::GetMilesPerPixel(void) {
 	// Take the number of pixels between the center and the outer ring, about 305px, and divide by range in miles to get miles per pixel
@@ -94,6 +91,7 @@ double HSD::GetMilesPerPixel(void) {
 	double pixels_from_my_aircraft_to_outer_ring = static_cast<double>(305);
 	return  (current_hsd_range / pixels_from_my_aircraft_to_outer_ring );
 }
+
 
 void HSD::IncreaseRange(void) {
 	int range_size = HSD_ranges.size() - 1;
@@ -106,6 +104,7 @@ void HSD::IncreaseRange(void) {
 	}
 }
 
+
 void HSD::DecreaseRange(void) {
 	if (range_level_ > 0) {
 		range_level_ -= 1;
@@ -114,6 +113,11 @@ void HSD::DecreaseRange(void) {
 		range_level_ = 0;
 	}
 }
+
+void HSD::ResetHSDRange(void) {
+	range_level_ = 0;
+}
+
 
 int HSD::GetHSDCurrentRange() {
 	if (GetCenteredState()) {
@@ -124,20 +128,18 @@ int HSD::GetHSDCurrentRange() {
 	}
 }
 
-//std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name, std::string onscreen_text) {
-//	PLOG_VERBOSE << "HSD::AddObcButton called with 7 parameters";
-//	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name, onscreen_text);
-//}
-//
-//std::unique_ptr<OnSceenButton> HSD::AddOsbButton(int xPos, int yPos, int xPosEnd, int yPosEnd, bool toggelable, std::string button_name) {
-//	PLOG_VERBOSE << "HSD::AddObcButton called with 6 parameters";
-//	return std::make_unique<OnSceenButton>(xPos, yPos, xPosEnd, yPosEnd, toggelable, button_name);
-//}
+
+void HSD::RotateHsdRingsTo(int final_angle) {
+	hsd_distance_rings_->RotateToFinalAngle(final_angle);
+}
 
 
+void HSD::BearingPointerTo(int final_angle) {
+	bearing_pointer_->RotateToFinalAngle(final_angle);
+}
 
-//void HSD::Draw(SDL_Renderer* renderer, std::unique_ptr<Bullseye>& bullseye, std::unique_ptr<Aircraft>& bogey1, std::string const& bogey_1_awacs, std::unique_ptr<Aircraft>& bogey2, std::string bogey_2_awacs, std::unique_ptr<Aircraft>& bogey3, std::string bogey_3_awacs, int remaining_guesses) {
-void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std::unique_ptr<Aircraft>&bogey1, std::unique_ptr<Aircraft>&bogey2, std::unique_ptr<Aircraft>&bogey3, int remaining_guesses) {
+
+void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std::unique_ptr<Aircraft>&bogey1, std::unique_ptr<Aircraft>&bogey2, std::unique_ptr<Aircraft>&bogey3, int remaining_guesses, const Difficulty& level, GameState& state, Coordinate mouse_click_position) {
 	// This method separates the data from the visuals.
 	PLOG_VERBOSE << "HSD::Draw with bulls and bogey info called";
 
@@ -159,8 +161,8 @@ void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std:
 	// Text for buttons
 	font_16_->Draw(renderer, kExitButtonText, kMfdWhiteColour, 433, 795);
 	// if a round is in progress then don't display the setup button as we don't want to change the difficulty mid round
-	// if (game_state == RoundState::kRoundStarting || game_state == RoundState::kGameEnded) { font_16_->Draw(renderer_, kSetupButtonText, kMfdWhiteColour, 260, 795); }
-	font_16_->Draw(renderer, kSetupButtonText, kMfdWhiteColour, 260, 795);
+	if (state == GameState::kNewRound || state == GameState::kGameEnded) { font_16_->Draw(renderer_, kSetupButtonText, kMfdWhiteColour, 260, 795); }
+	//font_16_->Draw(renderer, kSetupButtonText, kMfdWhiteColour, 260, 795);
 	font_16_->Draw(renderer, kDepButtonText, kMfdWhiteColour, 183, 276);
 
 
@@ -177,29 +179,55 @@ void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std:
 	}
 
 	// Let the user know how many guesses they have left
-	font_16_->Draw(renderer_, "Guesses left " + remaining_guesses, kMfdGreenColour, 475, 280);
-
-
+	font_16_->Draw(renderer_, "Guesses left " + std::to_string(remaining_guesses), kMfdGreenColour, 475, 280);
 
 
 	// Draw on screen buttons
-	exit_button->DrawOutline(renderer);
-	setup_button->DrawOutline(renderer);
-	inc_rng_button->DrawOutline(renderer);
-	dec_rng_button->DrawOutline(renderer);
-	dep_rng_button->DrawOutline(renderer);
+	//exit_button->DrawOutline(renderer);
+	//setup_button->DrawOutline(renderer);
+	//inc_rng_button->DrawOutline(renderer);
+	//dec_rng_button->DrawOutline(renderer);
+	//dep_rng_button->DrawOutline(renderer);
 
 	// Text for the instruction box 
 	// AWACS header
 	font_20_->DrawCenteredText(renderer, "AWACS Call:", kMfdGreenColour, kMfdPaddingTop - 150);
 	if (bogey1) {
-		font_18_->DrawCenteredText(renderer_, bogey1->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 100);
+		font_18_->DrawCenteredText(renderer_, bogey1->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 110);
 	}
 	if (bogey2) {
-		font_18_->DrawCenteredText(renderer_, bogey2->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 80);
+		font_18_->DrawCenteredText(renderer_, bogey2->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 90);
 	}
 	if (bogey3) {
-		font_18_->DrawCenteredText(renderer_, bogey3->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 60);
+		font_18_->DrawCenteredText(renderer_, bogey3->GetAwacsString(), kMfdWhiteColour, kMfdPaddingTop - 70);
+	}
+
+	// Display the text that describes what the player should do at each difficulty level
+
+	if (level == Difficulty::kAce && (state == GameState::kRoundPlaying || state == GameState::kNewRound)) {
+		difficulty_text1 = "Difficulty: ACE";
+		difficulty_text2 = "Click on HSD close to all groups of bogey's";
+	}
+	else if (level == Difficulty::kCadet && (state == GameState::kRoundPlaying || state == GameState::kNewRound)) {
+		difficulty_text1 = "Difficulty: CADET";
+		difficulty_text2 = "Click on HSD close to the bullseye";
+	}
+	else if (level == Difficulty::kRecruit && (state == GameState::kRoundPlaying || state == GameState::kNewRound)) {
+		difficulty_text1 = "Difficulty: RECRUIT";
+		difficulty_text2 = "Click on HSD in the direction of the bullseye";
+	}
+	else if (level == Difficulty::kRookie && (state == GameState::kRoundPlaying || state == GameState::kNewRound)) {
+		difficulty_text1 = "Difficulty: ROOKIE";
+		difficulty_text2 = "Click on HSD in the direction of the bogey from the bullseye";
+	}
+	else if (level == Difficulty::kVeteran && (state == GameState::kRoundPlaying || state == GameState::kNewRound)) {
+		difficulty_text1 = "Difficulty: VETERAN";
+		difficulty_text2 = "Click on HSD close to the bogey's";
+	}
+
+	if (difficulty_text1.length() > 0) {
+		font_14_->DrawCenteredText(renderer_, difficulty_text1, kMfdBlueColour, kMfdPaddingTop - 45);
+		font_14_->DrawCenteredText(renderer_, difficulty_text2, kMfdBlueColour, kMfdPaddingTop - 25);
 	}
 
 	// Adjust the position of these depending on if the HSD is centered or not and if the object is in range
@@ -219,8 +247,19 @@ void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std:
 			if (bogey1 ) {
 				int total_range = bullseye->GetDistance() + bogey1->GetDistanceFromBullseye();
 				if (total_range <= debug_current_range) {
-					bogey1->SetVisibility(true);
 					bogey1->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
+				}
+			}
+			if (bogey2) {
+				int total_range = bullseye->GetDistance() + bogey2->GetDistanceFromBullseye();
+				if (total_range <= debug_current_range) {
+					bogey2->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
+				}
+			}
+			if (bogey3) {
+				int total_range = bullseye->GetDistance() + bogey3->GetDistanceFromBullseye();
+				if (total_range <= debug_current_range) {
+					bogey3->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
 				}
 			}
 		}
@@ -241,11 +280,124 @@ void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std:
 			if (bogey1) {
 				int total_range = bullseye->GetDistance() + bogey1->GetDistanceFromBullseye();
 				if (total_range <= debug_current_range) {
-					bogey1->SetVisibility(true);
 					bogey1->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
 				}
 			}
+			if (bogey2) {
+				int total_range = bullseye->GetDistance() + bogey2->GetDistanceFromBullseye();
+				if (total_range <= debug_current_range) {
+					bogey2->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
+				}
+			}
+			if (bogey3) {
+				int total_range = bullseye->GetDistance() + bogey3->GetDistanceFromBullseye();
+				if (total_range <= debug_current_range) {
+					bogey3->DrawBogey(renderer_, my_aircraft_, bulls_pos, GetMilesPerPixel());
+				}
+			}
 		}
+	}
+
+	// Using the GameState which is set in the methods called by RoundManager->CheckGuessAgainstWinCondition() and display the correct symbol
+	switch (level) {
+		case Difficulty::kRecruit:
+ 		   int user_bearing_guess = angle_between_point_a_and_b(my_aircraft_->GetPosition(), mouse_click_position);
+
+			if (state == GameState::kRoundWon) {
+				// Display the green arc with the bullseye after a correct guess
+				correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
+				bullseye->SetVisibility(true);
+				mfd_frame_->Draw(renderer);
+				SDL_RenderPresent(renderer);
+				Sleep(2000);
+				state = GameState::kGameEnded;
+			}
+			else if (state == GameState::kRoundFail) {
+				// Display the red arc with the bullseye after 3 guesses
+				wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+				bullseye->SetVisibility(true);
+				mfd_frame_->Draw(renderer);
+				SDL_RenderPresent(renderer);
+				Sleep(2000);
+				state = GameState::kGameEnded;
+			}
+			else if (state == GameState::kRoundPlaying) {
+				// Display the red arc but keep going with the remaining guesses
+				wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+			}
+			break;
+//
+//		case Difficulty::kCadet:
+//			if (state == GameState::kRoundWon) {
+//				// Display the green arc with the bullseye after a correct guess
+//				correct_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
+//				bullseye_->Draw(renderer_);
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (state == RoundState::kRoundFail) {
+//				// Display the red arc with the bullseye after 3 guesses
+//				wrong_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
+//				bullseye_->Draw(renderer_);
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (state == RoundState::kRoundPlaying) {
+//				// Display the red arc but keep going with the remaining guesses
+//				wrong_guess_rect_->DrawCenteredAt(renderer_, mouse_click_position);
+//			}
+//			break;
+//
+//		case Difficulty::kRookie:
+//			// Determine the bearing of the actual bogey from the bullseye as well as the location the user clicked on
+//			user_bearing_guess = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, mouse_click_position);
+//			bogey_bearing_from_bulleye = bullseye_->Bearing_FromPoint1ToPoint2(bullseye_->image_center_, bogeys[0]->image_center_);
+//
+//			if (state == RoundState::kRoundWon) {
+//				// Display the green arc from the bullseye to the bogey after a correct guess
+//				correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);  // need to know the user bearing guess
+//				bullseye_->Draw(renderer_);
+//				// bogeys[0]->Draw(renderer_);
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (state == RoundState::kRoundFail) {
+//				// Display the red arc from the bulls eye to the bogey after 3 guesses
+//				wrong_guess_arc_->DrawArc(renderer_, bogey_bearing_from_bulleye);
+//				bullseye_->Draw(renderer_);
+//				// bogeys[0]->Draw(renderer_);
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (state == RoundState::kRoundPlaying) {
+//				// Display the red arc from the bulls eye to the clicked on point and keep going with the remaining guesses
+//				wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+//			}
+//			break;
+//
+//		case Difficulty::kVeteran:
+//			if (state == RoundState::kRoundWon) {
+//				// Display the green arc with the bullseye after a correct guess
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (state == RoundState::kRoundFail) {
+//				// Display the red arc with the bullseye after 3 guesses
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (state == RoundState::kRoundPlaying) {
+//				// Display the red arc but keep going with the remaining guesses
+//			}
+//			break;
+//
+//		case Difficulty::kAce:
+//			if (state == RoundState::kRoundWon) {
+//				// Display the green arc with the bullseye after a correct guess
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (game_state == RoundState::kRoundFail) {
+//				// Display the red arc with the bullseye after 3 guesses
+//				state = RoundState::kGameEnded;
+//			}
+//			else if (game_state == RoundState::kRoundPlaying) {
+//				// Display the red arc but keep going with the remaining guesses
+//			}
+			break;
 	}
 
 	// Always draw frame last so it's on top of everything
@@ -256,6 +408,13 @@ void HSD::Draw(SDL_Renderer * renderer, std::unique_ptr<Bullseye>&bullseye, std:
 
 }
 
+void HSD::DrawCorrectGuessArc(int user_bearing_guess) {
+	correct_guess_arc_->DrawArc(renderer_, user_bearing_guess);
+}
+
+void HSD::DrawWrongGuessArc(int user_bearing_guess) {
+	wrong_guess_arc_->DrawArc(renderer_, user_bearing_guess);  
+}
 
 //bool SA_Trainer::SetupGameScreen() {
 //

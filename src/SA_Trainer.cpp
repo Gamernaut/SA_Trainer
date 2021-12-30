@@ -11,16 +11,6 @@
 #include <windows.h>		// For sleep function
 #include "sa_trainer.h"
 
-//#include <iostream>
-//#include <string>
-//#include <SDL.h>
-//#include <SDL_image.h>
-//#include <SDL_ttf.h>
-//#include <plog/Log.h>
-//#include <random>
-//#include "main.h"
-//#include "image_object.h"
-
 
 using namespace cpv;
 
@@ -122,15 +112,17 @@ void SA_Trainer::CloseDown() {
 
 void SA_Trainer::RenderGameScreen() {
 
-	round_manager_->Draw(renderer_);
+	round_manager_->Draw(renderer_, gameDifficulty, game_state);
 	SDL_RenderPresent(renderer_);
 }
+
 
 void SA_Trainer::RenderStartScreen() {
 
 	start_screen_->Draw();
 	SDL_RenderPresent(renderer_);
 }
+
 
 void SA_Trainer::RenderOptionsSceen() {
 
@@ -167,6 +159,12 @@ void SA_Trainer::Render() {
 	case GameState::kOptionsScreen:
 		RenderOptionsSceen();
 		break;
+	case GameState::kRoundWon:
+		RenderGameScreen();
+		break;
+	case GameState::kRoundFail:
+		RenderGameScreen();
+		break;
 	case GameState::kRoundPlaying:
 		RenderGameScreen();
 		break;
@@ -175,6 +173,7 @@ void SA_Trainer::Render() {
 		break;
 	}
 }
+
 
 void SA_Trainer::ProcessInput() {
 	SDL_Event sdlEvent;
@@ -346,15 +345,16 @@ break;
 			}
 
 			// Handle clicks when game is running
-			if (game_state == GameState::kRoundPlaying) {
+			if (game_state == GameState::kRoundPlaying || game_state == GameState::kNewRound) {
 
 				// Handle a click that's inside the MFD surround (not a button press but a guess by the user)
 				if (mouseX >= kMfdScreenLeftInsideEdge && mouseX <= kMfdScreenRightInsideEdge &&
 					mouseY >= kMfdScreenTopInsideEdge && mouseY <= kMfdScreenBottomInsideEdge) {
 					mouse_click_position.x = mouseX;
 					mouse_click_position.y = mouseY;
-					PLOG_INFO << "HSD guess made -> Calling CheckWinStatus()";
-					// round_manager_->CheckWinStatus(gameDifficulty, game_state, mouse_click_position, hsd_range_[hsd_range_level_]);
+					PLOG_INFO << "HSD guess made -> Calling CheckGuessAgainstWinCondition()";
+					game_state = GameState::kRoundPlaying;
+					round_manager_->CheckGuessAgainstWinCondition(gameDifficulty, game_state, mouse_click_position);
 					break;
 				}
 
@@ -397,18 +397,12 @@ break;
 	}	// end of while loop
 }
 
-void SA_Trainer::SetupRound() {
-	// Create round manager object and setup round
-	// Round manager manages the  
-	//round_manager_->SetupRound(gameDifficulty, game_state, hsd_screen_);
-}
 
 void SA_Trainer::Run() {
 
 
 	while (is_game_running ) {
 		// Delay at the start of each round to allow player to see results before new round
-		// Sleep(3000);
 		round_manager_->SetupRound(gameDifficulty, game_state);
 		
 		while (game_state != GameState::kGameEnded) {
@@ -421,6 +415,8 @@ void SA_Trainer::Run() {
 			ProcessInput();
 			Render();
 		}
+		// Sleep(2000);
 		round_manager_->ResetRound();
+		game_state = GameState::kNewRound;
 	}
 }

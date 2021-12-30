@@ -72,16 +72,16 @@ void OptionsScreen::Draw(int loggingLevel) {
 	}
 
 	// Draw the outlines for all the on screen buttons
-	recruit_button_->DrawOutline(renderer_);
-	cadet_button_->DrawOutline(renderer_);
-	rookie_button_->DrawOutline(renderer_);
-	veteran_button_->DrawOutline(renderer_);
-	ace_button_->DrawOutline(renderer_);
-	select_button_->DrawOutline(renderer_);
-	cancel_button_->DrawOutline(renderer_);
-	verbose_button_->DrawOutline(renderer_);
-	info_button_->DrawOutline(renderer_);
-	critical_button_->DrawOutline(renderer_);
+	//recruit_button_->DrawOutline(renderer_);
+	//cadet_button_->DrawOutline(renderer_);
+	//rookie_button_->DrawOutline(renderer_);
+	//veteran_button_->DrawOutline(renderer_);
+	//ace_button_->DrawOutline(renderer_);
+	//select_button_->DrawOutline(renderer_);
+	//cancel_button_->DrawOutline(renderer_);
+	//verbose_button_->DrawOutline(renderer_);
+	//info_button_->DrawOutline(renderer_);
+	//critical_button_->DrawOutline(renderer_);
 
 	mfd_frame_->Draw(renderer_);
 	SDL_RenderPresent(renderer_);

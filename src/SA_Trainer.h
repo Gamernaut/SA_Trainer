@@ -83,7 +83,6 @@ namespace cpv {
 		void Render();
 		void ProcessInput();
 		void Run();
-		void SetupRound();
 	};
 
 }

@@ -32,7 +32,7 @@ namespace cpv {
 			~Aircraft();
 			void SetRandomHeading();
 			int GetHeading();
-			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft>& my_aircraft, Coordinate bulls_pos,/*std::unique_ptr<Bullseye>& bullseye*/ double miles_per_pixel);
+			void DrawBogey(SDL_Renderer* renderer, std::unique_ptr<Aircraft>& my_aircraft, Coordinate bulls_pos, double miles_per_pixel);
 			void SetRandomBearingAndDistanceFromBullseye();
 			int GetDistanceFromBullseye();
 			int GetBearingFromBullseye();

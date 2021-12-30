@@ -43,7 +43,7 @@ void StartScreen::Draw() {
 	start_screen_image_->Draw(renderer_);
 
 	// Add code to render button stuff
-	start_button->DrawOutline(renderer_);
+	//start_button->DrawOutline(renderer_);
 
 	SDL_RenderPresent(renderer_);
 }
